@@ -1,1 +1,0 @@
-The ability to read any file is cool. What about the ability to write any file (`as root`)? Can you get the flag?

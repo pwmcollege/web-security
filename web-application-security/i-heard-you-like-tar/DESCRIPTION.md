@@ -1,0 +1,1 @@
+The ability to read any file is cool. What about the ability to arbitrary write?

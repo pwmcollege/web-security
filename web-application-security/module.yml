@@ -1,19 +1,25 @@
 name: Web Application Security
 challenges:
-    - id: sticky-tar-pit
-      name: Unsafe Archive Handling
+    - id: a-tar-challenge
+      name: A Tar Challenge
       import:
           dojo: fluffy~ea96493b
           module: web
           challenge: sticky-tar-pit
-    - id: leaky-tar-pit
-      name: Unsafe Archive Handling 2
+    - id: another-tar-challenge
+      name: Another Tar Challenge
       import:
           dojo: fluffy~ea96493b
           module: web
           challenge: leaky-tar-pit
-    - id: slippery-tar-pit
-      name: Unsafe Archive Handling 3
+    - id: yet-another-tar-challenge
+      name: Yet Another Tar Challenge
+      import:
+          dojo: az-ctf-2025~6fbdc1d4
+          module: azctf-web
+          challenge: pwn-backups
+    - id: i-heard-you-like-tar
+      name: I Heard You Like Tar
       import:
           dojo: fluffy~ea96493b
           module: web
