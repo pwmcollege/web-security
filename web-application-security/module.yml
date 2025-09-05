@@ -1,26 +1,32 @@
 name: Web Application Security
 challenges:
-    - id: a-tar-challenge
-      name: A Tar Challenge
+    - id: the-missing-link
+      name: The Missing Link
       import:
           dojo: fluffy~ea96493b
           module: web
           challenge: sticky-tar-pit
-    - id: another-tar-challenge
-      name: Another Tar Challenge
+    - id: introspection-station
+      name: Introspection Station
       import:
           dojo: fluffy~ea96493b
           module: web
           challenge: leaky-tar-pit
-    - id: yet-another-tar-challenge
-      name: Yet Another Tar Challenge
+    - id: helpful-assistant-service
+      name: Helpful Assistant Service
       import:
           dojo: az-ctf-2025~6fbdc1d4
           module: azctf-web
           challenge: pwn-backups
-    - id: i-heard-you-like-tar
-      name: I Heard You Like Tar
+    - id: directory-delivery-dilemma
+      name: Directory Delivery Dilemma
       import:
           dojo: fluffy~ea96493b
           module: web
           challenge: slippery-tar-pit
+    - id: paranoid-installer
+      name: Paranoid Installer
+      import:
+          dojo: shell-lin-do~148f65dd
+          module: other
+          challenge: 41
