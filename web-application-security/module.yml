@@ -2,12 +2,14 @@ name: Web Application Security
 challenges:
     - id: the-missing-link
       name: The Missing Link
+      allow_privileged: false
       import:
           dojo: fluffy~ea96493b
           module: web
           challenge: sticky-tar-pit
     - id: introspection-station
       name: Introspection Station
+      allow_privileged: false
       import:
           dojo: fluffy~ea96493b
           module: web
@@ -20,6 +22,7 @@ challenges:
           challenge: pwn-backups
     - id: directory-delivery-dilemma
       name: Directory Delivery Dilemma
+      allow_privileged: false
       import:
           dojo: fluffy~ea96493b
           module: web
