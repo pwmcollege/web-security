@@ -5,7 +5,7 @@ mkdir -p /var/log/gunicorn
 chmod 544 /challenge/wsgi.py
 mv /challenge/wsgi.py /opt/lecture/
 
-chmod -R 444 /challenge
+chmod -R -s /challenge
 
 cd /opt/lecture
 gunicorn --daemon
