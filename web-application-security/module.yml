@@ -58,4 +58,11 @@ resources:
           challenge: "41"
 
     - type: header
-      content: Abyssopelagic Zone
+      content: Hadalpelagic Zone
+    - id: professors-podium
+      name: Professor's Podium
+      image: pwncollege/challenge-lecture
+      interfaces:
+          - name: Challenge
+            port: 80
+      type: challenge

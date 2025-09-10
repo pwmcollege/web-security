@@ -1,0 +1,13 @@
+#!/bin/sh
+export PYTHONDONTWRITEBYTECODE=1
+mkdir -p /var/log/gunicorn
+
+chmod 544 /challenge/wsgi.py
+mv /challenge/wsgi.py /opt/lecture/
+
+chmod -R 444 /challenge
+
+cd /opt/lecture
+gunicorn --daemon
+
+until curl -fs localhost:80 >/dev/null; do sleep 0.1; done
