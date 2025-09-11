@@ -10,5 +10,5 @@ modules:
       import:
           dojo: fundamentals
           module: talking-web
-    - id: web-application-security
     - id: dom-clobbering
+    - id: web-application-security

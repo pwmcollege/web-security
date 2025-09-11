@@ -1,5 +1,4 @@
 name: DOM Clobbering
-resources:
+challenges:
     - id: test
       name: Test
-      type: challenge
