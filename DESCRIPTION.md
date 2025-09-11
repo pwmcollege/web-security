@@ -1,10 +1,28 @@
-# Welcome to The Art of Web dojo
+# The Art of Web 🕸️
 
-This dojo aims to teach you about web-based vulnerabilities, which you usually see in CTFs. We created this dojo to fill the web content void that pwn.college doesn't offer.
+Welcome to The Art of Web dojo.
 
-Most modules go from easy to complex challenges with a generous amount of hints; however, if you want to earn the badge, you must prove yourself worthy with the `Web Application Security` module.
+## What the dojo
 
-Good luck.
+This dojo teaches you about web vulnerabilities, the kind that show up in CTFs and real pentests.
 
-This dojo is open source!
-Contribute [here](https://github.com/0x-FFFFFF/the-art-of-web).
+## Why the dojo
+
+We created this dojo to fill the web content void that pwn.college doesn't offer. Under the guidance from `Zardus`, we aim to make something that might eventually become the official pwn.college web belt.
+
+## How the dojo
+
+Each module starts simple but gets harder fast, and they have a generous amount of hints.\
+Want the badge? You'll need to prove yourself worthy, and beat the `Web Application Security` module. No hints, no mercy.
+
+## Who the dojo
+
+This dojo is for anyone interested in web security, from complete beginners to web gods looking for some entertainment.
+
+## Where the dojo
+
+This dojo is open source! Pull requests are appreciated. [Github](https://github.com/snowy-fluff/the-art-of-web).
+
+## Feedback the dojo
+
+Questions? Hints? Unintended solves? Need harder challenges? Please contact `Gus`, `RenegadePenguin`, `Snowy` (or `0xFFFFFF`) on `discord`.
