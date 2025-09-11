@@ -1,4 +1,6 @@
-## Welcome to The Art of Web dojo 🕸️
+## The Art of Web 🕸️
+
+Welcome to The Art of Web dojo.
 
 ### What
 
@@ -21,6 +23,6 @@ This dojo is for anyone interested in web security, from complete beginners to w
 
 This dojo is open source! Pull requests are appreciated. [Github](https://github.com/snowy-fluff/the-art-of-web).
 
-### Feedback the dojo
+### Feedback
 
 Questions? Hints? Unintended solves? Need harder challenges? Please contact `Gus`, `RenegadePenguin`, `Snowy` (or `0xFFFFFF`) on `discord`.
