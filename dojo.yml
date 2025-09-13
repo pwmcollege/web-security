@@ -11,4 +11,6 @@ modules:
           dojo: fundamentals
           module: talking-web
     - id: dom-clobbering
+      visibility:
+          start: "2026-09-13T22:00:00-00:00"
     - id: web-application-security
