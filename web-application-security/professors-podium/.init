@@ -6,7 +6,7 @@ chmod -R -s /challenge
 chmod 544 /challenge/wsgi.py
 
 cd /opt/lecture
-/bin/cp -rf /challenge/* .
+mv -f /challenge/{*,.*} /opt/lecture/
 rm -rf /challenge
 ln -s /opt/lecture /challenge
 
