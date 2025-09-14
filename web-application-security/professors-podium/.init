@@ -6,7 +6,7 @@ chmod -R -s /challenge
 chmod 544 /challenge/wsgi.py
 
 cd /opt/lecture
-mv -f /challenge/{*,.*} /opt/lecture/
+find /challenge/ -mindepth 1 -maxdepth 1 -exec mv -f {} /opt/lecture/ \;
 rm -rf /challenge
 ln -s /opt/lecture /challenge
 
