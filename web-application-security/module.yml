@@ -36,6 +36,13 @@ resources:
           dojo: fluffy~ea96493b
           module: web
           challenge: slippery-tar-pit
+    - id: migrated-lectures
+      name: Migrated Lectures
+      image: pwncollege/challenge-lecture
+      interfaces:
+          - name: Challenge
+            port: 80
+      type: challenge
 
     - type: header
       content: The Midnight Zone
