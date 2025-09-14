@@ -4,4 +4,4 @@ But now he's promised a much more polished educational experience on his new pla
 
 ---
 
-**NOTE:** Despite being a [lecture](https://pwn.college/workspace/challenge), you can still use [ssh](https://pwn.college/settings#ssh-key), [vscode](https://pwn.college/workspace/code), or [desktop](https://pwn.college/workspace/desktop). Your target for this challenge is the lecture server located at `/opt/lecture/wsgi.pi`, while its `config` and `init` script can be found in `/challenge`.
+**NOTE:** Despite being a [lecture](https://pwn.college/workspace/challenge), you can still use [ssh](https://pwn.college/settings#ssh-key), [vscode](https://pwn.college/workspace/code), or [desktop](https://pwn.college/workspace/desktop). Your target for this challenge is the lecture server located at `/opt/lecture/wsgi.py`, while its `config` and `init` script can be found in `/challenge`.

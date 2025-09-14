@@ -4,4 +4,4 @@ Simply watch the presentation from beginning to end like a diligent student, and
 
 ---
 
-**NOTE:** Despite being a [lecture](https://pwn.college/workspace/challenge), you can still use [ssh](https://pwn.college/settings#ssh-key), [vscode](https://pwn.college/workspace/code), or [desktop](https://pwn.college/workspace/desktop). Your target for this challenge is the lecture server located at `/challenge/wsgi.pi`, with its `config` and `init` script can be found in the same folder.
+**NOTE:** Despite being a [lecture](https://pwn.college/workspace/challenge), you can still use [ssh](https://pwn.college/settings#ssh-key), [vscode](https://pwn.college/workspace/code), or [desktop](https://pwn.college/workspace/desktop). Your target for this challenge is the lecture server located at `/challenge/wsgi.py`, with its `config` and `init` script can be found in the same folder.
