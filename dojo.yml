@@ -3,7 +3,7 @@ name: The Art of Web
 type: hidden
 award:
     emoji: 🦄
-image: pwncollege/challenge-legacy:latest
+image: pwmcollege/challenge-main:latest
 modules:
     - id: introduction
       name: Introduction
