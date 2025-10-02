@@ -2,40 +2,9 @@ name: Web Application Security
 resources:
     - type: header
       content: The Sunlight Zone
-    - id: the-missing-link
-      name: The Missing Link
-      type: challenge
-      allow_privileged: false
-      import:
-          dojo: fluffy~ea96493b
-          module: web
-          challenge: sticky-tar-pit
-    - id: introspection-station
-      name: Introspection Station
-      type: challenge
-      allow_privileged: false
-      import:
-          dojo: fluffy~ea96493b
-          module: web
-          challenge: leaky-tar-pit
-    - id: helpful-assistant-service
-      name: Helpful Assistant Service
-      type: challenge
-      import:
-          dojo: az-ctf-2025~6fbdc1d4
-          module: azctf-web
-          challenge: pwn-backups
 
     - type: header
       content: The Twilight Zone
-    - id: directory-delivery-dilemma
-      name: Directory Delivery Dilemma
-      type: challenge
-      allow_privileged: false
-      import:
-          dojo: fluffy~ea96493b
-          module: web
-          challenge: slippery-tar-pit
     - id: migrated-lectures
       name: Migrated Lectures
       image: pwmcollege/challenge-lecture
@@ -46,23 +15,9 @@ resources:
 
     - type: header
       content: The Midnight Zone
-    - id: everlasting-epistolary
-      name: Everlasting Epistolary
-      type: challenge
-      import:
-          dojo: intro-to-cybersecurity
-          module: integrated-security
-          challenge: "secure-chat-5"
 
     - type: header
       content: The Abyss
-    - id: paranoid-installer
-      name: Paranoid Installer
-      type: challenge
-      import:
-          dojo: shell-lin-do~148f65dd
-          module: other
-          challenge: "41"
 
     - type: header
       content: The Trenches
