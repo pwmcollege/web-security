@@ -1,0 +1,43 @@
+name: Community
+challenges:
+    - id: the-missing-link
+      name: The Missing Link
+      allow_privileged: false
+      import:
+          dojo: fluffy~ea96493b
+          module: web
+          challenge: sticky-tar-pit
+    - id: introspection-station
+      name: Introspection Station
+      allow_privileged: false
+      import:
+          dojo: fluffy~ea96493b
+          module: web
+          challenge: leaky-tar-pit
+    - id: helpful-assistant-service
+      name: Helpful Assistant Service
+      import:
+          dojo: az-ctf-2025~6fbdc1d4
+          module: azctf-web
+          challenge: pwn-backups
+    - id: directory-delivery-dilemma
+      name: Directory Delivery Dilemma
+      allow_privileged: false
+      import:
+          dojo: fluffy~ea96493b
+          module: web
+          challenge: slippery-tar-pit
+    - id: everlasting-epistolary
+      name: Everlasting Epistolary
+      type: challenge
+      import:
+          dojo: intro-to-cybersecurity
+          module: integrated-security
+          challenge: "secure-chat-5"
+    - id: paranoid-installer
+      name: Paranoid Installer
+      type: challenge
+      import:
+          dojo: shell-lin-do~148f65dd
+          module: other
+          challenge: "41"
