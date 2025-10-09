@@ -2,12 +2,14 @@
 
 <head>
     <script src="/static/main.js" type="module" defer></script>
-    <link rel="stylesheet" href="/static/main.css">
-    </link>
-    <title>Main Page</title>
+    <link rel="stylesheet" href="/static/main.css"></link>
+    <title>pwn.golf</title>
 </head>
 
 <body>
+    <div class="x-center">
+        <header>PWN.GOLF</header>
+    </div>
     {% if logged_in_as %}
     <a href="/logout">Log Out</a>
     {% else %}
@@ -17,9 +19,11 @@
     {% if username %}
     <div>{{username|safe}}'s Game</div>
     {% endif %}
-    <div class="absolute-container">
-        <img src="/static/hole.svg" id="hole">
-        <img src="/static/golf-ball.svg" id="ball">
-        <canvas id="game-canvas" width="500" height="500"></canvas>
-    </div>
+    <div class="x-center">
+        <div class="absolute-container">
+            <img src="/static/hole.svg" id="hole" draggable="false">
+            <img src="/static/golf-ball.svg" id="ball" draggable="false">
+            <canvas id="game-canvas" width="500" height="500"></canvas>
+        </div>
+    </div>  
 </body>
