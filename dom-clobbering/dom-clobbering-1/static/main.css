@@ -1,0 +1,41 @@
+#ball {
+    position:absolute;
+    width: 15px;
+    height: 15px;
+}
+
+img#ball {
+    top:300px;
+    left:10px;
+}
+
+#hole {
+    position:absolute;
+    width: 25px;
+    height: 25px;
+}
+
+img#hole {
+    top:20px;
+    left:300px;
+}
+
+
+.absolute-container {
+    position:relative;
+}
+
+body {
+    display:flex;
+    flex-direction: column;
+}
+
+canvas {
+    width: 400px;
+    height: 400px;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}

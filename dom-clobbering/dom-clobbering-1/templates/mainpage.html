@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <head>
-    <script src="/static/main.js"></script>
+    <script src="/static/main.js" type="module" defer></script>
     <link rel="stylesheet" href="/static/main.css">
     </link>
     <title>Main Page</title>
@@ -17,4 +17,9 @@
     {% if username %}
     <div>{{username|safe}}'s Game</div>
     {% endif %}
+    <div class="absolute-container">
+        <img src="/static/hole.svg" id="hole">
+        <img src="/static/golf-ball.svg" id="ball">
+        <canvas id="game-canvas" width="500" height="500"></canvas>
+    </div>
 </body>
