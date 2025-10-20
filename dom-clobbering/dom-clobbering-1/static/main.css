@@ -2,6 +2,7 @@
     position:absolute;
     width: 15px;
     height: 15px;
+    transform: translate(-50%,-50%);
 }
 
 img#ball {
@@ -13,6 +14,7 @@ img#ball {
     position:absolute;
     width: 25px;
     height: 25px;
+    transform: translate(-50%,-50%)
 }
 
 img#hole {
@@ -25,17 +27,28 @@ img#hole {
     position:relative;
 }
 
-body {
+.x-center {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.flex-vertical {
     display:flex;
     flex-direction: column;
 }
 
-canvas {
-    width: 400px;
-    height: 400px;
+/* Keep people from accidentally dragging the ball/hole/canvas */
+img, canvas {
     -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
 }
+
+canvas {
+    width: 400px;
+    height: 400px;
+}
+

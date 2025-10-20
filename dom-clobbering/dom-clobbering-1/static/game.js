@@ -3,12 +3,14 @@ const ctx = canvas.getContext("2d")
 const ball = document.getElementById("ball")
 const hole = document.getElementById("hole")
 let strokes = 0;
+
 function ballInHole() {
     const ballRect = ball.getBoundingClientRect();
     const holeRect = hole.getBoundingClientRect();
     return ballRect.left >= holeRect.left && ballRect.right <= holeRect.right && ballRect.top >= holeRect.top && ballRect.bottom <= holeRect.bottom;
 }
 
+/* A helper function to enable sleep-like behavior based on promises */
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -28,9 +30,19 @@ async function moveBall(xDiff,yDiff) {
     }
 }
 
+let lock = false; // Weird hacky way to keep only one loop to check if ball is in hole
 async function startGame() {
+    // Decorate the canvas
     ctx.fillStyle = "green";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Reset the position of the ball
+    ball.style.removeProperty("top")
+    ball.style.removeProperty("left")
+    strokes = 0
+    if (lock) {
+        return;
+    }
+    lock = true;
     while (true) {
         if (ballInHole()) {
             alert(`YOU WIN!!! - ${strokes} strokes`);
@@ -38,6 +50,7 @@ async function startGame() {
         }
         await sleep(500);
     }
+    lock = false;
 }
 
 

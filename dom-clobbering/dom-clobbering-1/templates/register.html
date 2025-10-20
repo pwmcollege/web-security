@@ -9,7 +9,7 @@
         {{"Register successful!" if status == "success" else "Register failed"}}
     </div>
     {% endif %}
-    <form target="/register" method="post">
+    <form action="/register" method="POST">
         <div>Username</div>
         <input name="username">
         <div>Password</div>
