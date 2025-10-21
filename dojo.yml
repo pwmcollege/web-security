@@ -12,4 +12,6 @@ modules:
           module: talking-web
     - id: dom-clobbering
     - id: community
+    - id: web-server-exploitation
     - id: web-application-security
+    
