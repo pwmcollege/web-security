@@ -1,0 +1,123 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python3 -I
+
+from flask import *
+import os
+import sqlite3
+import tempfile
+import hashlib
+
+app = Flask(__name__)
+# Don't panic about this class. It simply implements a temporary database in which
+# this application can store data. You don't need to understand its internals, just
+# that it processes SQL queries using db.execute().
+class TemporaryDB:
+    def __init__(self):
+        self.db_file = tempfile.NamedTemporaryFile("x", suffix=".db")
+
+    def execute(self, sql, parameters=()):
+        connection = sqlite3.connect(self.db_file.name)
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+        result = cursor.execute(sql, parameters)
+        connection.commit()
+        return result
+
+db = TemporaryDB()
+
+db.execute("""CREATE TABLE golfer (
+    username TEXT PRIMARY KEY,
+    password TEXT,
+    golfSteps DEFAULT '[]'
+)""")
+db.execute("INSERT INTO golfer (username,password) VALUES ('hacker', '1337')")
+db.execute("INSERT INTO golfer (username,password) VALUES ('guest', 'password')")
+
+@app.after_request
+def add_headers(response:Response):
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self';"
+        "base-uri 'none';"
+        "frame-ancestors 'none';"
+    )
+    return response
+
+@app.route('/')
+def golf_menu():
+    username = None
+    if "username" in session:
+        username = session["username"]
+    return render_template("mainpage.html",username=username,logged_in="username" in session)
+
+@app.route('/share')
+def display_recording():
+    if "username" in request.args:
+        username = request.args.get("username")
+        return render_template("share.html",username=username,logged_in="username" in session)
+    else:
+        return Response("No Username Provided",404)
+
+@app.route('/record',methods=["GET","POST"])
+def handle_recording():
+    if request.method == "GET":
+        if "username" in request.args:
+            username = request.args.get("username")
+        else:
+            return Response("No Username Provided",404)
+        user_recording = db.execute("SELECT golfSteps FROM golfer WHERE username=?",(username,)).fetchone()[0]
+        return Response(user_recording,mimetype="application/json")
+    elif request.method == "POST":
+        if "username" in session:
+            username = session["username"]
+        else:
+            return Response("Not Logged In",403)
+        try:
+            recording_data = request.json
+            print(recording_data)
+            # Manually reconstruct recording to minimize shenanigans
+            sanitized_data = []
+            for stroke in recording_data:
+                sanitized_data.append([int(stroke[0]),int(stroke[1])])
+            db.execute("UPDATE golfer SET golfSteps=? WHERE username=?",(str(sanitized_data),username))
+            return Response("HTTP 200 OK",200)
+        except Exception as e:
+            print(e)
+            return Response("Bad Recording Data",400)
+
+@app.route('/login',methods=["GET","POST"])
+def login_menu():
+    if request.method == "GET":
+        return render_template("login.html",status=request.args.get("status"))
+    elif request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if not username or not password:
+            return redirect(url_for("login_menu",status="error"))
+        user = db.execute("""SELECT * FROM golfer WHERE username=? AND password=?""",
+            (username,password)).fetchone()
+        if user:
+            session["username"] = username
+            return redirect(url_for("golf_menu"))
+        else:
+            return redirect(url_for("login_menu",status="error"))
+
+@app.route('/register',methods=["GET","POST"])
+def register_menu():
+    if request.method == "GET":
+        return render_template("register.html",status=request.args.get("status"))
+    elif request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if not username or not password:
+            return redirect(url_for("register_menu",status="error"))
+        result = db.execute("""INSERT INTO golfer (username, password) VALUES (?,?)""",
+            (username,password))
+        return redirect(url_for("register_menu",status="success"))
+            
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+            
+app.secret_key = os.urandom(8)
+app.config["SERVER_NAME"] = f"challenge.localhost:80"
+app.run("challenge.localhost", 80)

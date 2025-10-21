@@ -1,0 +1,54 @@
+#ball {
+    position:absolute;
+    width: 15px;
+    height: 15px;
+    transform: translate(-50%,-50%);
+}
+
+img#ball {
+    top:300px;
+    left:10px;
+}
+
+#hole {
+    position:absolute;
+    width: 25px;
+    height: 25px;
+    transform: translate(-50%,-50%)
+}
+
+img#hole {
+    top:20px;
+    left:300px;
+}
+
+
+.absolute-container {
+    position:relative;
+}
+
+.x-center {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.flex-vertical {
+    display:flex;
+    flex-direction: column;
+}
+
+/* Keep people from accidentally dragging the ball/hole/canvas */
+img, canvas {
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+canvas {
+    width: 400px;
+    height: 400px;
+}
+
