@@ -5,13 +5,7 @@ award:
     emoji: 🦄
 image: pwmcollege/challenge-main:latest
 modules:
-    - id: introduction
-      name: Introduction
-      import:
-          dojo: fundamentals
-          module: talking-web
-    - id: dom-clobbering
     - id: community
+    - id: dom-clobbering
     - id: web-server-exploitation
     - id: web-application-security
-    
