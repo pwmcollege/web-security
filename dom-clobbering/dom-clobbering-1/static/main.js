@@ -1,4 +1,6 @@
-import { moveBall, startGame } from "./game.js";
+import { moveBall, startGame, initGame } from "./game.js";
+initGame();
+
 let clicked = false;
 let moving = false;
 let lastX = null;
@@ -81,8 +83,3 @@ document.body.addEventListener("mouseup", async (e) => {
     await moveBall(xDiff, yDiff)
     moving = false;
 })
-
-
-
-
-startGame();

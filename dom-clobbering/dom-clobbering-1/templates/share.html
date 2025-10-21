@@ -25,33 +25,8 @@
             <img src="/static/golf-ball.svg" id="ball" draggable="false">
             <canvas id="game-canvas" width="500" height="500"></canvas>
         </div>
-    </div>  
-</body><!DOCTYPE html>
-
-<head>
-    <script src="/static/share.js" type="module" defer></script>
-    <link rel="stylesheet" href="/static/main.css"></link>
-    <title>pwn.golf</title>
-</head>
-
-<body class="flex-vertical">
-    <div class="x-center">
-        <header>PWN.GOLF</header>
-    </div>
-    {% if logged_in %}
-    <a href="/logout">Log Out</a>
-    {% else %}
-    <a href="/login">Log In</a>
-    <a href="/register">Register</a>
-    {% endif %}
-    {% if username %}
-    <div>{{username|safe}}'s Game</div>
-    {% endif %}
-    <div class="x-center">
-        <div class="absolute-container">
-            <img src="/static/hole.svg" id="hole" draggable="false">
-            <img src="/static/golf-ball.svg" id="ball" draggable="false">
-            <canvas id="game-canvas" width="500" height="500"></canvas>
+        <div class="flex-vertical">
+            <button id="start-replay">Replay</button>
         </div>
     </div>  
 </body>
