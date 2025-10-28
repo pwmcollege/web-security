@@ -1,5 +1,5 @@
-import { moveBall, startGame, initGame } from "./game.js";
-initGame();
+import { moveBall, startGame, initCanvas } from "./game.js";
+initCanvas();
 // Load game record from the server
 const urlParams = new URLSearchParams(window.location.search);
 const username = urlParams.get('username');

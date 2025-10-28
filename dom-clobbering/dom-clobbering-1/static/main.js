@@ -1,15 +1,17 @@
-import { moveBall, startGame, initGame } from "./game.js";
-initGame();
+import { moveBall, startGame, initCanvas } from "./game.js";
+initCanvas();
 
 let clicked = false;
 let moving = false;
 let lastX = null;
 let lastY = null;
 let recording = false;
-let strokes = []
-const startRecord = document.getElementById("start-record")
-const stopRecord = document.getElementById("stop-record")
-const submitRecord = document.getElementById("submit-record")
+let strokes = [];
+const startRecord = document.getElementById("start-record");
+const stopRecord = document.getElementById("stop-record");
+const submitRecord = document.getElementById("submit-record");
+const canvas = document.getElementById("game-canvas")
+const ctx = canvas.getContext("2d");
 
 startRecord?.addEventListener("click", async () => {
     if (moving) {
@@ -61,7 +63,23 @@ document.body.addEventListener("mousedown", (e) => {
 })
 
 document.addEventListener("mousemove", (e) => {
-    // idk
+    if (clicked) {
+        function getCanvasXY(x,y) {
+            const rect = canvas.getBoundingClientRect();
+            const xDiff = x-rect.left;
+            const yDiff = y-rect.top;
+            const canvasStyles = window.getComputedStyle(canvas);
+            return [xDiff*canvas.width/parseInt(canvasStyles.width),yDiff*canvas.height/parseInt(canvasStyles.height)];
+        }
+        window.requestAnimationFrame(()=>{
+            initCanvas();
+            ctx.strokeStyle = "rgb(255,0,0)"
+            ctx.beginPath();
+            ctx.moveTo(...getCanvasXY(lastX,lastY));
+            ctx.lineTo(...getCanvasXY(e.clientX,e.clientY));
+            ctx.stroke();
+        })
+    }
 })
 
 document.addEventListener("mouseup", async (e) => {
@@ -72,6 +90,9 @@ document.addEventListener("mouseup", async (e) => {
     if (moving) {
         return; // Don't allow multiple hits of the ball at once
     }
+    window.requestAnimationFrame(()=>{
+        initCanvas();
+    })
     moving = true;
     const newX = e.clientX;
     const newY = e.clientY;
