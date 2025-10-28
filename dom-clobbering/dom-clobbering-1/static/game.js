@@ -39,8 +39,9 @@ async function moveBall(xDiff, yDiff) {
     }
 }
 
-function initGame() {
+function initCanvas() {
     // Decorate the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "green";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
@@ -57,4 +58,4 @@ async function startGame() {
 }
 
 
-export { moveBall, startGame, initGame }
+export { moveBall, startGame, initCanvas }
