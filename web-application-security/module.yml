@@ -1,7 +1,7 @@
 name: Web Application Security
 challenges:
-    - id: migrated-lectures
-      name: Migrated Lectures
+    - id: technical-issues
+      name: Technical Issues
       image: pwmcollege/challenge-lecture
       interfaces:
           - name: Challenge
