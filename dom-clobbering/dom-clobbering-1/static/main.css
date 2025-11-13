@@ -1,7 +1,7 @@
 #ball {
     position:absolute;
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     transform: translate(-50%,-50%);
 }
 

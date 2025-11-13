@@ -96,8 +96,8 @@ document.addEventListener("mouseup", async (e) => {
     moving = true;
     const newX = e.clientX;
     const newY = e.clientY;
-    const xDiff = newX - lastX;
-    const yDiff = newY - lastY;
+    const xDiff = lastX - newX;
+    const yDiff = lastY - newY;
     if (recording) {
         strokes.push([xDiff, yDiff]);
     }
