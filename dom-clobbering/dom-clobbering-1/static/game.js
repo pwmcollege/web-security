@@ -2,6 +2,7 @@
 const CANVAS_HEIGHT = 400;
 const CANVAS_WIDTH = 400;
 const BALL_RADIUS = 14/2;
+const DELTA = 2; // Delta value to reduce chance of ball clipping
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d")
 const ball = document.getElementById("ball")
@@ -10,8 +11,8 @@ let strokes = 0;
 let won = false;
 
 // Data format for walls: [x,[yMin,yMax]] for vertical, [y, [xMin,xMax]] for horizontal
-const vertWalls = [[0,[0,CANVAS_HEIGHT]],[CANVAS_WIDTH,[0,CANVAS_HEIGHT]]];
-const horizWalls = [[0,[0,CANVAS_WIDTH]],[CANVAS_HEIGHT,[0,CANVAS_WIDTH]]];
+const vertWalls = [[0,[0,CANVAS_HEIGHT]],[100,[0,300]],[200,[0,300]],[300,[100,200]],[CANVAS_WIDTH,[0,CANVAS_HEIGHT]]];
+const horizWalls = [[0,[0,CANVAS_WIDTH]],[100,[300,400]],[200,[300,400]],[300,[100,200]],[CANVAS_HEIGHT,[0,CANVAS_WIDTH]]];
 
 function win() {
     won = true;
@@ -36,7 +37,7 @@ function distanceToWall(ballMajor, ballMinor, normMajor, normMinor, wall) {
     const dist = majorDist/normMajor;
     // Check for an actual collision with the wall
     const minorLoc = ballMinor + dist*normMinor;
-    if (wall[1][0]-BALL_RADIUS < minorLoc && wall[1][1]+BALL_RADIUS > minorLoc) {
+    if (wall[1][0]-BALL_RADIUS-DELTA < minorLoc && wall[1][1]+BALL_RADIUS+DELTA > minorLoc) {
         return Math.abs(dist);
     } else {
         return null;
@@ -92,7 +93,7 @@ async function moveBall(xDiff, yDiff) {
     let xNorm = xDiff / magnitude;
     let yNorm = yDiff / magnitude;
     magnitude = Math.min(magnitude, 100); // Cap out magnitude
-    let stepDist = magnitude / 5;
+    let stepDist = magnitude / 3;
     while (stepDist > 0) {
         [xNorm, yNorm] = moveWithBounce(xNorm,yNorm,stepDist);
         await sleep(50);
@@ -104,10 +105,27 @@ async function moveBall(xDiff, yDiff) {
 }
 
 function initCanvas() {
+    const scaleX = canvas.width/CANVAS_WIDTH;
+    const scaleY = canvas.height/CANVAS_HEIGHT;
     // Decorate the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "green";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw in the walls
+    ctx.strokeStyle = "blue";
+    for (const wall of vertWalls) {
+        ctx.beginPath();
+        ctx.moveTo(wall[0]*scaleX,wall[1][0]*scaleY);
+        ctx.lineTo(wall[0]*scaleX,wall[1][1]*scaleY);
+        ctx.stroke();
+    }
+    for (const wall of horizWalls) {
+        ctx.beginPath();
+        ctx.moveTo(wall[1][0]*scaleX,wall[0]*scaleY);
+        ctx.lineTo(wall[1][1]*scaleX,wall[0]*scaleY);
+        ctx.stroke();
+    }
 }
 
 async function startGame() {
