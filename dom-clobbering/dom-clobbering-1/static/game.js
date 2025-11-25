@@ -29,6 +29,20 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function distanceToWall(ballMajor, ballMinor, normMajor, normMinor, wall) {
+    if (normMajor > 0 && wall[0] < ballMajor) return null; // No way to hit this wall
+    if (normMajor < 0 && wall[0] > ballMajor) return null; // No way to hit this wall
+    const majorDist = Math.abs(wall[0]-ballMajor)-BALL_RADIUS;
+    const dist = majorDist/normMajor;
+    // Check for an actual collision with the wall
+    const minorLoc = ballMinor + dist*normMinor;
+    if (wall[1][0]-BALL_RADIUS < minorLoc && wall[1][1]+BALL_RADIUS > minorLoc) {
+        return Math.abs(dist);
+    } else {
+        return null;
+    }
+}
+
 /* Moves ball, taking into account the wall. Returns updated xNorm and yNorm in case a bounce occurred. */
 function moveWithBounce(xNorm, yNorm, dist) {
     if (dist < 0.001) {
@@ -36,46 +50,36 @@ function moveWithBounce(xNorm, yNorm, dist) {
     }
     const ballY = parseInt(window.getComputedStyle(ball).top);
     const ballX = parseInt(window.getComputedStyle(ball).left);
-    let minDistX = Number.MAX_VALUE;
+    let minDistVertWall = Number.MAX_VALUE;
     for (const wall of vertWalls) {
-        if (xNorm > 0 && wall[0] < ballX) continue; // No way to hit this wall
-        if (xNorm < 0 && wall[0] > ballX) continue; // No way to hit this wall
-        const currDist = Math.abs(wall[0]-ballX)-BALL_RADIUS;
-        minDistX = Math.min(minDistX,currDist);
+        const currDist = distanceToWall(ballX, ballY, xNorm, yNorm, wall);
+        if (currDist != null) {
+            minDistVertWall = Math.min(minDistVertWall,currDist);
+        }
     }
-    let minDistY = Number.MAX_VALUE;
+    let minDistHorizWall = Number.MAX_VALUE;
     for (const wall of horizWalls) {
-        if (yNorm > 0 && wall[0] < ballY) continue; // No way to hit this wall
-        if (yNorm < 0 && wall[0] > ballY) continue; // No way to hit this wall
-        const currDist = Math.abs(wall[0]-ballY)-BALL_RADIUS;
-        minDistY = Math.min(minDistY,currDist);
+        const currDist = distanceToWall(ballY, ballX, yNorm, xNorm, wall);
+        if (currDist != null) {
+            minDistHorizWall = Math.min(minDistHorizWall,currDist);
+        }
     }
-    const realDistY = Math.abs(yNorm * dist);
-    const realDistX = Math.abs(xNorm * dist);
-
     let newDist = dist;
     let newXNorm = xNorm;
     let newYNorm = yNorm;
     
-    if (minDistY < realDistY && minDistX < realDistX) {
-        // Check whether we hit a vertical or horizontal wall first
-        if (minDistY/realDistY < minDistX/realDistX) {
-            console.log("bounce off horizontal")
-            newDist = minDistY/yNorm;
-            newYNorm *= -1;
-        } else {
+    if (minDistVertWall < dist || minDistHorizWall < dist) {
+        // There is some bouncing
+        if (minDistVertWall < minDistHorizWall) {
+            // Vertical wall closer
             console.log("bounce off vertical")
-            newDist = minDistX/xNorm;
+            newDist = minDistVertWall;
             newXNorm *= -1;
+        } else {
+            console.log("bounce off horizontal")
+            newDist = minDistHorizWall;
+            newYNorm *= -1;
         }
-    } else if (minDistY < realDistY) {
-        console.log("bounce off horizontal")
-        newDist = minDistY/yNorm;
-        newYNorm *= -1;
-    } else if (minDistX < realDistX) {
-        console.log("bounce off vertical")
-        newDist = minDistX/xNorm;
-        newXNorm *= -1;
     }
     ball.style.top = (ballY + yNorm * newDist) + "px";
     ball.style.left = (ballX + xNorm * newDist) + "px";
