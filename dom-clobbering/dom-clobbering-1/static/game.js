@@ -2,13 +2,15 @@
 const CANVAS_HEIGHT = 400;
 const CANVAS_WIDTH = 400;
 const BALL_RADIUS = 14/2;
-const DELTA = 2; // Delta value to reduce chance of ball clipping
+const DELTA = 1e-6; // Delta value to reduce chance of ball clipping
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d")
 const ball = document.getElementById("ball")
 const hole = document.getElementById("hole")
 let strokes = 0;
 let won = false;
+let ballX;
+let ballY;
 
 // Data format for walls: [x,[yMin,yMax]] for vertical, [y, [xMin,xMax]] for horizontal
 const vertWalls = [[0,[0,CANVAS_HEIGHT]],[100,[0,300]],[200,[0,300]],[300,[100,200]],[CANVAS_WIDTH,[0,CANVAS_HEIGHT]]];
@@ -34,11 +36,11 @@ function distanceToWall(ballMajor, ballMinor, normMajor, normMinor, wall) {
     if (normMajor > 0 && wall[0] < ballMajor) return null; // No way to hit this wall
     if (normMajor < 0 && wall[0] > ballMajor) return null; // No way to hit this wall
     const majorDist = Math.abs(wall[0]-ballMajor)-BALL_RADIUS;
-    const dist = majorDist/normMajor;
+    const dist = Math.abs(majorDist/normMajor);
     // Check for an actual collision with the wall
     const minorLoc = ballMinor + dist*normMinor;
     if (wall[1][0]-BALL_RADIUS-DELTA < minorLoc && wall[1][1]+BALL_RADIUS+DELTA > minorLoc) {
-        return Math.abs(dist);
+        return dist;
     } else {
         return null;
     }
@@ -49,8 +51,7 @@ function moveWithBounce(xNorm, yNorm, dist) {
     if (dist < 0.001) {
         return [xNorm,yNorm]
     }
-    const ballY = parseInt(window.getComputedStyle(ball).top);
-    const ballX = parseInt(window.getComputedStyle(ball).left);
+    
     let minDistVertWall = Number.MAX_VALUE;
     for (const wall of vertWalls) {
         const currDist = distanceToWall(ballX, ballY, xNorm, yNorm, wall);
@@ -82,8 +83,10 @@ function moveWithBounce(xNorm, yNorm, dist) {
             newYNorm *= -1;
         }
     }
-    ball.style.top = (ballY + yNorm * newDist) + "px";
-    ball.style.left = (ballX + xNorm * newDist) + "px";
+    ballY = ballY + yNorm * newDist;
+    ballX = ballX + xNorm * newDist;
+    ball.style.top = ballY + "px";
+    ball.style.left = ballX + "px";
     return moveWithBounce(newXNorm,newYNorm,dist-newDist);
 }
 
@@ -132,6 +135,8 @@ async function startGame() {
     // Reset the position of the ball
     ball.style.removeProperty("top")
     ball.style.removeProperty("left")
+    ballY = parseInt(window.getComputedStyle(ball).top);
+    ballX = parseInt(window.getComputedStyle(ball).left);
     strokes = 0
     won = false;
     if (ballInHole()) { // Lucky user gets a cosmic bit flip??
