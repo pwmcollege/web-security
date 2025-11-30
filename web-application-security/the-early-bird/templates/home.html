@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block content %} {% if username %}
+<div class="card">
+    <div class="actions top-space">
+        <span class="pill">Signed in as <b>{{ username }}</b></span>
+        <form
+            action="{{ url_for('logout') }}"
+            method="post"
+            style="margin-left: auto"
+        >
+            <button class="btn ghost" type="submit">Logout</button>
+        </form>
+    </div>
+    <form action="{{ url_for('draft') }}" method="post">
+        <label for="content">Post</label>
+        <textarea
+            id="content"
+            name="content"
+            placeholder="Write something!"
+        ></textarea>
+        <div class="actions">
+            <button class="btn" type="submit">Save</button>
+            <label class="checkbox">
+                Publish now
+                <input type="checkbox" name="publish" />
+            </label>
+            <button
+                class="btn ghost push-right"
+                type="submit"
+                formaction="{{ url_for('publish') }}"
+                formmethod="post"
+            >
+                Publish All Drafts
+            </button>
+        </div>
+    </form>
+</div>
+<div class="grid">
+    {% if posts %} {% for post in posts %}
+    <div class="post">
+        <h3>{{ post.author }}</h3>
+        {% if post.author == username %} {{ post.content|safe }} {% elif
+        username == 'admin' %}
+        <b>NON-ADMIN POST HIDDEN FOR SAFETY</b>
+        {% elif post.published %} {{ post.content|safe }} {% else %}
+        <div class="muted">(Draft, first 12 characters)</div>
+        {{ post.content[:12]|safe }} {% endif %}
+    </div>
+    {% endfor %} {% else %}
+    <div class="card">
+        <div class="muted">No posts yet. Draft something!</div>
+    </div>
+    {% endif %}
+</div>
+{% else %}
+<div class="card hero">
+    <h2>Welcome to pwnpost</h2>
+    <div class="actions">
+        <a class="btn" href="{{ url_for('login') }}">Log in</a>
+        <a class="btn ghost" href="{{ url_for('register') }}">Register</a>
+    </div>
+</div>
+{% endif %} {% endblock %}

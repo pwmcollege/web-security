@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>pwnpost</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}"
+        />
+    </head>
+    <body>
+        <div class="shell">
+            <div class="brand">
+                <h1>pwnpost</h1>
+            </div>
+            <hr />
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

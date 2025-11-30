@@ -1,5 +1,7 @@
 name: Web Application Security
 challenges:
+    - id: the-early-bird
+      name: The Early Bird
     - id: technical-issues
       name: Technical Issues
       image: pwmcollege/challenge-lecture

@@ -1,0 +1,174 @@
+#!/usr/bin/exec-suid --real --environ=all -- /usr/local/bin/python
+
+import hashlib
+import os
+import sqlite3
+import tempfile
+import threading
+
+import flask
+
+app = flask.Flask(__name__)
+
+
+class TemporaryDB:
+    def __init__(self):
+        self.db_file = tempfile.NamedTemporaryFile("x", suffix=".db")
+        self.connection = sqlite3.connect(self.db_file.name, check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self._lock = threading.Lock()
+
+    def execute(self, sql, parameters=()):
+        with self._lock:
+            cursor = self.connection.cursor()
+            result = cursor.execute(sql, parameters)
+            self.connection.commit()
+            return result
+
+
+flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
+
+
+def hash_password(password: str) -> str:
+    return hashlib.sha3_512(password.encode()).hexdigest()
+
+
+db = TemporaryDB()
+# https://www.sqlite.org/lang_createtable.html
+db.execute(
+    """CREATE TABLE posts AS SELECT ? AS content, "admin" AS author, FALSE AS published""",
+    [flag],
+)
+db.execute(
+    """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
+    [hash_password(flag)],
+)
+
+# https://www.sqlite.org/lang_insert.html
+db.execute(
+    """INSERT INTO users SELECT "guest" as username, ? as password""",
+    [hash_password("password")],
+)
+db.execute(
+    """INSERT INTO users SELECT "hacker" as username, ? as password""",
+    [hash_password("1337")],
+)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if flask.request.method == "GET":
+        if flask.session.get("username"):
+            return flask.redirect("/")
+        return flask.render_template("login.html")
+
+    username = (flask.request.form.get("username") or "").strip()
+    password = flask.request.form.get("password")
+
+    if not username:
+        flask.abort(400, "Missing `username` form parameter")
+    if not password:
+        flask.abort(400, "Missing `password` form parameter")
+
+    # https://www.sqlite.org/lang_select.html
+    user = db.execute(
+        "SELECT * FROM users WHERE username = ? AND password = ?",
+        (username, hash_password(password)),
+    ).fetchone()
+    if not user:
+        flask.abort(403, "Invalid username or password")
+
+    flask.session["username"] = username
+    return flask.redirect("/")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if flask.request.method == "GET":
+        if flask.session.get("username"):
+            return flask.redirect("/")
+        return flask.render_template("register.html")
+
+    username = (flask.request.form.get("username") or "").strip()
+    password = flask.request.form.get("password")
+
+    if not username:
+        flask.abort(400, "Missing `username` form parameter")
+    if not password:
+        flask.abort(400, "Missing `password` form parameter")
+    if username == "admin":
+        flask.abort(400, "That username is reserved")
+
+    existing = db.execute(
+        "SELECT 1 FROM users WHERE username = ?", [username]
+    ).fetchone()
+    if existing:
+        flask.abort(400, "That username is already taken")
+
+    db.execute(
+        "INSERT INTO users (username, password) VALUES (?, ?)",
+        (username, hash_password(password)),
+    )
+    flask.session["username"] = username
+    return flask.redirect("/")
+
+
+@app.route("/draft", methods=["POST"])
+def draft():
+    username = flask.session.get("username", None)
+    if not username:
+        flask.abort(403, "Log in first!")
+
+    if username == "admin":
+        flask.abort(
+            400,
+            "pwnpost no longer supports admin posting due to rampant flag disclosure",
+        )
+
+    content = flask.request.form.get("content", "")
+    # https://www.sqlite.org/lang_insert.html
+    db.execute(
+        "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
+        (content, username, bool(flask.request.form.get("publish"))),
+    )
+    return flask.redirect("/")
+
+
+@app.route("/publish", methods=["POST"])
+def publish():
+    username = flask.session.get("username", None)
+    if not username:
+        flask.abort(403, "Log in first!")
+
+    if username == "admin":
+        flask.abort(
+            400,
+            "pwnpost no longer supports admin posting due to rampant flag disclosure",
+        )
+
+    # https://www.sqlite.org/lang_update.html
+    db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
+    return flask.redirect("/")
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    flask.session.pop("username", None)
+    return flask.redirect("/")
+
+
+@app.route("/", methods=["GET"])
+def home():
+    username = flask.session.get("username", None)
+    if username:
+        posts = [dict(row) for row in db.execute("SELECT * FROM posts").fetchall()]
+        for post in posts:
+            post["published"] = bool(post["published"])
+        return flask.render_template("home.html", username=username, posts=posts)
+
+    return flask.render_template("home.html", username=None, posts=[])
+
+
+if __name__ == "__main__":
+    app.secret_key = os.urandom(64)
+    app.run("challenge.localhost", 80)
