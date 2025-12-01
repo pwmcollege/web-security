@@ -2,6 +2,8 @@ name: Web Application Security
 challenges:
     - id: the-early-bird
       name: The Early Bird
+    - id: upstream-betrayal
+      name: Upstream Betrayal
     - id: technical-issues
       name: Technical Issues
       image: pwmcollege/challenge-lecture

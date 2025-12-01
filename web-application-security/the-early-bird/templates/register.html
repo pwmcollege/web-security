@@ -2,23 +2,23 @@
 <div class="card">
     <h2>Create your account</h2>
     <form action="{{ url_for('register') }}" method="post">
-        <label for="new_username">Username</label>
+        <label for="username">Username</label>
         <input
-            id="new_username"
+            id="username"
             type="text"
             name="username"
             placeholder="Username"
             autofocus
         />
-        <label for="new_password">Password</label>
+        <label for="password">Password</label>
         <input
-            id="new_password"
+            id="password"
             type="password"
             name="password"
             placeholder="Password"
         />
         <div class="actions auth-actions">
-            <button class="btn" type="submit">Register</button>
+            <button class="btn" type="submit" name="submit">Register</button>
             <button
                 class="btn ghost"
                 type="button"
