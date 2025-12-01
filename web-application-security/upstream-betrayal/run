@@ -1,0 +1,50 @@
+#!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
+
+import os
+import pwd
+import signal
+import subprocess
+import sys
+
+
+def drop_privileges():
+    pw_record = pwd.getpwnam("nobody")
+    os.setgid(pw_record.pw_gid)
+    os.setuid(pw_record.pw_uid)
+
+
+def main():
+    if os.geteuid() != 0:
+        print("Must be run as root", file=sys.stderr)
+        sys.exit(1)
+
+    proxy = [sys.executable, "/challenge/proxy"]
+    server = [sys.executable, "/challenge/server"]
+
+    children = [
+        subprocess.Popen(proxy, env={}, preexec_fn=os.setsid),
+        subprocess.Popen(
+            server,
+            env={},
+            preexec_fn=lambda: (
+                drop_privileges(),
+                os.setsid(),
+            ),
+        ),
+    ]
+
+    try:
+        while children:
+            pid, status = os.wait()
+    except KeyboardInterrupt:
+        for c in children:
+            try:
+                os.killpg(c.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        for c in children:
+            c.wait()
+
+
+if __name__ == "__main__":
+    main()
