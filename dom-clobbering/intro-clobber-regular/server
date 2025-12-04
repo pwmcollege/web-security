@@ -1,0 +1,33 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python3 -I
+
+from flask import *
+import os
+
+app = Flask(__name__)
+
+@app.after_request
+def add_headers(response:Response):
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self';"
+        "base-uri 'none';"
+        "frame-ancestors 'none';"
+    )
+    return response
+
+@app.route("/")
+def main():
+    if "message" in request.args:
+        message = request.args.get("message")
+    else:
+        message = None
+    return render_template("mainpage.html",message=message)
+
+@app.route("/cookie-dump")
+def dump_cookies():
+    if "secret" in request.cookies:
+        print(f"Secret: {request.cookies.get("secret")}")
+    return "Cookies dumped!"
+
+app.secret_key = os.urandom(8)
+app.config["SERVER_NAME"] = f"challenge.localhost:80"
+app.run("challenge.localhost", 80)

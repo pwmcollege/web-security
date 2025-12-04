@@ -2,6 +2,8 @@ name: DOM Clobbering
 challenges:
     - id: intro-clobber-selector
       name: Baby's First DOM Clobbering
+    - id: intro-clobber-regular
+      name: Real DOM Clobbering
     - id: dom-clobbering-1
       name: Welcome to PWN.GOLF
     - id: dom-clobbering-2
