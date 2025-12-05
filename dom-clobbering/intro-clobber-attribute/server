@@ -40,7 +40,7 @@ def main():
 @app.route("/showflag")
 def dump_flag():
     if "secret" in request.cookies:
-        if (request.cookies.get(secret) == open("/challenge/secret").read()):
+        if (request.cookies.get("secret") == open("/challenge/secret").read()):
             print(open("/flag").read())
             return "Flag displayed"
     return Response("Unauthorized",401)
