@@ -40,11 +40,11 @@ def parse_role(role):
     if role in ("admin_noflag","user_flag","user_noflag"):
         return role
     elif role == "admin_flag":
-        print("Can't request the flag")
-        exit()
+        print("Can't request the flag; not setting role")
+        return None
     else:
-        print("Unrecognized role")
-        exit()
+        print("Unrecognized role; not setting role")
+        return None
 
 if len(sys.argv) >= 3:
     message = sys.argv[1]
@@ -66,7 +66,10 @@ browser.get(challenge_url)
 print("Setting cookie...")
 browser.add_cookie({"name": "secret", "value": open("/challenge/secret")})
 
-message_url = f"{challenge_url}?role={role}&message={quote_plus(message)}"
+if role is not None:
+    message_url = f"{challenge_url}?role={role}&message={quote_plus(message)}"
+else:
+    message_url = f"{challenge_url}?message={quote_plus(message)}"
 print(f"Visiting {message_url}")
 browser.get(message_url)
 
