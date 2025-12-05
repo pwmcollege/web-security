@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    {% if role %}
+    <script src="{{role}}"></script>
+    {% endif %}
+    <script src="/static/main.js" defer></script>
+    <title>Clobbering Attributes</title>
+</head>
+<body>
+    {% if message %}
+    <div>Message: {{message | safe}}</div>
+    {% endif %}
+</body>
