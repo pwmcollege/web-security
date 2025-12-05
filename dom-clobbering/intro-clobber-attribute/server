@@ -1,0 +1,51 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python3 -I
+
+from flask import *
+import os
+
+app = Flask(__name__)
+
+@app.after_request
+def add_headers(response:Response):
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self';"
+        "base-uri 'none';"
+        "frame-ancestors 'none';"
+    )
+    return response
+
+@app.route("/")
+def main():
+    if "role" in request.args:
+        role_name = request.args.get("role")
+        if role_name == "admin_flag":
+            role = "/static/admin_flag.js"
+        elif role_name == "admin_noflag":
+            role = "/static/admin_noflag.js"
+        elif role_name == "user_flag":
+            role = "/static/user_flag.js"
+        elif role_name == "user_noflag":
+            role = "/static/user_noflag.js"
+        else:
+            # Unrecognized role
+            role = None
+    else:
+        role = None
+    if "message" in request.args:
+        message = request.args.get("message")
+    else:
+        message = None
+    return render_template("mainpage.html",role=role, message=message)
+
+@app.route("/showflag")
+def dump_flag():
+    if "secret" in request.cookies:
+        if (request.cookies.get(secret) == open("/challenge/secret").read()):
+            print(open("/flag").read())
+            return "Flag displayed"
+    return Response("Unauthorized",401)
+
+
+app.secret_key = os.urandom(8)
+app.config["SERVER_NAME"] = f"challenge.localhost:80"
+app.run("challenge.localhost", 80)

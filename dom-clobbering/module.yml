@@ -4,6 +4,8 @@ challenges:
       name: Baby's First DOM Clobbering
     - id: intro-clobber-regular
       name: Real DOM Clobbering
+    - id: intro-clobber-attribute
+      name: Clobbering Attributes
     - id: dom-clobbering-1
       name: Welcome to PWN.GOLF
     - id: dom-clobbering-2
