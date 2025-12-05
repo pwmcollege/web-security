@@ -36,11 +36,26 @@ else:
     print("Service doesn't seem to be running?")
     sys.exit(1)
 
-if len(sys.argv) >= 2:
+def parse_role(role):
+    if role in ("admin_noflag","user_flag","user_noflag"):
+        return role
+    elif role == "admin_flag":
+        print("Can't request the flag")
+        exit()
+    else:
+        print("Unrecognized role")
+        exit()
+
+if len(sys.argv) >= 3:
     message = sys.argv[1]
+    role = parse_role(sys.argv[2])
 else:
     print("What message should I see?")
     message = input()
+    print("What role should I use?")
+    role = parse_role(input())
+
+
 
 challenge_url = "http://challenge.localhost:80/"
 flag = open("/flag").read().strip()
@@ -51,7 +66,7 @@ browser.get(challenge_url)
 print("Setting cookie...")
 browser.add_cookie({"name": "secret", "value": open("/challenge/secret")})
 
-message_url = f"{challenge_url}?message={quote_plus(message)}"
+message_url = f"{challenge_url}?role={role}&message={quote_plus(message)}"
 print(f"Visiting {message_url}")
 browser.get(message_url)
 
