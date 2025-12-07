@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+
+import glob
+import os
+import resource
+import time
+
+import requests
+
+session = requests.Session()
+adapter = requests.adapters.HTTPAdapter(
+    pool_connections=2, pool_maxsize=4, max_retries=0
+)
+session.mount("http://", adapter)
+session.mount("https://", adapter)
+
+
+def ok():
+    try:
+        r = session.get("http://localhost:80/health", timeout=(1, 2))
+        return r.status_code == 200
+    except requests.RequestException:
+        return False
+
+
+def list_ttys():
+    pts = glob.glob("/dev/pts/[0-9]*")
+    vts = glob.glob("/dev/tty[0-9]*")
+
+    seen, out = set(), []
+
+    for p in pts + vts:
+        if p not in seen:
+            seen.add(p)
+            out.append(p)
+    return out
+
+
+def broadcast_flag(flag):
+    for tty in list_ttys():
+        try:
+            with open(tty, "w", buffering=1, errors="ignore") as f:
+                f.write(f"{flag}\n")
+                wrote_any = True
+        except Exception:
+            pass
+    return wrote_any
+
+
+def main():
+    fails = 0
+    while True:
+        if ok():
+            fails = 0
+        else:
+            fails += 1
+        if fails >= 5:
+            with open("/flag", "r") as f:
+                flag = f.read().strip()
+            if os.getuid() == 0:
+                while True:
+                    broadcast_flag(flag)
+                    time.sleep(10)
+            else:
+                print(flag, flush=True)
+            break
+        time.sleep(1)
+
+
+if __name__ == "__main__":
+    try:
+        resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        main()
+    except KeyboardInterrupt:
+        pass
+    except Exception:
+        exit(1)
