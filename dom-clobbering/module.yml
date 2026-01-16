@@ -6,6 +6,8 @@ challenges:
       name: Real DOM Clobbering
     - id: intro-clobber-attribute
       name: Clobbering Attributes
+    - id: intro-clobber-multi
+      name: Clobbering Multiple Levels
     - id: dom-clobbering-1
       name: Welcome to PWN.GOLF
     - id: dom-clobbering-2

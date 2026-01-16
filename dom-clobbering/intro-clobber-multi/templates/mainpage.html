@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <script src="/static/main.js" defer></script>
+    <title>Clobbering Multiple Levels</title>
+</head>
+<body>
+    {% if sequence %}
+    <p>You entered sequence: {{sequence | safe}}</p>
+    {% endif %}
+    <p>Enter factorial sequence:</p>
+    <form method="GET" target="_self">
+        <input name="sequence">
+        <button>Submit</button>
+    </form>
+    <button id="check-tetration">Check for correct tetration</button>
+</body>

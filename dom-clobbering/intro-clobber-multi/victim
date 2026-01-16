@@ -1,0 +1,72 @@
+#!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
+
+import atexit
+import os
+import sys
+import time
+
+import psutil
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException, StaleElementReferenceException
+from urllib.parse import urlparse
+
+service = FirefoxService(
+    executable_path="/usr/local/bin/geckodriver", log_path="/dev/null"
+)
+options = FirefoxOptions()
+options.add_argument("--headless")
+options.binary_location = "/usr/bin/firefox"
+browser = webdriver.Firefox(service=service, options=options)
+atexit.register(browser.quit)
+
+# Wait for service to start
+for i in range(5):
+    open_ports = {
+        s.laddr.port
+        for s in psutil.net_connections(kind="inet")
+        if s.status == "LISTEN"
+    }
+    if 80 in open_ports:
+        break
+    time.sleep(1)
+else:
+    print("Service doesn't seem to be running?")
+    sys.exit(1)
+
+if len(sys.argv) >= 2:
+    challenge_url = sys.argv[1]
+else:
+    print("What site should I visit?")
+    challenge_url = input()
+
+print(f"Visiting {challenge_url}")
+browser.get(challenge_url)
+try:
+    tetration_button = WebDriverWait(browser,5).until(EC.presence_of_element_located((By.ID,"check-tetration")))
+    tetration_button.click()
+    WebDriverWait(browser,10).until(EC.alert_is_present())
+    alert = browser.switch_to.alert
+    alert_content = alert.text
+    alert.dismiss()
+    url = browser.current_url
+    parsed_url = urlparse(url)
+    tetration_button.click() # Verify that we're still on the same page
+    if parsed_url.netloc == "challenge.localhost": # Make sure that we are on the site hosted by /challenge/server
+        if (alert_content == "SUCCESS"):
+            print("Wow! So that's how tetration works!")
+            print(open("/flag").read())
+        else:
+            print("Idk doesn't seem correct")
+    else:
+        print("???")
+        print("DEBUG:",parsed_url)
+        # os.unlink("/flag")
+except StaleElementReferenceException:
+    print("?!?!")
+    # os.unlink("/flag")
