@@ -1,4 +1,4 @@
-Welcome to The Art of Web dojo. This dojo aims to teache you about web vulnerabilities.
+Welcome to The Art of Web dojo. This dojo aims to teach you about web vulnerabilities.
 
 We created this dojo to fill the web content void that pwn.college doesn't offer. We aim to make something that might eventually become the official pwn.college web belt.
 
