@@ -1,4 +1,0 @@
-#!/bin/bash
-
-find -L /challenge -type f -exec chmod 0444 {} +
-chmod 4555 /challenge/server

@@ -1,10 +1,9 @@
-id: the-art-of-web
-name: The Art of Web
+id: web-security
+name: Web Security
 type: hidden
 award:
     emoji: 🕸️
 image: pwmcollege/challenge-web:latest
 modules:
+    - id: introduction
     - id: dom-clobbering
-    - id: web-server-exploitation
-    - id: web-application-security

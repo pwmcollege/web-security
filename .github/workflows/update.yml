@@ -14,5 +14,5 @@ jobs:
         steps:
             - uses: pwncollege/dojo-update@v1
               with:
-                  dojo: "the-art-of-web~f98637a0"
+                  dojo: "web-security~f98637a0"
                   update_code: ${{ secrets.UPDATE_CODE }}
