@@ -3,3 +3,5 @@ image: pwmcollege/challenge-web:latest
 challenges:
     - id: inline-reflect-alert
       name: Inline Reflected 1
+    - id: inline-reflect-cookie
+      name: Inline Reflected 2
