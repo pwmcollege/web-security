@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{{ title }}</title>
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body>
+        <div class="wrap">
+            <div class="navcard">
+                <nav class="tabs">
+                    <a
+                        class="tab{% if active_tab == 'home' %} active{% endif %}"
+                        href="/"
+                        >Home</a
+                    >
+                    <a
+                        class="tab{% if active_tab == 'victim' %} active{% endif %}"
+                        href="/victim"
+                        >Victim</a
+                    >
+                </nav>
+            </div>
+            <div class="card">{% block content %}{% endblock %}</div>
+        </div>
+        <script>
+            (() => {
+                const root = document.documentElement;
+                const onScroll = () => {
+                    if (window.scrollY > 4) root.classList.add("scrolled");
+                    else root.classList.remove("scrolled");
+                };
+                onScroll();
+                window.addEventListener("scroll", onScroll, { passive: true });
+            })();
+        </script>
+    </body>
+</html>

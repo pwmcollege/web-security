@@ -1,0 +1,177 @@
+#!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
+
+import os
+import shutil
+import sqlite3
+import tempfile
+import threading
+from urllib.parse import quote_plus, urlparse
+
+from flask import Flask, abort, redirect, render_template, request
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+app = Flask(__name__)
+
+
+flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
+admin_token = os.urandom(256).hex()
+
+
+class TemporaryDB:
+    def __init__(self):
+        self.db_file = tempfile.NamedTemporaryFile("x", suffix=".db")
+        self.connection = sqlite3.connect(self.db_file.name, check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self._lock = threading.Lock()
+
+    def execute(self, sql, parameters=()):
+        with self._lock:
+            cursor = self.connection.cursor()
+            result = cursor.execute(sql, parameters)
+            self.connection.commit()
+            return result
+
+
+db = TemporaryDB()
+
+# https://www.sqlite.org/lang_createtable.html
+db.execute(
+    """CREATE TABLE posts AS SELECT ? AS content, "admin" AS author""",
+    ["Hello hackers!"],
+)
+
+
+@app.route("/login", methods=["POST"])
+def pwn_login():
+    username = request.form.get("username")
+    if not username:
+        abort(400, "Missing `username` form parameter")
+
+    return redirect(f"/?username={quote_plus(username)}")
+
+
+@app.route("/post", methods=["POST"])
+def pwn_post():
+    username = request.form.get("username", "")
+
+    if not username:
+        abort(400, "Missing `username` form parameter")
+
+    if username == "admin":
+        abort(
+            400,
+            "pwnpost does not support admin posting",
+        )
+    content = request.form.get("content", "")
+    # https://www.sqlite.org/lang_insert.html
+    db.execute(
+        "INSERT INTO posts (content, author) VALUES (?, ?)",
+        (content, username),
+    )
+    return redirect(f"/?username={quote_plus(username)}")
+
+
+@app.route("/victim", methods=["GET", "POST"])
+def victim():
+    if request.method == "GET":
+        return render_template(
+            "victim.html",
+            title="Victim",
+            active_tab="victim",
+            show_form=True,
+        )
+
+    url = request.form.get("url", "").strip()
+    if not url:
+        abort(400, "Missing `url` form parameter")
+
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        abort(400, "Invalid URL")
+
+    old_umask = os.umask(0o077)
+    profile_dir = tempfile.mkdtemp(prefix="chromium-profile-")
+    os.umask(old_umask)
+
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument(f"--user-data-dir={profile_dir}")
+    options.binary_location = "/usr/bin/chromium"
+    service = Service("/usr/bin/chromedriver")
+    driver = None
+
+    try:
+        try:
+            driver = webdriver.Chrome(service=service, options=options)
+            driver.get("http://challenge.localhost/")
+            driver.add_cookie(
+                {
+                    "name": "admin_token",
+                    "value": admin_token,
+                    "path": "/",
+                    "httpOnly": True,
+                }
+            )
+            driver.get(url)
+        except WebDriverException:
+            abort(500)
+
+        try:
+            WebDriverWait(driver, 1).until(EC.alert_is_present())
+        except TimeoutException:
+            print("Failure: JavaScript alert did not trigger...")
+        else:
+            db.execute(
+                "INSERT INTO posts (content, author) VALUES (?, ?)",
+                (f"Your flag: {flag}", "admin"),
+            )
+
+            print("Alert triggered! Admin has posted the flag!")
+    finally:
+        if driver is not None:
+            driver.quit()
+        shutil.rmtree(profile_dir, ignore_errors=True)
+
+    return render_template(
+        "victim.html",
+        title="Victim",
+        active_tab="victim",
+        show_form=False,
+        url=url,
+    )
+
+
+@app.route("/", methods=["GET"])
+def pwn_get():
+    username = request.args.get("username", "")
+    admin_tk = request.cookies.get("admin_token", "")
+    if username == "admin" and admin_tk != admin_token:
+        abort(
+            403,
+            "Admin spoofing detected!!!",
+        )
+
+    posts = (
+        db.execute("SELECT * FROM posts").fetchall()
+        if username and username != "admin"
+        else []
+    )
+    return render_template(
+        "index.html",
+        title="pwnpost",
+        active_tab="home",
+        username=username,
+        posts=posts,
+    )
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.localhost:80"
+app.run("challenge.localhost", 80)

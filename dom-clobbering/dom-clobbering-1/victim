@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid -- /usr/local/bin/python3 -I
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
 
 import psutil
 import atexit
@@ -13,7 +13,11 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, WebDriverException, StaleElementReferenceException
+from selenium.common.exceptions import (
+    TimeoutException,
+    WebDriverException,
+    StaleElementReferenceException,
+)
 
 from urllib.parse import urlparse
 
@@ -23,11 +27,15 @@ os.environ["PATH"] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 
 options = FirefoxOptions()
 options.add_argument("--headless")
-service = FirefoxService(executable_path="/usr/local/bin/geckodriver", log_path="/dev/null")
+service = FirefoxService(
+    executable_path="/usr/local/bin/geckodriver", log_path="/dev/null"
+)
 browser = webdriver.Firefox(service=service, options=options)
 atexit.register(browser.quit)
 
-open_ports = {s.laddr.port for s in psutil.net_connections(kind="inet") if s.status == "LISTEN"}
+open_ports = {
+    s.laddr.port for s in psutil.net_connections(kind="inet") if s.status == "LISTEN"
+}
 if 80 not in open_ports:
     print("Service doesn't seem to be running?")
     sys.exit(1)
@@ -41,26 +49,32 @@ else:
 print(f"Visiting {challenge_url}")
 browser.get(challenge_url)
 try:
-    replay_button = WebDriverWait(browser,5).until(EC.presence_of_element_located((By.ID,"start-replay")))
+    replay_button = WebDriverWait(browser, 5).until(
+        EC.presence_of_element_located((By.ID, "start-replay"))
+    )
     replay_button.click()
-    WebDriverWait(browser,10).until(EC.alert_is_present())
+    WebDriverWait(browser, 10).until(EC.alert_is_present())
     alert = browser.switch_to.alert
     alert_content = alert.text
     alert.dismiss()
     url = browser.current_url
     parsed_url = urlparse(url)
     replay_button.click()
-    if parsed_url.netloc == "challenge.localhost" and parsed_url.path == "/share": # Make sure that we are on the site hosted by /challenge/server
-        stroke_match = re.search(r"\n(\d+) stroke",alert_content)
-        stroke_count = int(stroke_match.group(1)) # Determine how many strokes it took for the user to win
-        if (stroke_count <= 1):
+    if (
+        parsed_url.netloc == "challenge.localhost" and parsed_url.path == "/share"
+    ):  # Make sure that we are on the site hosted by /challenge/server
+        stroke_match = re.search(r"\n(\d+) stroke", alert_content)
+        stroke_count = int(
+            stroke_match.group(1)
+        )  # Determine how many strokes it took for the user to win
+        if stroke_count <= 1:
             print("Congrats on your golf game! Here is your flag:")
             print(open("/flag").read())
         else:
             print("Too many strokes, I believe in you!")
     else:
         print("???")
-        print("DEBUG:",parsed_url)
+        print("DEBUG:", parsed_url)
         # os.unlink("/flag")
 except TimeoutException:
     print("Did not score in time?")

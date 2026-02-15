@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block content %} Welcome to pwnpost{% if username
+%}, {{ username|safe }}{% endif %}!
+<hr />
+{% if username %}
+<form action="post" method="post">
+    <input type="hidden" name="username" value="{{ username }}" />
+    Post:<textarea name="content">Write something!</textarea>
+    <input type="submit" value="Post" />
+</form>
+<br />
+<hr />
+{% if username == "admin" %}
+<i>Posts hidden for admin</i>
+<hr />
+{% else %} {% for post in posts %}
+<h2>Author: {{ post.author }}</h2>
+{{ post.content }} {% if not loop.last %}
+<hr />
+{% endif %} {% endfor %} {% endif %} {% else %}
+<form action="login" method="post">
+    Username:<input type="text" name="username" />
+    <input type="submit" name="submit" value="Login" />
+</form>
+{% endif %} {% endblock %}

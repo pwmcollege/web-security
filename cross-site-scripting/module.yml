@@ -1,0 +1,5 @@
+name: Cross-site Scripting
+image: pwmcollege/challenge-web:latest
+challenges:
+    - id: inline-reflect-alert
+      name: Inline Reflected 1

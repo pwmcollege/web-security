@@ -1,18 +1,18 @@
-#!/usr/bin/exec-suid -- /usr/local/bin/python3 -I
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
 
 from flask import *
 import os
 
 app = Flask(__name__)
 
+
 @app.after_request
-def add_headers(response:Response):
+def add_headers(response: Response):
     response.headers["Content-Security-Policy"] = (
-        "default-src 'self';"
-        "base-uri 'none';"
-        "frame-ancestors 'none';"
+        "default-src 'self';base-uri 'none';frame-ancestors 'none';"
     )
     return response
+
 
 @app.route("/")
 def main():
@@ -35,15 +35,16 @@ def main():
         message = request.args.get("message")
     else:
         message = None
-    return render_template("mainpage.html",role=role, message=message)
+    return render_template("mainpage.html", role=role, message=message)
+
 
 @app.route("/showflag")
 def dump_flag():
     if "secret" in request.cookies:
-        if (request.cookies.get("secret") == open("/challenge/secret").read()):
+        if request.cookies.get("secret") == open("/challenge/secret").read():
             print(open("/flag").read())
             return "Flag displayed"
-    return Response("Unauthorized",401)
+    return Response("Unauthorized", 401)
 
 
 app.secret_key = os.urandom(8)

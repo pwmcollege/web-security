@@ -7,4 +7,5 @@ award:
 image: pwmcollege/challenge-web:latest
 modules:
     - id: introduction
+    - id: cross-site-scripting
     - id: dom-clobbering

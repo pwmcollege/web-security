@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block content %} {% if show_form %}
+<h1>Victim</h1>
+<form action="/victim" method="post">
+    URL:<input
+        type="text"
+        name="url"
+        placeholder="http://challenge.localhost/"
+        size="50"
+    />
+    <input type="submit" value="Visit" />
+</form>
+{% else %} Victim visited the site:
+<a href="{{ url }}">{{ url }}</a>
+<hr />
+<a href="/victim">Back</a>
+{% endif %} {% endblock %}
