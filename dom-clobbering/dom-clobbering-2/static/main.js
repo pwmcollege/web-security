@@ -43,7 +43,7 @@ stopRecord?.addEventListener("click", () => {
 })
 
 submitRecord?.addEventListener("click", () => {
-    fetch("http://challenge.localhost:80/record", {
+    fetch("http://pwm.college:80/record", {
         method: "POST",
         headers: {
             "Content-type": "application/json; charset=UTF-8"
