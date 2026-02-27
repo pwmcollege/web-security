@@ -22,6 +22,12 @@ options.binary_location = "/usr/bin/firefox"
 browser = webdriver.Firefox(service=service, options=options)
 atexit.register(browser.quit)
 
+# Wait for service to start
+open_ports = {s.laddr.port for s in psutil.net_connections(kind="inet") if s.status == "LISTEN"}
+if 80 not in open_ports:
+    print("Service doesn't seem to be running?")
+    sys.exit(1)
+
 def parse_role(role):
     if role in ("admin_noflag","user_flag","user_noflag"):
         return role
