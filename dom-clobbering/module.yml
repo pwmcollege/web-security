@@ -1,4 +1,5 @@
 name: DOM Clobbering
+privileged: true
 challenges:
     - id: intro-clobber-selector
       name: Baby's First DOM Clobbering
