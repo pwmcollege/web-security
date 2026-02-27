@@ -1,7 +1,7 @@
 #!/bin/bash
 
 find -L /challenge -type f -exec chmod 0444 {} +
-echo "192.168.13.37 pwm.college" >> /etc/hosts
+echo -e "192.168.13.37\tpwn.college" >> /etc/hosts
 
 ip netns add challenge_ns
 
