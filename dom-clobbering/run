@@ -1,3 +1,0 @@
-#!/usr/bin/exec-suid --real --environ=none -- /bin/bash -p
-
-/usr/bin/ip netns exec challenge_ns /challenge/server
