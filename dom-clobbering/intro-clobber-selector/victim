@@ -22,20 +22,6 @@ options.binary_location = "/usr/bin/firefox"
 browser = webdriver.Firefox(service=service, options=options)
 atexit.register(browser.quit)
 
-# Wait for service to start
-for i in range(5):
-    open_ports = {
-        s.laddr.port
-        for s in psutil.net_connections(kind="inet")
-        if s.status == "LISTEN"
-    }
-    if 80 in open_ports:
-        break
-    time.sleep(1)
-else:
-    print("Service doesn't seem to be running?")
-    sys.exit(1)
-
 if len(sys.argv) >= 2:
     message = sys.argv[1]
 else:
