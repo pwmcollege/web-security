@@ -14,5 +14,5 @@ iptables-legacy -A INPUT -p tcp -d 192.168.13.37 --dport 1024: -j REJECT
 chmod 4555 /challenge/server
 chmod 4555 /challenge/victim
 
-openssl rand -hex 20 > /challenge/secret
+openssl rand -hex 20 | tr -d "\n" > /challenge/secret
 chmod 400 /challenge/secret
