@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+#!/usr/bin/env python
 
 from flask import *
 import os

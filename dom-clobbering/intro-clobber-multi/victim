@@ -57,7 +57,7 @@ try:
     url = browser.current_url
     parsed_url = urlparse(url)
     tetration_button.click() # Verify that we're still on the same page
-    if parsed_url.netloc == "challenge.localhost": # Make sure that we are on the site hosted by /challenge/server
+    if parsed_url.netloc == "pwm.college": # Make sure that we are on the site hosted by /challenge/server
         if (alert_content == "SUCCESS"):
             print("Wow! So that's how tetration works!")
             print(open("/flag").read())

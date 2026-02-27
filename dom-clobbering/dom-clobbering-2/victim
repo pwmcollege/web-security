@@ -61,7 +61,7 @@ try:
     parsed_url = urlparse(url)
     replay_button.click()
     if (
-        parsed_url.netloc == "challenge.localhost" and parsed_url.path == "/share"
+        parsed_url.netloc == "pwm.college" and parsed_url.path == "/share"
     ):  # Make sure that we are on the site hosted by /challenge/server
         stroke_match = re.search(r"\n(\d+) stroke", alert_content)
         stroke_count = int(
