@@ -48,5 +48,5 @@ def dump_flag():
 
 
 app.secret_key = os.urandom(8)
-app.config["SERVER_NAME"] = f"challenge.pwn.college:80"
-app.run("challenge.pwn.college", 80)
+app.config["SERVER_NAME"] = f"pwm.college:80"
+app.run("pwm.college", 80)
