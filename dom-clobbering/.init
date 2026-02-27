@@ -19,4 +19,3 @@ ip netns exec challenge_ns ip link set lo up
 chmod 544 /challenge/server
 chmod 4555 /challenge/run
 chmod 4555 /challenge/victim
-uuidgen > /challenge/secret

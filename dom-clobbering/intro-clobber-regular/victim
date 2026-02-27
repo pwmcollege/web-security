@@ -42,7 +42,7 @@ else:
     print("What message should I see?")
     message = input()
 
-challenge_url = "http://challenge.localhost:80/"
+challenge_url = "http://pwm.college:80/"
 flag = open("/flag").read().strip()
 
 print(f"Visiting {challenge_url}")
