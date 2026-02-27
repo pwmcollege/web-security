@@ -1,9 +1,12 @@
 #!/bin/bash
 
 find -L /challenge -type f -exec chmod 0444 {} +
-echo "192.168.13.37 challenge.pwn.college" >> /etc/hosts
+echo "192.168.13.37 pwm.college" >> /etc/hosts
 
+# Network setup
 ip addr add 192.168.13.37/32 dev eth0
+ip route del local 192.168.13.37/32
+ip route add local 192.168.13.37/32 dev lo src 127.0.0.1
 
 # Reject packets sent to 192.168.13.37 at non-privileged ports
 iptables-legacy -A INPUT -p tcp -d 192.168.13.37 --dport 1024: -j REJECT
