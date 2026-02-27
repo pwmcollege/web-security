@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
+#!/usr/bin/env python
 
 import os
 import shutil
@@ -107,7 +107,7 @@ def victim():
 
     try:
         driver = webdriver.Chrome(service=service, options=options)
-        driver.get("http://challenge.localhost/")
+        driver.get("http://pwm.college/")
         driver.add_cookie(
             {
                 "name": "admin_token",
@@ -168,5 +168,5 @@ def pwn_get():
 
 
 app.secret_key = os.urandom(64)
-app.config["SERVER_NAME"] = "challenge.localhost:80"
-app.run("challenge.localhost", 80)
+app.config["SERVER_NAME"] = "pwm.college:80"
+app.run("pwm.college", 80)
