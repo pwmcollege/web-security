@@ -1,22 +1,13 @@
 #!/bin/bash
 
 find -L /challenge -type f -exec chmod 0444 {} +
-echo "192.168.13.37 pwm.college" >> /etc/hosts
+echo "192.168.13.37 challenge.pwn.college" >> /etc/hosts
 
-ip netns add challenge_ns
+ip addr add 192.168.13.37/32 dev eth0
 
-ip link add veth_host type veth peer name veth_ns
+# Reject packets sent to 192.168.13.37 at non-privileged ports
+iptables-legacy -A INPUT -p tcp -d 192.168.13.37 --dport 1024: -j REJECT
 
-ip link set veth_ns netns challenge_ns
-
-ip addr add 192.168.13.1/24 dev veth_host
-ip link set veth_host up
-
-ip netns exec challenge_ns ip addr add 192.168.13.37/24 dev veth_ns
-ip netns exec challenge_ns ip link set veth_ns up
-ip netns exec challenge_ns ip link set lo up
-
-chmod 544 /challenge/server
-chmod 4555 /challenge/run
+chmod 4555 /challenge/server
 chmod 4555 /challenge/victim
 uuidgen > /challenge/secret
