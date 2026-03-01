@@ -1,7 +1,7 @@
 #!/bin/bash
 
 find -L /challenge -type f -exec chmod 0444 {} +
-echo -e "192.168.13.37\tpwn.college" >> /etc/hosts
+echo -e "10.0.13.37\tchallenge.internal" >> /etc/hosts
 
 ip netns add challenge_ns
 
@@ -9,10 +9,10 @@ ip link add veth_host type veth peer name veth_ns
 
 ip link set veth_ns netns challenge_ns
 
-ip addr add 192.168.13.1/24 dev veth_host
+ip addr add 10.0.13.37/24 dev veth_host
 ip link set veth_host up
 
-ip netns exec challenge_ns ip addr add 192.168.13.37/24 dev veth_ns
+ip netns exec challenge_ns ip addr add 10.0.13.37/24 dev veth_ns
 ip netns exec challenge_ns ip link set veth_ns up
 ip netns exec challenge_ns ip link set lo up
 

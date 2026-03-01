@@ -10,7 +10,7 @@ let strokes = [];
 const startRecord = document.getElementById("start-record");
 const stopRecord = document.getElementById("stop-record");
 const submitRecord = document.getElementById("submit-record");
-const canvas = document.getElementById("game-canvas")
+const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
 
 startRecord?.addEventListener("click", async () => {
@@ -23,13 +23,13 @@ startRecord?.addEventListener("click", async () => {
         return;
     }
     // Reset the game state
-    strokes = []
+    strokes = [];
     recording = true;
     startRecord.disabled = true;
     stopRecord.disabled = false;
     submitRecord.disabled = true;
     startGame();
-})
+});
 
 stopRecord?.addEventListener("click", () => {
     if (!recording) {
@@ -39,20 +39,20 @@ stopRecord?.addEventListener("click", () => {
     stopRecord.disabled = true;
     startRecord.disabled = false;
     submitRecord.disabled = false;
-    console.log(strokes)
-})
+    console.log(strokes);
+});
 
 submitRecord?.addEventListener("click", () => {
-    fetch("http://pwm.college:80/record", {
+    fetch("http://challenge.internal:80/record", {
         method: "POST",
         headers: {
-            "Content-type": "application/json; charset=UTF-8"
+            "Content-type": "application/json; charset=UTF-8",
         },
-        body: JSON.stringify(strokes)
+        body: JSON.stringify(strokes),
     });
     submitRecord.disabled = true; // Let the user know that the recording was submitted
     console.log("Submitted recording!");
-})
+});
 
 document.body.addEventListener("mousedown", (e) => {
     if (document.getElementById("game-canvas").contains(e.target)) {
@@ -60,27 +60,30 @@ document.body.addEventListener("mousedown", (e) => {
         lastX = e.clientX;
         lastY = e.clientY;
     }
-})
+});
 
 document.addEventListener("mousemove", (e) => {
     if (clicked) {
-        function getCanvasXY(x,y) {
+        function getCanvasXY(x, y) {
             const rect = canvas.getBoundingClientRect();
-            const xDiff = x-rect.left;
-            const yDiff = y-rect.top;
+            const xDiff = x - rect.left;
+            const yDiff = y - rect.top;
             const canvasStyles = window.getComputedStyle(canvas);
-            return [xDiff*canvas.width/parseInt(canvasStyles.width),yDiff*canvas.height/parseInt(canvasStyles.height)];
+            return [
+                (xDiff * canvas.width) / parseInt(canvasStyles.width),
+                (yDiff * canvas.height) / parseInt(canvasStyles.height),
+            ];
         }
-        window.requestAnimationFrame(()=>{
+        window.requestAnimationFrame(() => {
             initCanvas();
-            ctx.strokeStyle = "rgb(255,0,0)"
+            ctx.strokeStyle = "rgb(255,0,0)";
             ctx.beginPath();
-            ctx.moveTo(...getCanvasXY(lastX,lastY));
-            ctx.lineTo(...getCanvasXY(e.clientX,e.clientY));
+            ctx.moveTo(...getCanvasXY(lastX, lastY));
+            ctx.lineTo(...getCanvasXY(e.clientX, e.clientY));
             ctx.stroke();
-        })
+        });
     }
-})
+});
 
 document.addEventListener("mouseup", async (e) => {
     if (!clicked) {
@@ -90,9 +93,9 @@ document.addEventListener("mouseup", async (e) => {
     if (moving) {
         return; // Don't allow multiple hits of the ball at once
     }
-    window.requestAnimationFrame(()=>{
+    window.requestAnimationFrame(() => {
         initCanvas();
-    })
+    });
     moving = true;
     const newX = e.clientX;
     const newY = e.clientY;
@@ -101,6 +104,6 @@ document.addEventListener("mouseup", async (e) => {
     if (recording) {
         strokes.push([xDiff, yDiff]);
     }
-    await moveBall(xDiff, yDiff)
+    await moveBall(xDiff, yDiff);
     moving = false;
-})
+});

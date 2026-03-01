@@ -1,20 +1,18 @@
 #!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
 
 import atexit
-import os
 import sys
-import time
+from urllib.parse import urlparse
 
-import psutil
 from selenium import webdriver
+from selenium.common.exceptions import (
+    StaleElementReferenceException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, WebDriverException, StaleElementReferenceException
-from urllib.parse import urlparse
+from selenium.webdriver.support.wait import WebDriverWait
 
 service = FirefoxService(
     executable_path="/usr/local/bin/geckodriver", log_path="/dev/null"
@@ -34,24 +32,28 @@ else:
 print(f"Visiting {challenge_url}")
 browser.get(challenge_url)
 try:
-    tetration_button = WebDriverWait(browser,5).until(EC.presence_of_element_located((By.ID,"check-tetration")))
+    tetration_button = WebDriverWait(browser, 5).until(
+        EC.presence_of_element_located((By.ID, "check-tetration"))
+    )
     tetration_button.click()
-    WebDriverWait(browser,10).until(EC.alert_is_present())
+    WebDriverWait(browser, 10).until(EC.alert_is_present())
     alert = browser.switch_to.alert
     alert_content = alert.text
     alert.dismiss()
     url = browser.current_url
     parsed_url = urlparse(url)
-    tetration_button.click() # Verify that we're still on the same page
-    if parsed_url.netloc == "pwm.college": # Make sure that we are on the site hosted by /challenge/server
-        if (alert_content == "SUCCESS"):
+    tetration_button.click()  # Verify that we're still on the same page
+    if (
+        parsed_url.netloc == "challenge.internal"
+    ):  # Make sure that we are on the site hosted by /challenge/server
+        if alert_content == "SUCCESS":
             print("Wow! So that's how tetration works!")
             print(open("/flag").read())
         else:
             print("Idk doesn't seem correct")
     else:
         print("???")
-        print("DEBUG:",parsed_url)
+        print("DEBUG:", parsed_url)
         # os.unlink("/flag")
 except StaleElementReferenceException:
     print("?!?!")

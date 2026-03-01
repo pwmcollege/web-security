@@ -1,17 +1,13 @@
 #!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
 
 import atexit
-import os
 import sys
 import time
+from urllib.parse import quote_plus
 
-import psutil
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
-
-from urllib.parse import quote_plus
 
 service = FirefoxService(
     executable_path="/usr/local/bin/geckodriver", log_path="/dev/null"
@@ -28,7 +24,7 @@ else:
     print("What message should I see?")
     message = input()
 
-challenge_url = "http://pwm.college:80/"
+challenge_url = "http://challenge.internal:80/"
 flag = open("/flag").read().strip()
 
 print(f"Visiting {challenge_url}")

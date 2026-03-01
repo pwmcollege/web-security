@@ -1,11 +1,20 @@
 #!/usr/bin/exec-suid -- /usr/local/bin/python -I
 
-from flask import *
 import os
+import secrets
 import sqlite3
 import tempfile
-import hashlib
-import secrets
+
+from flask import (
+    Flask,
+    Response,
+    g,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 
 app = Flask(__name__)
 
@@ -156,5 +165,5 @@ def gen_nonce():
 
 
 app.secret_key = os.urandom(8)
-app.config["SERVER_NAME"] = f"pwm.college:80"
-app.run("pwm.college", 80)
+app.config["SERVER_NAME"] = "challenge.internal:80"
+app.run("challenge.internal", 80)

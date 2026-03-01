@@ -1,17 +1,14 @@
 #!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
 
 import atexit
-import os
 import sys
 import time
+from urllib.parse import quote_plus
 
 import psutil
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
-
-from urllib.parse import quote_plus
 
 service = FirefoxService(
     executable_path="/usr/local/bin/geckodriver", log_path="/dev/null"
@@ -23,13 +20,16 @@ browser = webdriver.Firefox(service=service, options=options)
 atexit.register(browser.quit)
 
 # Wait for service to start
-open_ports = {s.laddr.port for s in psutil.net_connections(kind="inet") if s.status == "LISTEN"}
+open_ports = {
+    s.laddr.port for s in psutil.net_connections(kind="inet") if s.status == "LISTEN"
+}
 if 80 not in open_ports:
     print("Service doesn't seem to be running?")
     sys.exit(1)
 
+
 def parse_role(role):
-    if role in ("admin_noflag","user_flag","user_noflag"):
+    if role in ("admin_noflag", "user_flag", "user_noflag"):
         return role
     elif role == "admin_flag":
         print("Can't request the flag; not setting role")
@@ -37,6 +37,7 @@ def parse_role(role):
     else:
         print("Unrecognized role; not setting role")
         return None
+
 
 if len(sys.argv) >= 3:
     message = sys.argv[1]
@@ -48,8 +49,7 @@ else:
     role = parse_role(input())
 
 
-
-challenge_url = "http://pwm.college:80/"
+challenge_url = "http://challenge.internal:80/"
 flag = open("/flag").read().strip()
 
 print(f"Visiting {challenge_url}")

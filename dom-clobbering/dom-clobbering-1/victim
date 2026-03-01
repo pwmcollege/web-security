@@ -1,25 +1,21 @@
 #!/usr/bin/exec-suid -- /usr/local/bin/python -I
 
-import psutil
 import atexit
-import time
-import sys
 import os
 import re
+import sys
+from urllib.parse import urlparse
 
 from selenium import webdriver
+from selenium.common.exceptions import (
+    StaleElementReferenceException,
+    TimeoutException,
+)
+from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import (
-    TimeoutException,
-    WebDriverException,
-    StaleElementReferenceException,
-)
-
-from urllib.parse import urlparse
+from selenium.webdriver.support.wait import WebDriverWait
 
 os.setuid(os.geteuid())
 os.environ.clear()
@@ -54,7 +50,7 @@ try:
     parsed_url = urlparse(url)
     replay_button.click()
     if (
-        parsed_url.netloc == "pwm.college" and parsed_url.path == "/share"
+        parsed_url.netloc == "challenge.internal" and parsed_url.path == "/share"
     ):  # Make sure that we are on the site hosted by /challenge/server
         stroke_match = re.search(r"\n(\d+) stroke", alert_content)
         stroke_count = int(
