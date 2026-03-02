@@ -1,25 +1,28 @@
-#!/usr/bin/env python
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
+import ctypes
+import ctypes.util
 import os
-import shutil
 import sqlite3
 import tempfile
 import threading
-from urllib.parse import quote_plus, urlparse
+from urllib.parse import quote_plus
 
 from flask import Flask, abort, redirect, render_template, request
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException, WebDriverException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+
+NETNS = os.environ.get("NETNS", "challenge_ns")
+CLONE_NEWNET = 0x40000000
+
+libc = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
+
+with open(f"/var/run/netns/{NETNS}") as ns:
+    if libc.setns(ns.fileno(), CLONE_NEWNET) != 0:
+        err = ctypes.get_errno()
+        raise OSError(err, os.strerror(err))
 
 app = Flask(__name__)
 
-
-flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
-admin_token = os.urandom(256).hex()
+admin_token = open("/challenge/.admin_token").read().strip()
 
 
 class TemporaryDB:
@@ -74,78 +77,6 @@ def pwn_post():
         (content, username),
     )
     return redirect(f"/?username={quote_plus(username)}")
-
-
-@app.route("/victim", methods=["GET", "POST"])
-def victim():
-    if request.method == "GET":
-        return render_template(
-            "victim.html",
-            title="Victim",
-            active_tab="victim",
-            show_form=True,
-        )
-
-    url = request.form.get("url", "").strip()
-    if not url:
-        abort(400, "Missing `url` form parameter")
-
-    parsed = urlparse(url)
-    if parsed.scheme not in ("http", "https") or not parsed.netloc:
-        abort(400, "Invalid URL")
-
-    old_umask = os.umask(0o077)
-    profile_dir = tempfile.mkdtemp(prefix="chromium-profile-")
-    os.umask(old_umask)
-
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument(f"--user-data-dir={profile_dir}")
-    options.binary_location = "/usr/bin/chromium"
-    service = Service("/usr/bin/chromedriver")
-    driver = None
-
-    try:
-        try:
-            driver = webdriver.Chrome(service=service, options=options)
-            driver.get("http://challenge.internal/")
-            driver.add_cookie(
-                {
-                    "name": "admin_token",
-                    "value": admin_token,
-                    "path": "/",
-                    "httpOnly": True,
-                }
-            )
-            driver.get(url)
-        except WebDriverException:
-            abort(500)
-
-        try:
-            WebDriverWait(driver, 1).until(EC.alert_is_present())
-        except TimeoutException:
-            print("Failure: JavaScript alert did not trigger...")
-        else:
-            db.execute(
-                "INSERT INTO posts (content, author) VALUES (?, ?)",
-                (f"Your flag: {flag}", "admin"),
-            )
-
-            print("Alert triggered! Admin has posted the flag!")
-    finally:
-        if driver is not None:
-            driver.quit()
-        shutil.rmtree(profile_dir, ignore_errors=True)
-
-    return render_template(
-        "victim.html",
-        title="Victim",
-        active_tab="victim",
-        show_form=False,
-        url=url,
-    )
 
 
 @app.route("/", methods=["GET"])
