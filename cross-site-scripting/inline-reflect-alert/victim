@@ -1,6 +1,7 @@
 #!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
 
 import atexit
+import ctypes
 import os
 import shutil
 import sys
@@ -13,6 +14,16 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+
+NETNS = os.environ.get("NETNS", "challenge_ns")
+CLONE_NEWNET = 0x40000000
+
+libc = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
+
+with open(f"/var/run/netns/{NETNS}") as ns:
+    if libc.setns(ns.fileno(), CLONE_NEWNET) != 0:
+        err = ctypes.get_errno()
+        raise OSError(err, os.strerror(err))
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
