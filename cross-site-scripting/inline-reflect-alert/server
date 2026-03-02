@@ -1,6 +1,7 @@
 #!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
 import ctypes
+import ctypes.util
 import os
 import sqlite3
 import tempfile
