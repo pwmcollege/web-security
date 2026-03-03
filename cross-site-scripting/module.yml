@@ -3,6 +3,6 @@ image: pwmcollege/challenge-web:latest
 privileged: true
 challenges:
     - id: inline-reflect-alert
-      name: Inline Reflected 1
+      name: A Reflective Start
     - id: inline-reflect-cookie
       name: Inline Reflected 2
