@@ -10,10 +10,13 @@ It's like having the fortress call you with the keys, rather than trying to brea
 
 ---
 
-**NOTE:**
+### Challenge Environment
+
 This challenge automatically starts the server with the `/reverse` endpoint waiting for you to trigger a reverse shell connecting to `localhost` on port `1337`.
 
-**RESOURCES:**
+---
+
+### Resources
 
 - [What Is a Reverse Shell?](https://www.imperva.com/learn/application-security/reverse-shell/)
 - [Reverse Shell vs Bind Shell](https://www.darkrelay.com/post/bind-and-reverse-shells/)

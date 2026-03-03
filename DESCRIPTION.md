@@ -1,11 +1,11 @@
-Welcome to The Art of Web dojo. This dojo aims to teach you about web vulnerabilities.
+Welcome to The Art of Web dojo.
 
-We created this dojo to fill the web content void that pwn.college doesn't offer. We aim to make something that might eventually become the official pwn.college web belt.
+This dojo is dedicated to exploring web vulnerabilities and building practical web security skills. We created it to help fill the web-focused gap in pwn.college's content, with the long-term goal of growing it into an official pwn.college web belt.
 
-Each module starts simple but gets harder fast, and they have a generous amount of hints.
+Each module begins with foundational concepts and ramps up quickly in difficulty. Along the way, you'll find a generous number of hints designed to guide your learning without spoiling the challenge.
 
-This dojo is for anyone interested in web security, from complete beginners to web masters looking for entertainment.
+Whether you're a complete beginner taking your first steps into web security or an experienced web hacker looking for something fun and challenging, this dojo is built for you.
 
-This dojo is open source! Pull requests are appreciated. [Github](https://github.com/pwmcollege/the-art-of-web).
+The project is open source — contributions are welcome! Check it out on [Github](https://github.com/pwmcollege/the-art-of-web).
 
-Questions? Hints? Unintended solves? Need harder challenges? Please contact `Gus`, `RenegadePenguin`, `Fluffy` on `discord`.
+Have questions, found an unintended solution, want more hints, or craving harder challenges? Reach out to [Gus](https://pwn.college/hacker/65661), [RenegadePenguin](https://pwn.college/hacker/66698), or [Fluffy](https://pwn.college/hacker/36708) on Discord.

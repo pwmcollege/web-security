@@ -6,9 +6,12 @@ This technique has its place in specific scenarios, perhaps you're already insid
 
 ---
 
-**NOTE:**
+### Challenge Environment
+
 This challenge automatically starts the server with the `/bind` endpoint waiting for you to trigger a reverse shell connecting to `localhost` on port `1337`.
 
-**RESOURCES:**
+---
+
+### Resources
 
 - [Reverse Shell vs Bind Shell](https://www.darkrelay.com/post/bind-and-reverse-shells/)
