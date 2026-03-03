@@ -18,8 +18,6 @@ ip netns exec challenge_ns ip addr add 10.0.13.36/24 dev veth_ns
 ip netns exec challenge_ns ip link set veth_ns up
 ip netns exec challenge_ns ip link set lo up
 
-iptables-legacy -A OUTPUT -d 10.0.13.36 -m owner ! --uid-owner 0 -j DROP
-
 /opt/cdn/server &
 chmod 4555 /challenge/server
 chmod 4555 /challenge/victim
