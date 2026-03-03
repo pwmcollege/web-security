@@ -12,13 +12,9 @@ It's like having the fortress call you with the keys, rather than trying to brea
 
 ### Challenge Environment
 
-The challenge files are located in `/challenge`.
+In this challenge, the server is automatically started; you can access the website at: `https://challenge.internal`
 
-To begin, start the web server: `/challenge/server`
-
-Once running, you can access the website at: `https://challenge.internal`
-
-In this challenge, the server is listening for a request at `https://challenge.internal/reverse` endpoint in order to trigger a reverse shell connecting to `localhost` on port `1337`.
+The server is listening for a request at `https://challenge.internal/reverse` endpoint in order to trigger a reverse shell connecting to `localhost` on port `1337`.
 
 ---
 

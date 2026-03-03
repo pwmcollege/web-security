@@ -3,4 +3,5 @@
 find -L /challenge -type f -exec chmod 0444 {} +
 echo -e "127.0.0.1\tchallenge.internal" >> /etc/hosts
 
-chmod 4555 /challenge/server
+chmod 544 /challenge/server
+/challenge/server &

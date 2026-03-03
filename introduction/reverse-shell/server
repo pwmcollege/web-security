@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def health():
-    return "OK", 200
+    return "OK\n", 200
 
 
 @app.route("/reverse")

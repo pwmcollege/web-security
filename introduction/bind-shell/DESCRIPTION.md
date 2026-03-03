@@ -8,13 +8,9 @@ This technique has its place in specific scenarios, perhaps you're already insid
 
 ### Challenge Environment
 
-The challenge files are located in `/challenge`.
+In this challenge, the server is automatically started; you can access the website at: `https://challenge.internal`
 
-To begin, start the web server: `/challenge/server`
-
-Once running, you can access the website at: `https://challenge.internal`
-
-In this challenge, the server is listening for a request at `https://challenge.internal/bind` endpoint in order to bind and start a shell at `localhost` on port `1337`.
+The server is listening for a request at `https://challenge.internal/bind` endpoint in order to bind and start a shell at `localhost` on port `1337`.
 
 ---
 
