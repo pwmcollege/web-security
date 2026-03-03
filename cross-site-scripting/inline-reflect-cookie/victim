@@ -22,7 +22,11 @@ if __name__ == "__main__":
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.netloc:
         print("Invalid url!!!")
-        exit(1)
+        sys.exit(1)
+
+    if parsed.hostname != "challenge.internal":
+        print("Invalid host!!!")
+        sys.exit(1)
 
     old_umask = os.umask(0o077)
     profile_dir = tempfile.mkdtemp(prefix="chromium-profile-")
@@ -43,14 +47,6 @@ if __name__ == "__main__":
 
         print("Setting cookie...")
         driver.get("http://challenge.internal/")
-        driver.add_cookie(
-            {
-                "name": "admin_token",
-                "value": open("/challenge/.admin_token").read().strip(),
-                "path": "/",
-                "httpOnly": True,
-            }
-        )
         driver.add_cookie(
             {
                 "name": "flag",

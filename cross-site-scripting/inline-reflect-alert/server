@@ -3,12 +3,8 @@
 import ctypes
 import ctypes.util
 import os
-import sqlite3
-import tempfile
-import threading
-from urllib.parse import quote_plus
 
-from flask import Flask, abort, redirect, render_template, request
+from flask import Flask, render_template, request
 
 NETNS = os.environ.get("NETNS", "challenge_ns")
 CLONE_NEWNET = 0x40000000
@@ -22,85 +18,10 @@ with open(f"/var/run/netns/{NETNS}") as ns:
 
 app = Flask(__name__)
 
-admin_token = open("/challenge/.admin_token").read().strip()
-
-
-class TemporaryDB:
-    def __init__(self):
-        self.db_file = tempfile.NamedTemporaryFile("x", suffix=".db")
-        self.connection = sqlite3.connect(self.db_file.name, check_same_thread=False)
-        self.connection.row_factory = sqlite3.Row
-        self._lock = threading.Lock()
-
-    def execute(self, sql, parameters=()):
-        with self._lock:
-            cursor = self.connection.cursor()
-            result = cursor.execute(sql, parameters)
-            self.connection.commit()
-            return result
-
-
-db = TemporaryDB()
-
-# https://www.sqlite.org/lang_createtable.html
-db.execute(
-    """CREATE TABLE posts AS SELECT ? AS content, "admin" AS author""",
-    ["Hello hackers!"],
-)
-
-
-@app.route("/login", methods=["POST"])
-def pwn_login():
-    username = request.form.get("username")
-    if not username:
-        abort(400, "Missing `username` form parameter")
-
-    return redirect(f"/?username={quote_plus(username)}")
-
-
-@app.route("/post", methods=["POST"])
-def pwn_post():
-    username = request.form.get("username", "")
-
-    if not username:
-        abort(400, "Missing `username` form parameter")
-
-    if username == "admin":
-        abort(
-            400,
-            "pwnpost does not support admin posting",
-        )
-    content = request.form.get("content", "")
-    # https://www.sqlite.org/lang_insert.html
-    db.execute(
-        "INSERT INTO posts (content, author) VALUES (?, ?)",
-        (content, username),
-    )
-    return redirect(f"/?username={quote_plus(username)}")
-
 
 @app.route("/", methods=["GET"])
-def pwn_get():
-    username = request.args.get("username", "")
-    admin_tk = request.cookies.get("admin_token", "")
-    if username == "admin" and admin_tk != admin_token:
-        abort(
-            403,
-            "Admin spoofing detected!!!",
-        )
-
-    posts = (
-        db.execute("SELECT * FROM posts").fetchall()
-        if username and username != "admin"
-        else []
-    )
-    return render_template(
-        "index.html",
-        title="pwnpost",
-        active_tab="home",
-        username=username,
-        posts=posts,
-    )
+def ephemeral():
+    return render_template("ephemeral.html", msg=request.args.get("msg"))
 
 
 app.secret_key = os.urandom(64)
