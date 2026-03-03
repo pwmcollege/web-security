@@ -1,0 +1,7 @@
+name: Request Forgery
+privileged: true
+resources:
+    - type: header
+      content: Cross-Site Request Forgery
+    - type: header
+      content: Server-Side Request Forgery

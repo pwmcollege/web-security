@@ -1,5 +1,4 @@
 name: Cross-site Scripting
-image: pwmcollege/challenge-web:latest
 privileged: true
 challenges:
     - id: inline-reflect-alert

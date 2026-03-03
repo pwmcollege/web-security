@@ -7,4 +7,6 @@ image: pwmcollege/challenge-web:latest
 modules:
     - id: introduction
     - id: cross-site-scripting
+    - id: request-forgery
+    - id: denial-of-service
     - id: dom-clobbering
