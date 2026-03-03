@@ -2,7 +2,7 @@
 
 find -L /challenge -type f -exec chmod 0444 {} +
 echo -e "10.0.13.37\tchallenge.internal" >> /etc/hosts
-echo -e "10.0.13.36\cdn.internal" >> /etc/hosts
+echo -e "10.0.13.36\tcdn.internal" >> /etc/hosts
 
 ip netns add challenge_ns
 

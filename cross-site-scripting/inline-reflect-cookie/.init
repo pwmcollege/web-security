@@ -2,7 +2,7 @@
 
 find -L /challenge -type f -exec chmod 0444 {} +
 echo -e "10.0.13.37\tchallenge.internal" >> /etc/hosts
-echo -e "10.0.13.36\cdn.internal" >> /etc/hosts
+echo -e "10.0.13.36\tcdn.internal" >> /etc/hosts
 
 # Network setup
 ip addr add 10.0.13.36/32 dev eth0
