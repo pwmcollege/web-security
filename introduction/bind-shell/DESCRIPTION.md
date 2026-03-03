@@ -8,7 +8,13 @@ This technique has its place in specific scenarios, perhaps you're already insid
 
 ### Challenge Environment
 
-This challenge automatically starts the server with the `/bind` endpoint waiting for you to trigger a reverse shell connecting to `localhost` on port `1337`.
+The challenge files are located in `/challenge`.
+
+To begin, start the web server: `/challenge/server`
+
+Once running, you can access the website at: `https://challenge.internal`
+
+In this challenge, the server is listening for a request at `https://challenge.internal/bind` endpoint in order to bind and start a shell at `localhost` on port `1337`.
 
 ---
 

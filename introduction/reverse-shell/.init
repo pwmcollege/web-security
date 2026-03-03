@@ -1,9 +1,6 @@
-#!/bin/sh
-export PYTHONDONTWRITEBYTECODE=1
-mkdir -p /var/log/gunicorn
+#!/bin/bash
 
 find -L /challenge -type f -exec chmod 0444 {} +
+echo -e "127.0.0.1\tchallenge.internal" >> /etc/hosts
 
-cd /challenge
-gunicorn --daemon
-until curl -fs http://localhost:80/health >/dev/null; do sleep 0.1; done
+chmod 4555 /challenge/server
