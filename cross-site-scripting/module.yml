@@ -1,9 +1,20 @@
 name: Cross-site Scripting
-privileged: true
 challenges:
     - id: inline-reflect-alert
       name: A Reflective Start
+      privileged: true
     - id: inline-reflect-cookie
       name: A Crumb in the Reflection
+      privileged: true
     - id: inline-reflect-attribute
       name: Quote Me If You Can
+      privileged: true
+    - id: inline-reflect-unquoted
+      name: Unquoted and Unhinged
+      privileged: true
+    - id: inline-reflect-href
+      name: The Missing Link
+      privileged: true
+    - id: inline-reflect-href-breakout
+      name: Click Around and Find Out
+      privileged: true
