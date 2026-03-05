@@ -5,3 +5,5 @@ challenges:
       name: A Reflective Start
     - id: inline-reflect-cookie
       name: A Crumb in the Reflection
+    - id: inline-reflect-attribute
+      name: Quote Me If You Can
