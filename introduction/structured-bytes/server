@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+
+import urllib.parse
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+
+def checksum(buf):
+    return (sum(buf) ^ 0x5A) & 0xFF
+
+
+@app.route("/", methods=["GET"])
+def token():
+    raw_qs = request.query_string.decode("latin-1")
+    if not raw_qs.startswith("fp="):
+        return "Missing token.\n", 400
+
+    fp = urllib.parse.unquote_to_bytes(raw_qs[len("fp=") :])
+    if len(fp) != 8:
+        return "Wrong length.\n", 400
+
+    if fp[:2] != b"WS":
+        return "Bad magic.\n", 400
+
+    if fp[2] != 0x01:
+        return "Bad version.\n", 400
+
+    if fp[3:7] != b"\x13\x37\xbe\xef":
+        return "Bad nonce.\n", 400
+
+    if fp[7] != checksum(fp[:7]):
+        return "Bad checksum.\n", 400
+
+    with open("/flag", "r") as f:
+        return f.read()
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

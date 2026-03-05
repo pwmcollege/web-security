@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+
+import urllib.parse
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+
+@app.route("/", methods=["GET"])
+def frame():
+    raw_qs = request.query_string.decode("latin-1")
+    if not raw_qs.startswith("blob="):
+        return "Missing blob.\n", 400
+
+    blob = urllib.parse.unquote_to_bytes(raw_qs[len("blob=") :])
+    if b":" not in blob:
+        return "Invalid frame.\n", 400
+
+    n_raw, data = blob.split(b":", 1)
+    if not n_raw.isdigit():
+        return "Invalid length.\n", 400
+
+    n = int(n_raw)
+    if n != len(data):
+        return "Length mismatch.\n", 400
+
+    if data != "cafe\u0301".encode("utf-8"):
+        return "Wrong data.\n", 400
+
+    with open("/flag", "r") as f:
+        return f.read()
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
