@@ -18,3 +18,9 @@ challenges:
     - id: inline-reflect-href-breakout
       name: Click Around and Find Out
       privileged: true
+    - id: inline-reflect-script
+      name: Scriptmaxxing
+      privileged: true
+    - id: inline-reflect-script-escaped
+      name: Encoded and Dangerous
+      privileged: true

@@ -1,0 +1,50 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+import secrets
+
+from flask import Flask, g, render_template, request
+
+app = Flask(__name__)
+
+
+@app.before_request
+def issue_nonce():
+    g.csp_nonce = secrets.token_urlsafe(16)
+
+
+@app.after_request
+def apply_csp(response):
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        f"script-src 'self' https://cdn.internal 'nonce-{g.csp_nonce}'; "
+        "style-src 'self' https://cdn.internal 'unsafe-inline'; "
+        "font-src 'self' https://cdn.internal; "
+        "img-src 'self' data:; "
+        "connect-src 'self' http://localhost:1337; "
+        "object-src 'none'; "
+        "base-uri 'none'"
+    )
+    return response
+
+
+@app.context_processor
+def inject_nonce():
+    return {"csp_nonce": g.csp_nonce}
+
+
+@app.route("/", methods=["GET"])
+def ephemeral():
+    return render_template("ephemeral.html", msg=request.args.get("msg"))
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

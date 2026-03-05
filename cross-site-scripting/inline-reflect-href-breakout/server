@@ -1,6 +1,7 @@
 #!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
 import os
+import string
 
 from flask import Flask, redirect, render_template, request
 
@@ -11,8 +12,11 @@ app = Flask(__name__)
 def ephemeral():
     msg = request.args.get("msg")
     if msg is not None:
-        for char in "<>/":
-            msg = msg.replace(char, "")
+        msg = "".join(
+            char
+            for char in msg
+            if char in set(string.ascii_letters + string.digits + " \"'=;:(),._-?+")
+        )
     return render_template("ephemeral.html", msg=msg)
 
 
