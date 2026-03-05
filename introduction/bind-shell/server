@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid --environ=none --real -- /usr/local/bin/python -I
+#!/usr/bin/env python
 
 import os
 import socket

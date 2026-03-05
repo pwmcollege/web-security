@@ -8,3 +8,6 @@ resources:
     - id: bind-shell
       name: Bind Shell
       type: challenge
+    - id: diy-shell
+      name: Do It Yourshell
+      type: challenge
