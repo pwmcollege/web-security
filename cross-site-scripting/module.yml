@@ -42,3 +42,6 @@ challenges:
     - id: reflect-side-channel
       name: Side Effects
       privileged: true
+    - id: stored-cookie
+      name: Cookie Influencer
+      privileged: true

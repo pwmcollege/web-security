@@ -1,0 +1,144 @@
+#!/usr/bin/exec-suid -- /usr/bin/python3 -I
+
+import os
+import sqlite3
+import tempfile
+import threading
+
+import flask
+from werkzeug.security import check_password_hash, generate_password_hash
+
+app = flask.Flask(__name__)
+
+
+class TemporaryDB:
+    def __init__(self):
+        self.db_file = tempfile.NamedTemporaryFile("x", suffix=".db")
+        self.connection = sqlite3.connect(self.db_file.name, check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self._lock = threading.Lock()
+
+    def execute(self, sql, parameters=()):
+        with self._lock:
+            cursor = self.connection.cursor()
+            result = cursor.execute(sql, parameters)
+            self.connection.commit()
+            return result
+
+
+flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
+
+db = TemporaryDB()
+# https://www.sqlite.org/lang_createtable.html
+db.execute(
+    """CREATE TABLE posts AS SELECT ? AS content, "admin" AS author, FALSE AS published""",
+    [flag],
+)
+db.execute(
+    """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
+    [generate_password_hash(flag)],
+)
+# https://www.sqlite.org/lang_insert.html
+db.execute(
+    """INSERT INTO users SELECT "guest" as username, ? as password""",
+    [generate_password_hash("password")],
+)
+db.execute(
+    """INSERT INTO users SELECT "hacker" as username, ? as password""",
+    [generate_password_hash("1337")],
+)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def challenge_login():
+    if flask.session.get("username"):
+        return flask.redirect("/")
+
+    if flask.request.method == "POST":
+        username = flask.request.form.get("username")
+        password = flask.request.form.get("password")
+
+        if not username or not password:
+            flask.flash("Identity credentials required")
+            return flask.redirect("/login")
+
+        # https://www.sqlite.org/lang_select.html
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ?",
+            (username,),
+        ).fetchone()
+
+        if not user or not check_password_hash(user["password"], password):
+            flask.flash("Access denied: Invalid credentials")
+            return flask.redirect("/login")
+
+        flask.session["username"] = username
+        return flask.redirect("/")
+
+    return flask.render_template("login.html")
+
+
+@app.route("/draft", methods=["POST"])
+def challenge_draft():
+    username = flask.session.get("username", None)
+    if not username:
+        flask.abort(403, "Log in first!")
+
+    if username == "admin":
+        flask.abort(
+            400,
+            "pwnpost no longer supports admin posting due to rampant flag disclosure",
+        )
+
+    content = flask.request.form.get("content", "")
+    # https://www.sqlite.org/lang_insert.html
+    db.execute(
+        "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
+        (content, username, bool(flask.request.form.get("publish"))),
+    )
+    return flask.redirect("/")
+
+
+@app.route("/publish", methods=["POST"])
+def challenge_publish():
+    username = flask.session.get("username", None)
+    if not username:
+        flask.abort(403, "Log in first!")
+
+    if username == "admin":
+        flask.abort(
+            400,
+            "pwnpost no longer supports admin posting due to rampant flag disclosure",
+        )
+
+    # https://www.sqlite.org/lang_update.html
+    db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
+    return flask.redirect("/")
+
+
+@app.route("/", methods=["GET"])
+def challenge_get():
+    username = flask.session.get("username")
+    if not username:
+        return flask.redirect("/login")
+
+    posts = db.execute("SELECT * FROM posts").fetchall()
+    return flask.render_template("index.html", username=username, posts=posts)
+
+
+@app.route("/logout")
+def challenge_logout():
+    flask.session.clear()
+    return flask.redirect("/")
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

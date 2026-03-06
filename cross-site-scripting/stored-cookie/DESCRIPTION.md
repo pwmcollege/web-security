@@ -1,0 +1,3 @@
+This new *pwnpost* platform looks unsafe...
+
+Maybe `victim` should check out the posts to see if they are safe?
