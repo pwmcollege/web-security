@@ -18,15 +18,21 @@ challenges:
     - id: inline-reflect-href-breakout
       name: Click Around and Find Out
       privileged: true
-    - id: inline-reflect-script
+    - id: reflect-script-src
+      name: Source Material
+      privileged: true
+    - id: reflect-script
       name: Scriptmaxxing
       privileged: true
-    - id: inline-reflect-script-escaped
-      name: Encoded and Dangerous
+    - id: reflect-script-literal
+      name: Literally Dangerous
       privileged: true
-    - id: inline-reflect-script-object
+    - id: reflect-script-object
       name: Objectively Dangerous
       privileged: true
-    - id: inline-reflect-json-parse
+    - id: reflect-json-parse
       name: Wrapped in JSON
+      privileged: true
+    - id: reflect-iframe-src
+      name: Frame of Reference
       privileged: true

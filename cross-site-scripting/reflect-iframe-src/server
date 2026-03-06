@@ -1,0 +1,29 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+
+@app.route("/", methods=["GET"])
+def ephemeral():
+    return render_template("ephemeral.html", msg=request.args.get("msg"))
+
+
+@app.route("/preview", methods=["GET"])
+def preview():
+    return render_template("preview.html", msg=request.args.get("msg"))
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

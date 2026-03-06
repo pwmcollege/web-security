@@ -1,36 +1,25 @@
 #!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
 import os
-import secrets
 
-from flask import Flask, g, render_template, request
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
-
-
-@app.before_request
-def issue_nonce():
-    g.csp_nonce = secrets.token_urlsafe(16)
 
 
 @app.after_request
 def apply_csp(response):
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
-        f"script-src 'self' https://cdn.internal 'nonce-{g.csp_nonce}'; "
+        "script-src 'self' http: https:; "
         "style-src 'self' https://cdn.internal 'unsafe-inline'; "
         "font-src 'self' https://cdn.internal; "
-        "img-src 'self' data:; "
+        "img-src 'self' data: http: https:; "
         "connect-src *; "
         "object-src 'none'; "
         "base-uri 'none'"
     )
     return response
-
-
-@app.context_processor
-def inject_nonce():
-    return {"csp_nonce": g.csp_nonce}
 
 
 @app.route("/", methods=["GET"])
