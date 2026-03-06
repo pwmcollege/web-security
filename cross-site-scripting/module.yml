@@ -36,3 +36,9 @@ challenges:
     - id: reflect-iframe-src
       name: Frame of Reference
       privileged: true
+    - id: reflect-log
+      name: Paper Trail
+      privileged: true
+    - id: reflect-side-channel
+      name: Side Effects
+      privileged: true

@@ -1,0 +1,41 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import ctypes
+import ctypes.util
+import logging
+import os
+
+from flask import Flask, render_template, request
+
+NETNS = os.environ.get("NETNS", "challenge_ns")
+CLONE_NEWNET = 0x40000000
+
+libc = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
+
+with open(f"/var/run/netns/{NETNS}") as ns:
+    if libc.setns(ns.fileno(), CLONE_NEWNET) != 0:
+        err = ctypes.get_errno()
+        raise OSError(err, os.strerror(err))
+
+app = Flask(__name__)
+
+if os.getuid() != 0:
+    logging.getLogger("werkzeug").disabled = True
+    app.logger.disabled = True
+
+
+@app.route("/", methods=["GET"])
+def ephemeral():
+    return render_template("ephemeral.html", msg=request.args.get("msg"))
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
