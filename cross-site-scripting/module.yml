@@ -24,3 +24,9 @@ challenges:
     - id: inline-reflect-script-escaped
       name: Encoded and Dangerous
       privileged: true
+    - id: inline-reflect-script-object
+      name: Objectively Dangerous
+      privileged: true
+    - id: inline-reflect-json-parse
+      name: Wrapped in JSON
+      privileged: true

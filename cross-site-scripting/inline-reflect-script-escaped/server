@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.before_request
 def issue_nonce():
-    g.csp_nonce = secrets.token_urlsafe(16)
+    g.csp_nonce = secrets.token_urlsafe(32)
 
 
 @app.after_request
@@ -21,7 +21,7 @@ def apply_csp(response):
         "style-src 'self' https://cdn.internal 'unsafe-inline'; "
         "font-src 'self' https://cdn.internal; "
         "img-src 'self' data:; "
-        "connect-src 'self' http://localhost:1337; "
+        "connect-src *; "
         "object-src 'none'; "
         "base-uri 'none'"
     )

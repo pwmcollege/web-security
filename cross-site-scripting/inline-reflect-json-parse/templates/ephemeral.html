@@ -33,8 +33,9 @@
             </div>
             {% if msg %}
             <script nonce="{{ csp_nonce }}">
-                const message = `{{ msg }}`;
-                document.getElementById("messageText").textContent = message;
+                const message = JSON.parse('{"text":"{{ msg|safe }}"}');
+                document.getElementById("messageText").textContent =
+                    message.text;
             </script>
             {% endif %} {% if msg %}
             <div
