@@ -65,6 +65,13 @@ db.execute(
     [generate_password_hash("1337")],
 )
 
+BLACKLIST = ("pwn.college",)
+
+
+def is_blacklisted(content):
+    lowered = content.lower()
+    return any(token in lowered for token in BLACKLIST)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def challenge_login():
@@ -135,6 +142,9 @@ def challenge_draft():
         flask.abort(403, "Log in first!")
 
     content = flask.request.form.get("content", "")
+    if is_blacklisted(content):
+        flask.abort(400, "Cannot save drafts with suspicious content")
+
     # https://www.sqlite.org/lang_insert.html
     db.execute(
         "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
@@ -148,6 +158,13 @@ def challenge_publish():
     username = flask.session.get("username", None)
     if not username:
         flask.abort(403, "Log in first!")
+
+    flagged_post = db.execute(
+        "SELECT content FROM posts WHERE author = ?",
+        (username,),
+    ).fetchall()
+    if any(is_blacklisted(post["content"]) for post in flagged_post):
+        flask.abort(400, "Cannot publish posts with suspicious content")
 
     # https://www.sqlite.org/lang_update.html
     db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
