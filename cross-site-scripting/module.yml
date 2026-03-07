@@ -90,3 +90,7 @@ resources:
       name: Hashing It Out
       type: challenge
       privileged: true
+    - id: dom-query
+      name: Query Me This
+      type: challenge
+      privileged: true

@@ -184,6 +184,7 @@ def challenge_logout():
 
 app.secret_key = os.urandom(64)
 app.config["SERVER_NAME"] = "challenge.internal"
+app.config["SESSION_COOKIE_HTTPONLY"] = False
 app.run(
     "challenge.internal",
     443,
