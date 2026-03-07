@@ -84,12 +84,6 @@ def challenge_draft():
     if not username:
         flask.abort(403, "Log in first!")
 
-    if username == "admin":
-        flask.abort(
-            400,
-            "pwnpost doesn't support admin posting",
-        )
-
     content = flask.request.form.get("content", "")
     # https://www.sqlite.org/lang_insert.html
     db.execute(
@@ -104,12 +98,6 @@ def challenge_publish():
     username = flask.session.get("username", None)
     if not username:
         flask.abort(403, "Log in first!")
-
-    if username == "admin":
-        flask.abort(
-            400,
-            "pwnpost doesn't support admin posting",
-        )
 
     # https://www.sqlite.org/lang_update.html
     db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
@@ -134,7 +122,6 @@ def challenge_logout():
 
 app.secret_key = os.urandom(64)
 app.config["SERVER_NAME"] = "challenge.internal"
-app.config["SESSION_COOKIE_HTTPONLY"] = False
 app.run(
     "challenge.internal",
     443,

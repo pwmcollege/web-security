@@ -19,3 +19,7 @@ You can visit it using a browser inside the [Desktop workspace](https://pwn.coll
 Once you've created a URL that triggers an [alert()](https://developer.mozilla.org/en-US/docs/Web/API/Window/alert), go ahead and run: `/challenge/victim`.
 
 When you're prompted, paste your crafted URL there. If your payload pops an alert in the victim's browser, you'll get the flag!
+
+---
+
+In this challenge, the server and the victim are isolated inside an ***air-gapped™*** network namespace. This means the victim cannot access any external URLs or services outside that namespace—its only reachable destination is the server itself.

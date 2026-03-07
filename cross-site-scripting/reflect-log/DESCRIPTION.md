@@ -1,3 +1,9 @@
 The ability to read a server's log is powerful.
 
-In this challenge, both the server and the victim are in an "air-gaped" network namespace, so no matter what you try, the victim won't visit a single URL outside that namespace, except for the server. Creatively leak the flag.
+Leak the flag.
+
+---
+
+### Challenge Environment
+
+In this challenge, the server and the victim are isolated inside an ***air-gapped™*** network namespace. This means the victim cannot access any external URLs or services outside that namespace—its only reachable destination is the server itself.
