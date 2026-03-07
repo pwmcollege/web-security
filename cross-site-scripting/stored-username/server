@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid -- /usr/bin/python3 -I
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
 import os
 import sqlite3

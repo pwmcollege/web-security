@@ -48,3 +48,9 @@ challenges:
     - id: stored-username
       name: Username Checks Out
       privileged: true
+    - id: stored-post-to-sender
+      name: Air-Gap Reply
+      privileged: true
+    - id: stored-keylogger
+      name: Keys to the Kingdom
+      privileged: true

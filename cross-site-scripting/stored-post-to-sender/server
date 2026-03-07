@@ -1,5 +1,8 @@
 #!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
+import ctypes
+import ctypes.util
+import logging
 import os
 import sqlite3
 import tempfile
@@ -9,6 +12,20 @@ import flask
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = flask.Flask(__name__)
+
+NETNS = os.environ.get("NETNS", "challenge_ns")
+CLONE_NEWNET = 0x40000000
+
+libc = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
+
+with open(f"/var/run/netns/{NETNS}") as ns:
+    if libc.setns(ns.fileno(), CLONE_NEWNET) != 0:
+        err = ctypes.get_errno()
+        raise OSError(err, os.strerror(err))
+
+if os.getuid() != 0:
+    logging.getLogger("werkzeug").disabled = True
+    app.logger.disabled = True
 
 
 class TemporaryDB:
@@ -76,6 +93,39 @@ def challenge_login():
         return flask.redirect("/")
 
     return flask.render_template("login.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def challenge_register():
+    if flask.session.get("username"):
+        return flask.redirect("/")
+
+    if flask.request.method == "POST":
+        username = flask.request.form.get("username")
+        password = flask.request.form.get("password")
+
+        if not username or not password:
+            flask.flash("Identity credentials required")
+            return flask.redirect("/register")
+
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ?",
+            (username,),
+        ).fetchone()
+
+        if user:
+            flask.flash("Username already taken")
+            return flask.redirect("/register")
+
+        db.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (username, generate_password_hash(password)),
+        )
+
+        flask.flash("Account created! Please log in.")
+        return flask.redirect("/login")
+
+    return flask.render_template("register.html")
 
 
 @app.route("/draft", methods=["POST"])
