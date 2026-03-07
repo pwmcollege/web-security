@@ -1,3 +1,12 @@
-This new *pwnpost* platform looks unsafe...
+This *new* ***pwnpost™*** platform looks unsafe...
 
-Maybe `victim` should check out the posts to see if they are safe?
+Maybe an `admin` should check the posts out to see if they are safe?
+
+---
+
+### Challenge Environment
+
+You can login into ***pwnpost™*** using these accounts:
+
+- `guest:password`
+- `hacker:1337`

@@ -52,5 +52,6 @@ if __name__ == "__main__":
         driver.get(url)
 
         driver.implicitly_wait(5)
+        print("Victim visited the page. Check if your payload worked.")
     except WebDriverException:
         print(f"There was an error visiting {url}")

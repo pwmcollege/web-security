@@ -6,7 +6,7 @@ import tempfile
 import threading
 
 import flask
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = flask.Flask(__name__)
 
@@ -76,6 +76,39 @@ def challenge_login():
         return flask.redirect("/")
 
     return flask.render_template("login.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def challenge_register():
+    if flask.session.get("username"):
+        return flask.redirect("/")
+
+    if flask.request.method == "POST":
+        username = flask.request.form.get("username")
+        password = flask.request.form.get("password")
+
+        if not username or not password:
+            flask.flash("Identity credentials required")
+            return flask.redirect("/register")
+
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ?",
+            (username,),
+        ).fetchone()
+
+        if user:
+            flask.flash("Username already taken")
+            return flask.redirect("/register")
+
+        db.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (username, generate_password_hash(password)),
+        )
+
+        flask.flash("Account created! Please log in.")
+        return flask.redirect("/login")
+
+    return flask.render_template("register.html")
 
 
 @app.route("/draft", methods=["POST"])

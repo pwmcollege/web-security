@@ -45,3 +45,6 @@ challenges:
     - id: stored-cookie
       name: Cookie Influencer
       privileged: true
+    - id: stored-username
+      name: Username Checks Out
+      privileged: true

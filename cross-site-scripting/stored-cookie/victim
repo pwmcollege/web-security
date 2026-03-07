@@ -34,6 +34,7 @@ if __name__ == "__main__":
         driver.get("https://challenge.internal/")
 
         time.sleep(2)
+        print("Admin reviewed the feed. Check if your payload worked.")
     except WebDriverException:
         print("There was an error reviewing posts.")
         sys.exit(1)
