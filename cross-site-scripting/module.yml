@@ -1,62 +1,92 @@
 name: Cross-site Scripting
-challenges:
+resources:
+    - type: header
+      content: Reflected XSS
     - id: inline-reflect-alert
       name: A Reflective Start
+      type: challenge
       privileged: true
     - id: inline-reflect-cookie
       name: A Crumb in the Reflection
+      type: challenge
       privileged: true
     - id: inline-reflect-attribute
       name: Quote Me If You Can
+      type: challenge
       privileged: true
     - id: inline-reflect-unquoted
       name: Unquoted and Unhinged
+      type: challenge
       privileged: true
     - id: inline-reflect-href
       name: The Missing Link
+      type: challenge
       privileged: true
     - id: inline-reflect-href-breakout
       name: Click Around and Find Out
+      type: challenge
       privileged: true
     - id: reflect-script-src
       name: Source Material
+      type: challenge
       privileged: true
     - id: reflect-script
       name: Scriptmaxxing
+      type: challenge
       privileged: true
     - id: reflect-script-literal
       name: Literally Dangerous
+      type: challenge
       privileged: true
     - id: reflect-script-object
       name: Objectively Dangerous
+      type: challenge
       privileged: true
     - id: reflect-json-parse
       name: Wrapped in JSON
+      type: challenge
       privileged: true
     - id: reflect-iframe-src
       name: Frame of Reference
+      type: challenge
       privileged: true
     - id: reflect-log
       name: Paper Trail
+      type: challenge
       privileged: true
     - id: reflect-side-channel
       name: Side Effects
+      type: challenge
       privileged: true
+    - type: header
+      content: Stored XSS
     - id: stored-post
       name: Post Haste
+      type: challenge
       privileged: true
     - id: stored-cookie
       name: Cookie Influencer
+      type: challenge
       privileged: true
     - id: stored-username
       name: Username Checks Out
+      type: challenge
       privileged: true
     - id: stored-publish
       name: Publish or Perish
+      type: challenge
       privileged: true
     - id: stored-post-to-sender
       name: Air-Gap Reply
+      type: challenge
       privileged: true
     - id: stored-keylogger
       name: Keys to the Kingdom
+      type: challenge
+      privileged: true
+    - type: header
+      content: DOM XSS
+    - id: dom-hash
+      name: Hashing It Out
+      type: challenge
       privileged: true
