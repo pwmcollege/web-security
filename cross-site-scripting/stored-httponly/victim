@@ -1,0 +1,39 @@
+#!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
+
+import atexit
+import sys
+import time
+
+from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+
+if __name__ == "__main__":
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.binary_location = "/usr/bin/chromium"
+    service = Service("/usr/bin/chromedriver")
+    driver = None
+
+    try:
+        driver = webdriver.Chrome(service=service, options=options)
+        atexit.register(driver.quit)
+
+        print("Logging in as admin...")
+        driver.get("http://challenge.localhost/login")
+        driver.find_element(By.NAME, "username").send_keys("admin")
+        driver.find_element(By.NAME, "password").send_keys(open("/flag").read().strip())
+        driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        print("Reviewing posts...")
+        driver.get("http://challenge.localhost/")
+
+        time.sleep(2)
+        print("Admin reviewed the feed. Check if your payload worked.")
+    except WebDriverException:
+        print("There was an error reviewing posts.")
+        sys.exit(1)

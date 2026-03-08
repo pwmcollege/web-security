@@ -68,6 +68,10 @@ resources:
       name: Cookie Influencer
       type: challenge
       privileged: true
+    - id: stored-httponly
+      name: OnlyHttp
+      type: challenge
+      privileged: true
     - id: stored-username
       name: Username Checks Out
       type: challenge
