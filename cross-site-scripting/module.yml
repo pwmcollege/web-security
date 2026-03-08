@@ -94,3 +94,11 @@ resources:
       name: Query Me This
       type: challenge
       privileged: true
+    - id: dom-title
+      name: Title Fight
+      type: challenge
+      privileged: true
+    - id: dom-data-attr
+      name: Data Exposure
+      type: challenge
+      privileged: true

@@ -1,0 +1,188 @@
+{% extends "layout.html" %} {% block content %}
+<div
+    class="w-full max-w-2xl flex-grow flex flex-col items-center py-12 animate-in slide-in-from-bottom duration-700"
+>
+    <div class="text-center px-4 mb-8 shrink-0">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+            Ephemeral
+        </h1>
+        <p class="text-slate-500 text-sm mt-1 font-medium italic">
+            Ephemeral Message
+        </p>
+    </div>
+
+    <div
+        class="glass w-full max-w-xl p-10 rounded-3xl border border-slate-200 bg-white shadow-2xl space-y-10 mt-12 mb-24"
+    >
+        <div class="space-y-2.5">
+            <h3
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center"
+            >
+                MESSAGE
+            </h3>
+            <div
+                id="messageBox"
+                class="w-full min-h-[140px] flex items-center justify-center text-center bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-inner transition-all hover:bg-white hover:border-[#007AFF]/20 group"
+            >
+                <p
+                    id="messagePlaceholder"
+                    class="text-[11px] font-bold text-slate-300 uppercase italic"
+                >
+                    (metadata sync pending)
+                </p>
+            </div>
+            <div
+                id="metadataWrap"
+                class="w-full min-h-[96px] hidden bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-inner"
+            >
+                <p
+                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center mb-3"
+                >
+                    DATA PREVIEW
+                </p>
+                <div
+                    id="metadataBox"
+                    class="text-sm text-slate-700 text-center break-words"
+                ></div>
+            </div>
+
+            <div
+                id="shareWrap"
+                class="space-y-2.5 pt-2 animate-in fade-in slide-in-from-top-4 duration-500 hidden"
+            >
+                <p
+                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center"
+                >
+                    Shareable URL
+                </p>
+                <div
+                    class="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-2xl p-1.5 pl-3"
+                >
+                    <input
+                        type="text"
+                        readonly
+                        id="shareUrl"
+                        class="flex-grow bg-transparent text-xs font-medium text-slate-500 truncate outline-none cursor-default"
+                        value=""
+                    />
+                    <button
+                        type="button"
+                        id="copyBtn"
+                        class="w-10 h-10 bg-white border border-slate-100 text-[#007AFF] rounded-xl hover:bg-slate-50 transition-all shadow-sm active:scale-95 shrink-0 flex items-center justify-center"
+                    >
+                        <span id="copyIcon">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <rect
+                                    width="8"
+                                    height="4"
+                                    x="8"
+                                    y="2"
+                                    rx="1"
+                                    ry="1"
+                                />
+                                <path
+                                    d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                                />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="h-px w-full bg-slate-100"></div>
+        <form id="craftForm" class="space-y-6">
+            <div class="space-y-2.5">
+                <p
+                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-center sm:text-left"
+                >
+                    CRAFT MESSAGE
+                </p>
+                <input
+                    type="text"
+                    id="messageInput"
+                    required
+                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                    placeholder="Enter message content..."
+                />
+            </div>
+
+            <div class="flex flex-col pt-2">
+                <button
+                    type="submit"
+                    class="w-full py-5 bg-[#007AFF] text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-black/10 hover:brightness-110 active:scale-95"
+                >
+                    CRAFT MESSAGE
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="text-center opacity-30 pt-12 pb-8 mt-auto shrink-0">
+        <p
+            class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-900 italic"
+        >
+            pwnpost
+        </p>
+    </footer>
+</div>
+
+<script>
+    const box = document.getElementById("messageBox");
+    const placeholder = document.getElementById("messagePlaceholder");
+    const metadataWrap = document.getElementById("metadataWrap");
+    const metadataBox = document.getElementById("metadataBox");
+    const input = document.getElementById("messageInput");
+    const shareWrap = document.getElementById("shareWrap");
+    const shareUrl = document.getElementById("shareUrl");
+    const copyBtn = document.getElementById("copyBtn");
+    const copyIcon = document.getElementById("copyIcon");
+    const message = new URLSearchParams(window.location.search).get("msg") || "";
+
+    function refreshShareUrl() {
+        shareUrl.value = window.location.href;
+    }
+
+    if (message) {
+        placeholder.remove();
+        box.textContent = "Message cached in data-*";
+        box.dataset.message = message;
+        metadataWrap.classList.remove("hidden");
+        metadataBox.innerHTML = box.dataset.message;
+        shareWrap.classList.remove("hidden");
+        refreshShareUrl();
+    }
+
+    document.getElementById("craftForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const next = new URL(window.location.href);
+        next.searchParams.set("msg", input.value);
+        window.location.href = next.toString();
+    });
+
+    copyBtn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(shareUrl.value);
+
+        const originalSvg = copyIcon.innerHTML;
+        const successSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M20 6 9 17l-5-5"/></svg>`;
+
+        copyIcon.innerHTML = successSvg;
+        copyBtn.classList.add("border-emerald-100", "bg-emerald-50/30");
+
+        setTimeout(() => {
+            copyIcon.innerHTML = originalSvg;
+            copyBtn.classList.remove("border-emerald-100", "bg-emerald-50/30");
+        }, 2000);
+    });
+</script>
+{% endblock %}
