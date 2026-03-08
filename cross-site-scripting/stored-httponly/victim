@@ -29,6 +29,16 @@ if __name__ == "__main__":
         driver.find_element(By.NAME, "password").send_keys(open("/flag").read().strip())
         driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 
+        driver.add_cookie(
+            {
+                "name": "admin_token",
+                "value": open("/challenge/.admin_token").read().strip(),
+                "domain": "challenge.localhost",
+                "path": "/",
+                "httpOnly": True,
+            }
+        )
+
         print("Reviewing posts...")
         driver.get("http://challenge.localhost/")
 

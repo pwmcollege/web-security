@@ -8,6 +8,7 @@ import threading
 import flask
 from werkzeug.security import check_password_hash, generate_password_hash
 
+ADMIN_TOKEN = open("/challenge/.admin_token").read().strip()
 app = flask.Flask(__name__)
 
 
@@ -118,15 +119,22 @@ def challenge_get():
         return flask.redirect("/login")
 
     posts = db.execute("SELECT * FROM posts").fetchall()
+    if flask.request.cookies.get("admin_token") == ADMIN_TOKEN:
+        posts = [post for post in posts if post["author"] != username]
+
     return flask.render_template("index.html", username=username, posts=posts)
 
 
 @app.route("/logout")
 def challenge_logout():
     flask.session.clear()
-    return flask.redirect("/")
+    response = flask.redirect("/")
+    response.delete_cookie("admin_token", domain="challenge.localhost", path="/")
+
+    return response
 
 
 app.secret_key = os.urandom(64)
 app.config["SERVER_NAME"] = "challenge.localhost"
+app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.run("challenge.localhost", 80)
