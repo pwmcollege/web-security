@@ -106,3 +106,7 @@ resources:
       name: Data Exposure
       type: challenge
       privileged: true
+    - id: dom-postmessage
+      name: Message Received
+      type: challenge
+      privileged: true

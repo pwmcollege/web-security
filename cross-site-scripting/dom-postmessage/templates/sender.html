@@ -1,0 +1,63 @@
+{% extends "layout.html" %} {% block content %}
+<div
+    class="w-full max-w-2xl flex-grow flex flex-col items-center py-12 animate-in slide-in-from-bottom duration-700"
+>
+    <div class="text-center px-4 mb-8 shrink-0">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+            Ephemeral
+        </h1>
+        <p class="text-slate-500 text-sm mt-1 font-medium italic">
+            Ephemeral Message
+        </p>
+    </div>
+
+    <div
+        class="glass w-full max-w-xl p-10 rounded-3xl border border-slate-200 bg-white shadow-2xl space-y-10 mt-12 mb-24"
+    >
+        <div class="space-y-2.5">
+            <h3
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center"
+            >
+                MESSAGE
+            </h3>
+            <div
+                id="messageBox"
+                class="w-full min-h-[140px] flex items-center justify-center text-center bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-inner transition-all hover:bg-white hover:border-[#007AFF]/20 group"
+            >
+                <p
+                    id="messagePlaceholder"
+                    class="text-[11px] font-bold text-slate-300 uppercase italic"
+                >
+                    (waiting for message event)
+                </p>
+            </div>
+            <p
+                class="text-[11px] font-medium text-slate-400 text-center leading-relaxed"
+            >
+                This preview updates whenever another window sends it a message.
+            </p>
+        </div>
+    </div>
+
+    <footer class="text-center opacity-30 pt-12 pb-8 mt-auto shrink-0">
+        <p
+            class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-900 italic"
+        >
+            pwnpost
+        </p>
+    </footer>
+</div>
+
+<script>
+    const box = document.getElementById('messageBox');
+    const placeholder = document.getElementById('messagePlaceholder');
+
+    window.addEventListener('message', (event) => {
+        if (placeholder) {
+            placeholder.remove();
+        }
+
+        box.innerHTML = event.data;
+    });
+</script>
+{% endblock %}
