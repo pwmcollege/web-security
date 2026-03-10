@@ -120,3 +120,23 @@ resources:
       name: Case Closed
       type: challenge
       privileged: true
+    - id: filter-img
+      name: Picture Imperfect
+      type: challenge
+      privileged: true
+    - id: filter-svg
+      name: Vector Control
+      type: challenge
+      privileged: true
+    - id: filter-iframe
+      name: Frame Rate
+      type: challenge
+      privileged: true
+    - id: filter-input
+      name: No Input Needed
+      type: challenge
+      privileged: true
+    - id: filter-media
+      name: Media Blackout
+      type: challenge
+      privileged: true
