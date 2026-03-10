@@ -2,8 +2,9 @@
 
 import os
 import re
+import secrets
 
-from flask import Flask, render_template, request
+from flask import Flask, make_response, render_template, request
 
 app = Flask(__name__)
 
@@ -23,6 +24,8 @@ FILTERS = [
     (r"<\s*/?\s*details\b", re.IGNORECASE),
     (r"<\s*/?\s*dialog\b", re.IGNORECASE),
     (r"<\s*/?\s*marquee\b", re.IGNORECASE),
+    (r"<\s*/?\s*style\b", re.IGNORECASE),
+    (r"<\s*/?\s*link\b", re.IGNORECASE),
     (r"\bontoggle\b", re.IGNORECASE),
     (r"\bonstart\b", re.IGNORECASE),
     (r"\bonload\b", re.IGNORECASE),
@@ -32,13 +35,15 @@ FILTERS = [
     (r"\bonfocusin\b", re.IGNORECASE),
     (r"\bonfocusout\b", re.IGNORECASE),
     (r"\bautofocus\b", re.IGNORECASE),
-    (r"\bstyle\s*=", re.IGNORECASE),
     (r"\bonanimationstart\b", re.IGNORECASE),
     (r"\bonanimationiteration\b", re.IGNORECASE),
     (r"\bonanimationend\b", re.IGNORECASE),
     (r"\bonanimationcancel\b", re.IGNORECASE),
+    (r"\bstyle\s*=", re.IGNORECASE),
     (r"\banimation\b", re.IGNORECASE),
     (r"\bkeyframes\b", re.IGNORECASE),
+    (r"\btransition\b", re.IGNORECASE),
+    (r"\btransform\b", re.IGNORECASE),
 ]
 
 
@@ -50,7 +55,22 @@ def is_banned(value):
 def ephemeral():
     msg = request.args.get("msg")
     banned = bool(msg and is_banned(msg))
-    return render_template("ephemeral.html", msg=msg, banned=banned)
+    csp_nonce = secrets.token_urlsafe(16)
+
+    response = make_response(
+        render_template(
+            "ephemeral.html",
+            msg=msg,
+            banned=banned,
+            csp_nonce=csp_nonce,
+            share_url=request.url if msg else "",
+        )
+    )
+    response.headers["Content-Security-Policy"] = (
+        f"style-src 'nonce-{csp_nonce}'; style-src-attr 'none'"
+    )
+
+    return response
 
 
 app.secret_key = os.urandom(64)

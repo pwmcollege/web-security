@@ -164,3 +164,7 @@ resources:
       name: The Last Frame
       type: challenge
       privileged: true
+    - id: filter-stylesheet
+      name: No Style Points
+      type: challenge
+      privileged: true

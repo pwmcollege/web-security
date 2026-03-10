@@ -17,6 +17,8 @@ In this challenge, the following elements are banned:
 - `details`
 - `dialog`
 - `marquee`
+- `style`
+- `link`
 
 The following handlers are also banned:
 
@@ -39,3 +41,5 @@ The following attributes are also banned:
 - `style=`
 - `animation`
 - `keyframes`
+- `transition`
+- `transform`
