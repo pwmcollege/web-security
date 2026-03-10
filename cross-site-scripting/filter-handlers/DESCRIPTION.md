@@ -26,3 +26,6 @@ The following handlers are also banned:
 - `onerror`
 - `onclick`
 - `onfocus`
+- `onfocusin`
+- `onfocusout`
+- `autofocus`

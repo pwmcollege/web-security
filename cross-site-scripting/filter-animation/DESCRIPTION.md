@@ -26,8 +26,13 @@ The following handlers are also banned:
 - `onerror`
 - `onclick`
 - `onfocus`
-- `onanimationstart`
+- `onfocusin`
+- `onfocusout`
+- `autofocus`
+- `onanimation*`
 
-The following attribute is also banned:
+The following attributes are also banned:
 
 - `style=`
+- `animation`
+- `keyframes`

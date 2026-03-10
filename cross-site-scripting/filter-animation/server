@@ -29,8 +29,13 @@ FILTERS = [
     (r"\bonerror\b", re.IGNORECASE),
     (r"\bonclick\b", re.IGNORECASE),
     (r"\bonfocus\b", re.IGNORECASE),
-    (r"\bonanimationstart\b", re.IGNORECASE),
+    (r"\bonfocusin\b", re.IGNORECASE),
+    (r"\bonfocusout\b", re.IGNORECASE),
+    (r"\bautofocus\b", re.IGNORECASE),
     (r"\bstyle\s*=", re.IGNORECASE),
+    (r"\bonanimation[a-z]*\b", re.IGNORECASE),
+    (r"\banimation\b", re.IGNORECASE),
+    (r"\bkeyframes\b", re.IGNORECASE),
 ]
 
 

@@ -29,6 +29,9 @@ FILTERS = [
     (r"\bonerror\b", re.IGNORECASE),
     (r"\bonclick\b", re.IGNORECASE),
     (r"\bonfocus\b", re.IGNORECASE),
+    (r"\bonfocusin\b", re.IGNORECASE),
+    (r"\bonfocusout\b", re.IGNORECASE),
+    (r"\bautofocus\b", re.IGNORECASE),
     (r"\bstyle\s*=", re.IGNORECASE),
 ]
 
