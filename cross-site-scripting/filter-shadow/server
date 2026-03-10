@@ -8,7 +8,7 @@ from flask import Flask, make_response, render_template, request
 
 app = Flask(__name__)
 
-FILTERS = [
+BLOCKLIST = [
     (r"<\s*/?\s*script\b", re.IGNORECASE),
     (r"<\s*/?\s*img\b", re.IGNORECASE),
     (r"<\s*/?\s*svg\b", re.IGNORECASE),
@@ -43,8 +43,7 @@ FILTERS = [
     (r"\bstyle\s*=", re.IGNORECASE),
     (r"\banimation\b", re.IGNORECASE),
     (r"\bkeyframes\b", re.IGNORECASE),
-    (r"\bcontent-visibility\b", re.IGNORECASE),
-    (r"\bcontentvisibility\b", re.IGNORECASE),
+    (r"\bcontent-?visibility\b", re.IGNORECASE),
     (r"\btransition\b", re.IGNORECASE),
     (r"\btransform\b", re.IGNORECASE),
     (r"shadow", re.IGNORECASE),
@@ -53,7 +52,7 @@ FILTERS = [
 
 
 def is_banned(value):
-    return any(re.search(pattern, value, flags=flags) for pattern, flags in FILTERS)
+    return any(re.search(pattern, value, flags=flags) for pattern, flags in BLOCKLIST)
 
 
 @app.route("/", methods=["GET"])

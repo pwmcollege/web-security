@@ -7,13 +7,13 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-FILTERS = [
+BLOCKLIST = [
     (r"<\s*/?\s*script\b", re.IGNORECASE),
 ]
 
 
 def is_banned(value):
-    return any(re.search(pattern, value, flags=flags) for pattern, flags in FILTERS)
+    return any(re.search(pattern, value, flags=flags) for pattern, flags in BLOCKLIST)
 
 
 @app.route("/", methods=["GET"])

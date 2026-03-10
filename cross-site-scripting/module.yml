@@ -172,3 +172,15 @@ resources:
       name: Ghost in the DOM
       type: challenge
       privileged: true
+    - id: filter-fetch
+      name: Request Denied
+      type: challenge
+      privileged: true
+    - id: filter-navigation
+      name: Wrong Turn
+      type: challenge
+      privileged: true
+    - id: filter-action
+      name: No Sudden Moves
+      type: challenge
+      privileged: true

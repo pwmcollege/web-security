@@ -1,0 +1,80 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+import re
+
+from bs4 import BeautifulSoup, NavigableString, Tag
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+ALLOWLIST = [
+    "script",
+]
+
+BLOCKLIST = [
+    (r"\bfetch\b", re.IGNORECASE),
+    (r"\bxmlhttprequest\b", re.IGNORECASE),
+    (r"\bsendbeacon\b", re.IGNORECASE),
+    (r"\blocation\b", re.IGNORECASE),
+    (r"\bopen\s*\(", re.IGNORECASE),
+    (r"\bassign\s*\(", re.IGNORECASE),
+    (r"\breplace\s*\(", re.IGNORECASE),
+    (r"\bsubmit\b", re.IGNORECASE),
+    (r"\bclick\b", re.IGNORECASE),
+]
+
+
+def _is_ignorable_text(node):
+    return isinstance(node, NavigableString) and not node.strip()
+
+
+def is_allowed_tag(tag):
+    return tag.name in ALLOWLIST
+
+
+def extract_script(value):
+    soup = BeautifulSoup(value, "html5lib")
+    body = soup.body
+    if body is None:
+        return None
+
+    nodes = [node for node in body.contents if not _is_ignorable_text(node)]
+    if len(nodes) != 1:
+        return None
+
+    tag = nodes[0]
+    if not isinstance(tag, Tag):
+        return None
+
+    if not is_allowed_tag(tag):
+        return None
+
+    if tag.attrs:
+        return None
+
+    return tag.get_text()
+
+
+def is_blocked(script_text):
+    return any(re.search(pattern, script_text, flags=flags) for pattern, flags in BLOCKLIST)
+
+
+@app.route('/', methods=['GET'])
+def ephemeral():
+    msg = request.args.get('msg')
+    script_text = extract_script(msg) if msg else None
+    banned = bool(msg and (script_text is None or is_blocked(script_text)))
+    return render_template('ephemeral.html', msg=msg, banned=banned)
+
+
+app.secret_key = os.urandom(64)
+app.config['SERVER_NAME'] = 'challenge.internal'
+app.run(
+    'challenge.internal',
+    443,
+    ssl_context=(
+        '/etc/ssl/certs/internal.cert.pem',
+        '/etc/ssl/private/internal.key.pem',
+    ),
+)
