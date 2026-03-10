@@ -168,3 +168,7 @@ resources:
       name: No Style Points
       type: challenge
       privileged: true
+    - id: filter-shadow
+      name: Ghost in the DOM
+      type: challenge
+      privileged: true
