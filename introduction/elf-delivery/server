@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import base64
+import binascii
 import os
 import subprocess
 
@@ -8,12 +10,17 @@ from flask import Flask, request
 app = Flask(__name__)
 
 
-@app.route("/", methods=["POST"])
+@app.route("/", methods=["GET"])
 def run_elf():
-    blob = request.get_data()
+    encoded = request.args.get("elf", "")
+    if not encoded:
+        return "Missing elf query parameter.\n", 400
 
-    if not blob:
-        return "Missing binary body.\n", 400
+    try:
+        padding = "=" * (-len(encoded) % 4)
+        blob = base64.urlsafe_b64decode(encoded + padding)
+    except (ValueError, binascii.Error):
+        return "Invalid base64 payload.\n", 400
 
     if not blob.startswith(b"\x7fELF"):
         return "Not an ELF binary.\n", 400

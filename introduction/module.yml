@@ -8,25 +8,10 @@ resources:
     - id: bind-shell
       name: Bind Shell
       type: challenge
-    - id: diy-shell
-      name: Do It Yourshell
-      type: challenge
     - type: header
       content: URL & Encoding
     - id: separator-smuggling
       name: Query Me This
-      type: challenge
-    - id: length-prefixed-payload
-      name: Len and Order
-      type: challenge
-    - id: canonicalization-mismatch
-      name: Once Upon a Decode
-      type: challenge
-    - id: request-crafting
-      name: Requestsmith
-      type: challenge
-    - id: structured-bytes
-      name: Byteframe
       type: challenge
     - id: elf-delivery
       name: ELFpress Delivery

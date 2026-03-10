@@ -110,3 +110,13 @@ resources:
       name: Message Received
       type: challenge
       privileged: true
+    - type: header
+      content: Filters
+    - id: filter-script
+      name: Only You
+      type: challenge
+      privileged: true
+    - id: filter-script-case
+      name: Case Closed
+      type: challenge
+      privileged: true

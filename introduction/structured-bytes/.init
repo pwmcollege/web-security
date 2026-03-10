@@ -1,7 +1,0 @@
-#!/bin/bash
-
-find -L /challenge -type f -exec chmod 0444 {} +
-echo -e "127.0.0.1\tchallenge.internal" >> /etc/hosts
-
-chmod 544 /challenge/server
-/challenge/server &
