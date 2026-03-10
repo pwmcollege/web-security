@@ -169,6 +169,10 @@ resources:
       type: challenge
       privileged: true
     - id: filter-shadow
+      name: Shadow Banned
+      type: challenge
+      privileged: true
+    - id: filter-shadow-side-channel
       name: Ghost in the DOM
       type: challenge
       privileged: true
@@ -181,6 +185,6 @@ resources:
       type: challenge
       privileged: true
     - id: filter-action
-      name: No Sudden Moves
+      name: Nothing Left to Click
       type: challenge
       privileged: true
