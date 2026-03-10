@@ -1,0 +1,51 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+import re
+
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+FILTERS = [
+    (r"<\s*/?\s*script\b", re.IGNORECASE),
+    (r"<\s*/?\s*img\b", re.IGNORECASE),
+    (r"<\s*/?\s*svg\b", re.IGNORECASE),
+    (r"<\s*/?\s*iframe\b", re.IGNORECASE),
+    (r"<\s*/?\s*input\b", re.IGNORECASE),
+    (r"<\s*/?\s*video\b", re.IGNORECASE),
+    (r"<\s*/?\s*audio\b", re.IGNORECASE),
+    (r"<\s*/?\s*source\b", re.IGNORECASE),
+    (r"<\s*/?\s*track\b", re.IGNORECASE),
+    (r"<\s*/?\s*html\b", re.IGNORECASE),
+    (r"<\s*/?\s*body\b", re.IGNORECASE),
+    (r"<\s*/?\s*frameset\b", re.IGNORECASE),
+    (r"<\s*/?\s*details\b", re.IGNORECASE),
+    (r"<\s*/?\s*dialog\b", re.IGNORECASE),
+    (r"<\s*/?\s*marquee\b", re.IGNORECASE),
+    (r"\bontoggle\b", re.IGNORECASE),
+    (r"\bonstart\b", re.IGNORECASE),
+]
+
+
+def is_banned(value):
+    return any(re.search(pattern, value, flags=flags) for pattern, flags in FILTERS)
+
+
+@app.route("/", methods=["GET"])
+def ephemeral():
+    msg = request.args.get("msg")
+    banned = bool(msg and is_banned(msg))
+    return render_template("ephemeral.html", msg=msg, banned=banned)
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

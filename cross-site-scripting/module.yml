@@ -140,3 +140,27 @@ resources:
       name: Media Blackout
       type: challenge
       privileged: true
+    - id: filter-body
+      name: Out of Body
+      type: challenge
+      privileged: true
+    - id: filter-toggle
+      name: Toggle Off
+      type: challenge
+      privileged: true
+    - id: filter-start
+      name: False Start
+      type: challenge
+      privileged: true
+    - id: filter-handlers
+      name: Family Filter
+      type: challenge
+      privileged: true
+    - id: filter-style
+      name: No Dress Code
+      type: challenge
+      privileged: true
+    - id: filter-animation
+      name: The Last Frame
+      type: challenge
+      privileged: true
