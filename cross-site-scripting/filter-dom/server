@@ -1,0 +1,126 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+import re
+
+from bs4 import BeautifulSoup, NavigableString, Tag
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+ALLOWLIST = [
+    "script",
+]
+
+BLOCKLIST = [
+    (r"\bfetch\b", re.IGNORECASE),
+    (r"\bxmlhttprequest\b", re.IGNORECASE),
+    (r"\bsendbeacon\b", re.IGNORECASE),
+    (r"\blocation\b", re.IGNORECASE),
+    (r"\bopen\s*\(", re.IGNORECASE),
+    (r"\bassign\s*\(", re.IGNORECASE),
+    (r"\breplace\s*\(", re.IGNORECASE),
+    (r"\bpushstate\b", re.IGNORECASE),
+    (r"\breplacestate\b", re.IGNORECASE),
+    (r"\bsubmit\b", re.IGNORECASE),
+    (r"\bclick\b", re.IGNORECASE),
+    (r"\bcreateelement(?:ns)?\b", re.IGNORECASE),
+    (r"\b(?:adopt|import|clone)node\b", re.IGNORECASE),
+    (r"\bappend(?:child)?\b", re.IGNORECASE),
+    (r"\bprepend\b", re.IGNORECASE),
+    (r"\bbefore\b", re.IGNORECASE),
+    (r"\bafter\b", re.IGNORECASE),
+    (r"\binsertbefore\b", re.IGNORECASE),
+    (r"\binsertadjacent(?:html|text|element)\b", re.IGNORECASE),
+    (r"\breplace(?:children|child|with)\b", re.IGNORECASE),
+    (r"\bremove(?:child)?\b", re.IGNORECASE),
+    (r"\binnerhtml\b", re.IGNORECASE),
+    (r"\bouterhtml\b", re.IGNORECASE),
+    (r"\b(?:inner|outer)(?:text|html)\b", re.IGNORECASE),
+    (r"\btextcontent\b", re.IGNORECASE),
+    (r"\bsetattribute(?:ns)?\b", re.IGNORECASE),
+    (r"\bremoveattribute(?:ns)?\b", re.IGNORECASE),
+    (r"\btoggleattribute\b", re.IGNORECASE),
+    (r"\bqueryselector(?:all)?\b", re.IGNORECASE),
+    (r"\bgetelement(?:sbytagname|sbyclassname|byid|sbyname)\b", re.IGNORECASE),
+    (r"\bwrite\b", re.IGNORECASE),
+    (r"\bwriteln\b", re.IGNORECASE),
+    (r"\bhref\b", re.IGNORECASE),
+    (r"\baction\b", re.IGNORECASE),
+    (r"\bformaction\b", re.IGNORECASE),
+    (r"\bsrcdoc\b", re.IGNORECASE),
+    (r"\bcookieStore\b", re.IGNORECASE),
+    (r"\b(?:local|session)Storage\b", re.IGNORECASE),
+    (r"\bFormData\b", re.IGNORECASE),
+    (r"\bURL(?:SearchParams)?\b", re.IGNORECASE),
+    (r"\bRequest\b", re.IGNORECASE),
+    (r"\bHeaders\b", re.IGNORECASE),
+    (r"\bResponse\b", re.IGNORECASE),
+    (r"\beval\b", re.IGNORECASE),
+    (r"\bFunction\b", re.IGNORECASE),
+    (r"\bset(?:Timeout|Interval)\b", re.IGNORECASE),
+]
+
+
+def _is_ignorable_text(node):
+    return isinstance(node, NavigableString) and not node.strip()
+
+
+def _document_nodes(soup):
+    nodes = []
+    for container in (soup.head, soup.body):
+        if container is None:
+            continue
+        nodes.extend(
+            node for node in container.contents if not _is_ignorable_text(node)
+        )
+    return nodes
+
+
+def is_allowed_tag(tag):
+    return tag.name in ALLOWLIST
+
+
+def extract_script(value):
+    soup = BeautifulSoup(value, "html5lib")
+    nodes = _document_nodes(soup)
+    if len(nodes) != 1:
+        return None
+
+    tag = nodes[0]
+    if not isinstance(tag, Tag):
+        return None
+
+    if not is_allowed_tag(tag):
+        return None
+
+    if tag.attrs:
+        return None
+
+    return tag.get_text()
+
+
+def is_blocked(script_text):
+    return any(
+        re.search(pattern, script_text, flags=flags) for pattern, flags in BLOCKLIST
+    )
+
+
+@app.route("/", methods=["GET"])
+def ephemeral():
+    msg = request.args.get("msg")
+    script_text = extract_script(msg) if msg else None
+    banned = bool(msg and (script_text is None or is_blocked(script_text)))
+    return render_template("ephemeral.html", msg=msg, banned=banned)
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

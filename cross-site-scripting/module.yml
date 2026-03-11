@@ -188,3 +188,7 @@ resources:
       name: Nothing Left to Click
       type: challenge
       privileged: true
+    - id: filter-dom
+      name: DOM and Gloom
+      type: challenge
+      privileged: true
