@@ -1,6 +1,6 @@
 id: web-security
 name: Web Security
-type: hidden
+type: public
 award:
     emoji: 🕸️
 image: pwmcollege/challenge-web:latest
