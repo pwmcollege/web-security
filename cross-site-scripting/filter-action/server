@@ -13,15 +13,15 @@ ALLOWLIST = [
 ]
 
 BLOCKLIST = [
-    (r"\bfetch\b", re.IGNORECASE),
-    (r"\bxmlhttprequest\b", re.IGNORECASE),
-    (r"\bsendbeacon\b", re.IGNORECASE),
-    (r"\blocation\b", re.IGNORECASE),
-    (r"\bopen\s*\(", re.IGNORECASE),
-    (r"\bassign\s*\(", re.IGNORECASE),
-    (r"\breplace\s*\(", re.IGNORECASE),
-    (r"\bsubmit\b", re.IGNORECASE),
-    (r"\bclick\b", re.IGNORECASE),
+    (r"fetch", re.IGNORECASE),
+    (r"xmlhttprequest", re.IGNORECASE),
+    (r"sendbeacon", re.IGNORECASE),
+    (r"location", re.IGNORECASE),
+    (r"open\s*\(", re.IGNORECASE),
+    (r"assign\s*\(", re.IGNORECASE),
+    (r"replace\s*\(", re.IGNORECASE),
+    (r"submit", re.IGNORECASE),
+    (r"click", re.IGNORECASE),
 ]
 
 

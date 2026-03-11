@@ -71,5 +71,3 @@ The following APIs are banned:
 - `Function`
 - `setTimeout`
 - `setInterval`
-
-Media-related APIs and properties are still allowed.

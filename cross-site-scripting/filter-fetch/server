@@ -13,9 +13,9 @@ ALLOWLIST = [
 ]
 
 BLOCKLIST = [
-    (r"\bfetch\b", re.IGNORECASE),
-    (r"\bxmlhttprequest\b", re.IGNORECASE),
-    (r"\bsendbeacon\b", re.IGNORECASE),
+    (r"fetch", re.IGNORECASE),
+    (r"xmlhttprequest", re.IGNORECASE),
+    (r"sendbeacon", re.IGNORECASE),
 ]
 
 
