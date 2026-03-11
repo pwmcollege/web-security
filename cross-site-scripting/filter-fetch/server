@@ -23,17 +23,24 @@ def _is_ignorable_text(node):
     return isinstance(node, NavigableString) and not node.strip()
 
 
+def _document_nodes(soup):
+    nodes = []
+    for container in (soup.head, soup.body):
+        if container is None:
+            continue
+        nodes.extend(
+            node for node in container.contents if not _is_ignorable_text(node)
+        )
+    return nodes
+
+
 def is_allowed_tag(tag):
     return tag.name in ALLOWLIST
 
 
 def extract_script(value):
     soup = BeautifulSoup(value, "html5lib")
-    body = soup.body
-    if body is None:
-        return None
-
-    nodes = [node for node in body.contents if not _is_ignorable_text(node)]
+    nodes = _document_nodes(soup)
     if len(nodes) != 1:
         return None
 
