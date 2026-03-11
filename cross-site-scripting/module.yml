@@ -192,3 +192,11 @@ resources:
       name: DOM and Gloom
       type: challenge
       privileged: true
+    - id: filter-apis
+      name: API Calypse
+      type: challenge
+      privileged: true
+    - id: filter-global
+      name: Think Small
+      type: challenge
+      privileged: true
