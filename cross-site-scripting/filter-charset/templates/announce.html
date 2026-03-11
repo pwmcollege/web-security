@@ -1,0 +1,65 @@
+{% extends "layout.html" %} {% block content %}
+<div
+    class="w-full max-w-3xl flex-grow flex flex-col items-center py-12 animate-in slide-in-from-bottom duration-700"
+>
+    <div class="text-center px-4 mb-8 shrink-0">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+            Ephemeral
+        </h1>
+        <p class="text-slate-500 text-sm mt-1 font-medium italic">
+            Announcement Console
+        </p>
+    </div>
+
+    <div
+        class="glass w-full max-w-2xl p-10 rounded-3xl border border-slate-200 bg-white shadow-2xl space-y-8 mt-12 mb-24"
+    >
+        <div class="space-y-2.5">
+            <h3
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center"
+            >
+                EDITOR
+            </h3>
+            {% if banned %}
+            <div
+                class="w-full rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-black uppercase tracking-widest text-red-500 text-center"
+            >
+                Announcement rejected.
+            </div>
+            {% endif %}
+            <form method="POST" action="/announce" class="space-y-6">
+                <textarea
+                    name="msg"
+                    required
+                    spellcheck="false"
+                    class="w-full min-h-[260px] bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-xs font-medium font-mono focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] outline-none transition-all placeholder:text-slate-300 shadow-inner resize-y"
+                    placeholder="Write your announcement..."
+                >
+{{ draft or '' }}</textarea
+                >
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button
+                        type="submit"
+                        class="flex-1 py-5 bg-[#007AFF] text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-black/10 hover:brightness-110 active:scale-95"
+                    >
+                        PUBLISH ANNOUNCEMENT
+                    </button>
+                    <a
+                        href="/"
+                        class="flex-1 text-center py-5 bg-slate-50 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-all border border-slate-200 hover:bg-white"
+                        >VIEW FEED</a
+                    >
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="text-center opacity-30 pt-12 pb-8 mt-auto shrink-0">
+        <p
+            class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-900 italic"
+        >
+            pwnpost
+        </p>
+    </footer>
+</div>
+{% endblock %}

@@ -200,3 +200,11 @@ resources:
       name: Think Small
       type: challenge
       privileged: true
+    - id: filter-string
+      name: No Strings Attached
+      type: challenge
+      privileged: true
+    - id: filter-charset
+      name: Lost for Words
+      type: challenge
+      privileged: true

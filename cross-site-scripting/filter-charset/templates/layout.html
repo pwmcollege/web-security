@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" class="h-full">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>pwnpost</title>
+        <script src="https://cdn.internal/@tailwindcss/browser@4"></script>
+        <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+
+    <body
+        class="min-h-screen bg-slate-50 text-slate-900 font-sans tracking-tight flex flex-col"
+    >
+        <div
+            class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-[#007AFF]/10 via-slate-50 to-slate-100"
+        ></div>
+        <div class="sticky top-6 z-50 px-4 shrink-0">
+            <nav
+                class="max-w-2xl mx-auto h-14 island-nav rounded-2xl flex items-center justify-between px-6 shadow-lg shadow-black/[0.03]"
+            >
+                <a
+                    href="/"
+                    class="text-lg font-bold tracking-tighter text-slate-900"
+                    >pwnpost</a
+                >
+                <div class="flex items-center space-x-6">
+                    <a
+                        href="/"
+                        class="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500 hover:text-[#007AFF] transition-colors"
+                        >Feed</a
+                    >
+                    <a
+                        href="/announce"
+                        class="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500 hover:text-[#007AFF] transition-colors"
+                        >Announce</a
+                    >
+                </div>
+            </nav>
+        </div>
+
+        <main class="flex-grow flex flex-col items-center px-4 sm:px-6 lg:px-8">
+            {% block content %}{% endblock %}
+        </main>
+    </body>
+</html>

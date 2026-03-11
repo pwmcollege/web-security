@@ -1,0 +1,59 @@
+#!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
+
+import atexit
+import sys
+import time
+from urllib.parse import urlparse
+
+from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+
+if __name__ == "__main__":
+    if len(sys.argv) >= 2:
+        url = sys.argv[1]
+    else:
+        print("What url should I visit?")
+        url = input()
+
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        print("Invalid url!!!")
+        sys.exit(1)
+
+    if parsed.hostname != "challenge.internal":
+        print("Invalid host!!!")
+        sys.exit(1)
+
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--ignore-certificate-errors")
+    options.add_argument("--disable-dev-shm-usage")
+    options.binary_location = "/usr/bin/chromium"
+    service = Service("/usr/bin/chromedriver")
+    driver = None
+
+    try:
+        driver = webdriver.Chrome(service=service, options=options)
+        atexit.register(driver.quit)
+        driver.set_page_load_timeout(10)
+
+        print("Setting cookie...")
+        driver.get("https://challenge.internal/")
+        driver.add_cookie(
+            {
+                "name": "flag",
+                "value": open("/flag").read().strip(),
+                "path": "/",
+            }
+        )
+
+        print(f"Visiting {url}")
+        driver.get(url)
+
+        time.sleep(10)
+        print("Victim visited the page. Check if your payload worked.")
+    except WebDriverException:
+        print(f"There was an error visiting {url}")

@@ -1,0 +1,99 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+import re
+
+from bs4 import BeautifulSoup, NavigableString, Tag
+from flask import Flask, redirect, render_template, request, url_for
+
+app = Flask(__name__)
+
+
+ALLOWLIST = [
+    "script",
+]
+
+CHARSET = re.compile(r"^[\[\]\(\)!+\s]*$")
+ANNOUNCEMENT = ""
+
+
+def _is_ignorable_text(node):
+    return isinstance(node, NavigableString) and not node.strip()
+
+
+def _document_nodes(soup):
+    nodes = []
+    for container in (soup.head, soup.body):
+        if container is None:
+            continue
+        nodes.extend(
+            node for node in container.contents if not _is_ignorable_text(node)
+        )
+    return nodes
+
+
+def is_allowed_tag(tag):
+    return tag.name in ALLOWLIST
+
+
+def extract_script(value):
+    soup = BeautifulSoup(value, "html5lib")
+    nodes = _document_nodes(soup)
+    if len(nodes) != 1:
+        return None
+
+    tag = nodes[0]
+    if not isinstance(tag, Tag):
+        return None
+
+    if not is_allowed_tag(tag):
+        return None
+
+    if tag.attrs:
+        return None
+
+    return tag.decode_contents()
+
+
+def is_allowed(script_text):
+    return bool(CHARSET.fullmatch(script_text))
+
+
+@app.route("/", methods=["GET"])
+def index():
+    return render_template("index.html", msg=ANNOUNCEMENT)
+
+
+@app.route("/announce", methods=["GET", "POST"])
+def announce():
+    global ANNOUNCEMENT
+
+    if request.method == "POST":
+        msg = request.form.get("msg", "")
+        script_text = extract_script(msg) if msg else None
+        if script_text is None or not is_allowed(script_text):
+            return render_template(
+                "announce.html",
+                msg=ANNOUNCEMENT,
+                draft=msg,
+                banned=True,
+            )
+        ANNOUNCEMENT = msg
+        return redirect(url_for("index"))
+
+    return render_template(
+        "announce.html", msg=ANNOUNCEMENT, draft=ANNOUNCEMENT, banned=False
+    )
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024 * 1024
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

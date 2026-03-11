@@ -1,0 +1,177 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+import re
+
+from bs4 import BeautifulSoup, NavigableString, Tag
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+ALLOWLIST = [
+    "script",
+]
+
+BLOCKLIST = [
+    (r"fetch", re.IGNORECASE),
+    (r"xmlhttprequest", re.IGNORECASE),
+    (r"sendbeacon", re.IGNORECASE),
+    (r"location", re.IGNORECASE),
+    (r"open\s*\(", re.IGNORECASE),
+    (r"assign\s*\(", re.IGNORECASE),
+    (r"replace\s*\(", re.IGNORECASE),
+    (r"pushstate", re.IGNORECASE),
+    (r"replacestate", re.IGNORECASE),
+    (r"submit", re.IGNORECASE),
+    (r"requestsubmit", re.IGNORECASE),
+    (r"click", re.IGNORECASE),
+    (r"createelement(?:ns)?", re.IGNORECASE),
+    (r"(?:adopt|import|clone)node", re.IGNORECASE),
+    (r"append(?:child)?", re.IGNORECASE),
+    (r"prepend", re.IGNORECASE),
+    (r"before", re.IGNORECASE),
+    (r"after", re.IGNORECASE),
+    (r"insertbefore", re.IGNORECASE),
+    (r"insertadjacent(?:html|text|element)", re.IGNORECASE),
+    (r"replace(?:children|child|with)", re.IGNORECASE),
+    (r"remove(?:child)?", re.IGNORECASE),
+    (r"innerhtml", re.IGNORECASE),
+    (r"outerhtml", re.IGNORECASE),
+    (r"(?:inner|outer)(?:text|html)", re.IGNORECASE),
+    (r"textcontent", re.IGNORECASE),
+    (r"setattribute(?:ns)?", re.IGNORECASE),
+    (r"removeattribute(?:ns)?", re.IGNORECASE),
+    (r"toggleattribute", re.IGNORECASE),
+    (r"queryselector(?:all)?", re.IGNORECASE),
+    (r"getelement(?:sbytagname|sbyclassname|byid|sbyname)", re.IGNORECASE),
+    (r"write", re.IGNORECASE),
+    (r"writeln", re.IGNORECASE),
+    (r"href", re.IGNORECASE),
+    (r"src", re.IGNORECASE),
+    (r"action", re.IGNORECASE),
+    (r"formaction", re.IGNORECASE),
+    (r"srcdoc", re.IGNORECASE),
+    (r"cookiestore", re.IGNORECASE),
+    (r"cookie", re.IGNORECASE),
+    (r"(?:local|session)storage", re.IGNORECASE),
+    (r"formdata", re.IGNORECASE),
+    (r"url(?:searchparams)?", re.IGNORECASE),
+    (r"request", re.IGNORECASE),
+    (r"headers", re.IGNORECASE),
+    (r"response", re.IGNORECASE),
+    (r"media", re.IGNORECASE),
+    (r"image", re.IGNORECASE),
+    (r"audio", re.IGNORECASE),
+    (r"video", re.IGNORECASE),
+    (r"track", re.IGNORECASE),
+    (r"source", re.IGNORECASE),
+    (r"bitmap", re.IGNORECASE),
+    (r"canvas", re.IGNORECASE),
+    (r"blob", re.IGNORECASE),
+    (r"file", re.IGNORECASE),
+    (r"navigator", re.IGNORECASE),
+    (r"postmessage", re.IGNORECASE),
+    (r"document", re.IGNORECASE),
+    (r"window", re.IGNORECASE),
+    (r"globalthis", re.IGNORECASE),
+    (r"global", re.IGNORECASE),
+    (r"self", re.IGNORECASE),
+    (r"this", re.IGNORECASE),
+    (r"top", re.IGNORECASE),
+    (r"parent", re.IGNORECASE),
+    (r"frames", re.IGNORECASE),
+    (r"form", re.IGNORECASE),
+    (r"element", re.IGNORECASE),
+    (r"eval", re.IGNORECASE),
+    (r"function", re.IGNORECASE),
+    (r"constructor", re.IGNORECASE),
+    (r"set(?:timeout|interval)", re.IGNORECASE),
+    (r"string", re.IGNORECASE),
+    (r"fromcharcode", re.IGNORECASE),
+    (r"fromcodepoint", re.IGNORECASE),
+    (r"charcodeat", re.IGNORECASE),
+    (r"codepointat", re.IGNORECASE),
+    (r"charat", re.IGNORECASE),
+    (r"at\s*\(", re.IGNORECASE),
+    (r"concat", re.IGNORECASE),
+    (r"join", re.IGNORECASE),
+    (r"split", re.IGNORECASE),
+    (r"slice", re.IGNORECASE),
+    (r"substring", re.IGNORECASE),
+    (r"substr", re.IGNORECASE),
+    (r"repeat", re.IGNORECASE),
+    (r"replaceall", re.IGNORECASE),
+    (r"padstart", re.IGNORECASE),
+    (r"padend", re.IGNORECASE),
+    (r"trim(?:start|end)?", re.IGNORECASE),
+    (r"tolowercase", re.IGNORECASE),
+    (r"touppercase", re.IGNORECASE),
+    (r"raw", re.IGNORECASE),
+    (r"'", 0),
+    (r'"', 0),
+    (r"`", 0),
+]
+
+
+def _is_ignorable_text(node):
+    return isinstance(node, NavigableString) and not node.strip()
+
+
+def _document_nodes(soup):
+    nodes = []
+    for container in (soup.head, soup.body):
+        if container is None:
+            continue
+        nodes.extend(
+            node for node in container.contents if not _is_ignorable_text(node)
+        )
+    return nodes
+
+
+def is_allowed_tag(tag):
+    return tag.name in ALLOWLIST
+
+
+def extract_script(value):
+    soup = BeautifulSoup(value, "html5lib")
+    nodes = _document_nodes(soup)
+    if len(nodes) != 1:
+        return None
+
+    tag = nodes[0]
+    if not isinstance(tag, Tag):
+        return None
+
+    if not is_allowed_tag(tag):
+        return None
+
+    if tag.attrs:
+        return None
+
+    return tag.get_text()
+
+
+def is_blocked(script_text):
+    return any(
+        re.search(pattern, script_text, flags=flags) for pattern, flags in BLOCKLIST
+    )
+
+
+@app.route("/", methods=["GET"])
+def ephemeral():
+    msg = request.args.get("msg")
+    script_text = extract_script(msg) if msg else None
+    banned = bool(msg and (script_text is None or is_blocked(script_text)))
+    return render_template("ephemeral.html", msg=msg, banned=banned)
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
