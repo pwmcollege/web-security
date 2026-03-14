@@ -123,7 +123,7 @@ BLOCKLIST = [
     (r"set(?:timeout|interval)", re.IGNORECASE),
 ]
 
-STRING_LITERAL = re.compile(r'''(["'`])((?:\\.|(?!\1).)*)\1''', re.DOTALL)
+STRING_LITERAL = re.compile(r"""(["'`])((?:\\.|(?!\1).)*)\1""", re.DOTALL)
 
 
 def has_long_string_literal(value):
@@ -139,37 +139,34 @@ def is_banned(value):
     )
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 def ephemeral():
-    msg = request.args.get('msg')
+    msg = request.args.get("msg")
     banned = bool(msg and is_banned(msg))
     csp_nonce = secrets.token_urlsafe(16)
 
     response = make_response(
         render_template(
-            'ephemeral.html',
+            "ephemeral.html",
             msg=msg,
             banned=banned,
             csp_nonce=csp_nonce,
-            share_url=request.url if msg else '',
+            share_url=request.url if msg else "",
         )
     )
-    response.headers['Content-Security-Policy'] = (
+    response.headers["Content-Security-Policy"] = (
         f"style-src 'nonce-{csp_nonce}'; style-src-attr 'none'"
     )
     return response
 
 
 app.secret_key = os.urandom(64)
-app.config['SERVER_NAME'] = 'challenge.internal'
-if os.getuid() == 0:
-    app.run(
-        'challenge.internal',
-        443,
-        ssl_context=(
-            '/etc/ssl/certs/internal.cert.pem',
-            '/etc/ssl/private/internal.key.pem',
-        ),
-    )
-else:
-    app.run('localhost', 1337, debug=True)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
