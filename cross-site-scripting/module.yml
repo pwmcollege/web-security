@@ -1,210 +1,161 @@
 name: Cross-site Scripting
+privileged: true
 resources:
     - type: header
       content: Reflected XSS
     - id: inline-reflect-alert
       name: A Reflective Start
       type: challenge
-      privileged: true
     - id: inline-reflect-cookie
       name: A Crumb in the Reflection
       type: challenge
-      privileged: true
     - id: inline-reflect-attribute
       name: Quote Me If You Can
       type: challenge
-      privileged: true
     - id: inline-reflect-unquoted
       name: Unquoted and Unhinged
       type: challenge
-      privileged: true
     - id: inline-reflect-href
       name: The Missing Link
       type: challenge
-      privileged: true
     - id: inline-reflect-href-breakout
       name: Click Around and Find Out
       type: challenge
-      privileged: true
     - id: reflect-script-src
       name: Source Material
       type: challenge
-      privileged: true
     - id: reflect-script
       name: Scriptmaxxing
       type: challenge
-      privileged: true
     - id: reflect-script-literal
       name: Literally Dangerous
       type: challenge
-      privileged: true
     - id: reflect-script-object
       name: Objectively Dangerous
       type: challenge
-      privileged: true
     - id: reflect-json-parse
       name: Wrapped in JSON
       type: challenge
-      privileged: true
     - id: reflect-iframe-src
       name: Frame of Reference
       type: challenge
-      privileged: true
     - id: reflect-log
       name: Paper Trail
       type: challenge
-      privileged: true
     - id: reflect-side-channel
       name: Side Effects
       type: challenge
-      privileged: true
     - type: header
       content: Stored XSS
     - id: stored-post
       name: Post Haste
       type: challenge
-      privileged: true
     - id: stored-cookie
       name: Cookie Influencer
       type: challenge
-      privileged: true
-    - id: stored-httponly
-      name: OnlyHttp
-      type: challenge
-      privileged: true
     - id: stored-username
       name: Username Checks Out
       type: challenge
-      privileged: true
     - id: stored-publish
       name: Publish or Perish
       type: challenge
-      privileged: true
     - id: stored-post-to-sender
       name: Air-Gap Reply
       type: challenge
-      privileged: true
     - id: stored-keylogger
       name: Keys to the Kingdom
       type: challenge
-      privileged: true
     - type: header
       content: DOM XSS
     - id: dom-hash
       name: Hashing It Out
       type: challenge
-      privileged: true
     - id: dom-query
       name: Query Me This
       type: challenge
-      privileged: true
     - id: dom-title
       name: Title Fight
       type: challenge
-      privileged: true
     - id: dom-data-attr
       name: Data Exposure
       type: challenge
-      privileged: true
     - id: dom-postmessage
       name: Message Received
       type: challenge
-      privileged: true
     - type: header
       content: Filters
     - id: filter-script
       name: Only You
       type: challenge
-      privileged: true
     - id: filter-script-case
       name: Case Closed
       type: challenge
-      privileged: true
     - id: filter-img
       name: Picture Imperfect
       type: challenge
-      privileged: true
     - id: filter-svg
       name: Vector Control
       type: challenge
-      privileged: true
     - id: filter-iframe
       name: Frame Rate
       type: challenge
-      privileged: true
     - id: filter-input
       name: No Input Needed
       type: challenge
-      privileged: true
     - id: filter-media
       name: Media Blackout
       type: challenge
-      privileged: true
     - id: filter-body
       name: Out of Body
       type: challenge
-      privileged: true
     - id: filter-toggle
       name: Toggle Off
       type: challenge
-      privileged: true
     - id: filter-start
       name: False Start
       type: challenge
-      privileged: true
     - id: filter-handlers
       name: Family Filter
       type: challenge
-      privileged: true
     - id: filter-style
       name: No Dress Code
       type: challenge
-      privileged: true
     - id: filter-animation
       name: The Last Frame
       type: challenge
-      privileged: true
     - id: filter-stylesheet
       name: No Style Points
       type: challenge
-      privileged: true
     - id: filter-shadow
       name: Shadow Banned
       type: challenge
-      privileged: true
     - id: filter-shadow-side-channel
       name: Ghost in the DOM
       type: challenge
-      privileged: true
     - id: filter-fetch
       name: Request Denied
       type: challenge
-      privileged: true
     - id: filter-navigation
       name: Wrong Turn
       type: challenge
-      privileged: true
     - id: filter-action
       name: Nothing Left to Click
       type: challenge
-      privileged: true
     - id: filter-dom
       name: DOM and Gloom
       type: challenge
-      privileged: true
     - id: filter-apis
       name: API Calypse
       type: challenge
-      privileged: true
     - id: filter-global
       name: Think Small
       type: challenge
-      privileged: true
     - id: filter-string
       name: No Strings Attached
       type: challenge
-      privileged: true
     - id: filter-charset
       name: Lost for Words
       type: challenge
-      privileged: true
+    - id: filter-shadow-global
+      name: The Great XSS Filter
+      type: challenge

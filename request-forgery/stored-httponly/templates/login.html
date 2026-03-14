@@ -1,0 +1,108 @@
+{% extends "layout.html" %} {% block content %}
+<div
+    class="w-full max-w-2xl flex-grow flex flex-col items-center justify-center py-12"
+>
+    <div
+        class="text-center px-4 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700"
+    >
+        <h1 class="text-5xl font-black text-slate-900 tracking-tighter">
+            pwnpost
+        </h1>
+        <p
+            class="text-slate-400 text-sm mt-3 font-semibold tracking-wide uppercase"
+        >
+            Secure Communication Portal
+        </p>
+    </div>
+
+    <div
+        class="glass max-w-sm w-full p-10 rounded-[2.5rem] space-y-8 border border-slate-200 bg-white shadow-2xl animate-in zoom-in-95 duration-500 overflow-hidden relative"
+    >
+        <div
+            class="absolute -top-24 -right-24 w-48 h-48 bg-[#007AFF]/5 rounded-full blur-3xl"
+        ></div>
+        <div
+            class="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl"
+        ></div>
+
+        <div class="text-center space-y-1 relative">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">
+                Welcome Back
+            </h2>
+        </div>
+
+        {% with messages = get_flashed_messages() %} {% if messages %}
+        <div
+            class="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300"
+        >
+            {% for message in messages %}
+            <div
+                class="bg-red-50 border border-red-100 text-red-500 px-4 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-wider flex items-center space-x-2 shadow-sm shadow-red-500/5"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 shrink-0"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+                <span>{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+        <form action="/login" method="post" class="space-y-6 relative">
+            <div class="space-y-2">
+                <label
+                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                    >Username</label
+                >
+                <div class="relative group">
+                    <input
+                        type="text"
+                        name="username"
+                        required
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                        placeholder="Username"
+                    />
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label
+                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                    >Password</label
+                >
+                <div class="relative group">
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                        placeholder="••••••••"
+                    />
+                </div>
+            </div>
+            <button
+                type="submit"
+                class="w-full py-5 bg-[#007AFF] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-xl shadow-[#007AFF]/20 hover:brightness-110 hover:shadow-[#007AFF]/30 active:scale-[0.98]"
+            >
+                Authenticate
+            </button>
+        </form>
+    </div>
+
+    <footer class="text-center opacity-30 pt-16 pb-8 mt-auto">
+        <p
+            class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-900 italic"
+        >
+            pwnpost
+        </p>
+    </footer>
+</div>
+{% endblock %}

@@ -1,6 +1,4 @@
 name: Introduction
-visibility:
-    start: "2067-06-07T00:00:00-07:00"
 resources:
     - type: header
       content: Shell

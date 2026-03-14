@@ -1,9 +1,12 @@
 name: Request Forgery
-visibility:
-    start: "2067-06-07T00:00:00-07:00"
 privileged: true
 resources:
     - type: header
-      content: Cross-Site Request Forgery
+      content: Cookies
+    - id: stored-httponly
+      name: OnlyHttp
+      type: challenge
     - type: header
-      content: Server-Side Request Forgery
+      content: Cross-Site
+    - type: header
+      content: Server-Side
