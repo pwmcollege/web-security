@@ -145,5 +145,3 @@ The following APIs and globals are also banned:
 - `constructor`
 - `setTimeout`
 - `setInterval`
-
-String literals are also limited to one character.

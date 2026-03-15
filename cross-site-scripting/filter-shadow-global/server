@@ -123,20 +123,9 @@ BLOCKLIST = [
     (r"set(?:timeout|interval)", re.IGNORECASE),
 ]
 
-STRING_LITERAL = re.compile(r"""(["'`])((?:\\.|(?!\1).)*)\1""", re.DOTALL)
-
-
-def has_long_string_literal(value):
-    for match in STRING_LITERAL.finditer(value):
-        if len(match.group(2)) > 1:
-            return True
-    return False
-
 
 def is_banned(value):
-    return has_long_string_literal(value) or any(
-        re.search(pattern, value, flags=flags) for pattern, flags in BLOCKLIST
-    )
+    return any(re.search(pattern, value, flags=flags) for pattern, flags in BLOCKLIST)
 
 
 @app.route("/", methods=["GET"])
