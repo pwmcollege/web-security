@@ -65,6 +65,18 @@ resources:
     - id: stored-keylogger
       name: Keys to the Kingdom
       type: challenge
+    - id: inject-dangling
+      name: Hanging by a Thread
+      type: challenge
+    - id: stored-svg
+      name: Scalable Vector XSS
+      type: challenge
+    - id: stored-blind
+      name: Blind Spot
+      type: challenge
+    - id: stored-blind-headers
+      name: Reading Between the Lines
+      type: challenge
     - type: header
       content: DOM XSS
     - id: dom-hash
@@ -83,36 +95,32 @@ resources:
       name: Message Received
       type: challenge
     - type: header
+      content: Mutation XSS
+    - id: mxss-table
+      name: Table Manners
+      type: challenge
+    - id: mxss-namespace
+      name: Namespace Invaders
+      type: challenge
+    - type: header
       content: Filters
     - id: filter-script
       name: Only You
       type: challenge
-    - id: filter-script-case
-      name: Case Closed
-      type: challenge
     - id: filter-img
       name: Picture Imperfect
       type: challenge
-    - id: filter-svg
-      name: Vector Control
-      type: challenge
-    - id: filter-iframe
-      name: Frame Rate
-      type: challenge
-    - id: filter-input
-      name: No Input Needed
+    - id: filter-encoding
+      name: Lost in Translation
       type: challenge
     - id: filter-media
       name: Media Blackout
       type: challenge
-    - id: filter-body
-      name: Out of Body
+    - id: filter-object
+      name: Old Faithful
       type: challenge
     - id: filter-toggle
       name: Toggle Off
-      type: challenge
-    - id: filter-start
-      name: False Start
       type: challenge
     - id: filter-handlers
       name: Family Filter
@@ -138,9 +146,6 @@ resources:
     - id: filter-navigation
       name: Wrong Turn
       type: challenge
-    - id: filter-action
-      name: Nothing Left to Click
-      type: challenge
     - id: filter-dom
       name: DOM and Gloom
       type: challenge
@@ -149,9 +154,6 @@ resources:
       type: challenge
     - id: filter-global
       name: Think Small
-      type: challenge
-    - id: filter-string
-      name: No Strings Attached
       type: challenge
     - id: filter-charset
       name: Lost for Words

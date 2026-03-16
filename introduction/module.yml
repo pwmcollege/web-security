@@ -1,5 +1,10 @@
 name: Introduction
 resources:
+    - name: "Web Security: Introduction"
+      type: lecture
+      video: AKTYVWCi6ss
+      playlist: PL-ymxv0nOtqrvXLSALV5SQ5v3oyKY4DWg
+      slides: 1ATO_U0aUlk2LRhlnIwdqTkDfu-lWRb5xoLDv0NQLPs8
     - type: header
       content: Shell
     - id: reverse-shell

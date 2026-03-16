@@ -2,14 +2,14 @@
 
 import os
 
-import flask
+from flask import Flask, render_template
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"])
 def index():
-    return flask.render_template("sender.html")
+    return render_template("sender.html")
 
 
 app.secret_key = os.urandom(64)

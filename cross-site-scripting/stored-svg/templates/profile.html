@@ -1,0 +1,111 @@
+{% extends "layout.html" %} {% block content %}
+<div class="w-full max-w-2xl flex-grow flex flex-col py-12 items-center">
+    <div class="text-center px-4 mb-8 shrink-0">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+            pwnpost
+        </h1>
+        <p class="text-slate-500 text-sm mt-1 font-medium">
+            Welcome to pwnpost!
+        </p>
+    </div>
+
+    <div class="w-full space-y-6">
+        <!-- User Hub -->
+        <div
+            class="glass mx-4 p-5 rounded-3xl border border-slate-200 shadow-xl shadow-black/[0.04] flex items-center justify-between bg-white/70"
+        >
+            <div class="flex items-center space-x-3">
+                <div
+                    class="h-10 w-10 rounded-full bg-[#007AFF] flex items-center justify-center text-white text-xs font-bold uppercase tracking-widest shadow-sm"
+                >
+                    {{ username[0] }}
+                </div>
+                <p class="text-sm font-bold text-slate-900 leading-none">
+                    {{ username }}
+                </p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a
+                    href="/"
+                    class="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-[#007AFF] transition-colors px-3 py-1.5 rounded-xl border border-slate-100 bg-white shadow-sm"
+                    >Feed</a
+                >
+                <a
+                    href="/logout"
+                    class="text-[10px] font-bold uppercase tracking-widest text-red-500/70 hover:text-red-700 transition-colors px-3 py-1.5 rounded-xl border border-red-100 bg-white shadow-sm"
+                    >Logout</a
+                >
+            </div>
+        </div>
+
+        <!-- Avatar Section -->
+        <div
+            class="glass mx-4 rounded-3xl p-8 border border-slate-200 shadow-lg space-y-8 bg-white/70"
+        >
+            <div class="flex items-center space-x-2">
+                <h3
+                    class="text-[11px] font-black uppercase tracking-widest text-[#007AFF]"
+                >
+                    Avatar
+                </h3>
+                <div class="h-px flex-grow bg-slate-100"></div>
+            </div>
+
+            {% with messages = get_flashed_messages() %} {% if messages %}
+            <div class="space-y-2">
+                {% for message in messages %}
+                <div
+                    class="bg-blue-50 border border-blue-100 text-blue-600 px-4 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-wider"
+                >
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %} {% endwith %} {% if has_avatar %}
+            <div class="space-y-3">
+                <p class="text-sm text-slate-600">Current avatar:</p>
+                <a
+                    href="/avatar/{{ username }}"
+                    class="inline-block text-[11px] font-bold text-[#007AFF] hover:underline"
+                    >View avatar</a
+                >
+            </div>
+            {% endif %}
+
+            <form
+                action="/upload"
+                method="post"
+                enctype="multipart/form-data"
+                class="space-y-4"
+            >
+                <div class="space-y-2">
+                    <label
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest"
+                        >Upload image</label
+                    >
+                    <input
+                        type="file"
+                        name="avatar"
+                        accept="image/*"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium outline-none transition-all shadow-inner file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:uppercase file:bg-[#007AFF] file:text-white"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="px-8 py-3 bg-[#007AFF] text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg active:scale-95 shadow-black/10"
+                >
+                    Upload
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="text-center opacity-30 pt-12 pb-8 mt-auto shrink-0">
+        <p
+            class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-900 italic"
+        >
+            pwnpost
+        </p>
+    </footer>
+</div>
+{% endblock %}

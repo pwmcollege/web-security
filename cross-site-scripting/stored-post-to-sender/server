@@ -8,10 +8,10 @@ import sqlite3
 import tempfile
 import threading
 
-import flask
+from flask import Flask, abort, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
 NETNS = os.environ.get("NETNS", "challenge_ns")
 CLONE_NEWNET = 0x40000000
@@ -68,16 +68,16 @@ db.execute(
 
 @app.route("/login", methods=["GET", "POST"])
 def challenge_login():
-    if flask.session.get("username"):
-        return flask.redirect("/")
+    if session.get("username"):
+        return redirect("/")
 
-    if flask.request.method == "POST":
-        username = flask.request.form.get("username")
-        password = flask.request.form.get("password")
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         if not username or not password:
-            flask.flash("Identity credentials required")
-            return flask.redirect("/login")
+            flash("Identity credentials required")
+            return redirect("/login")
 
         # https://www.sqlite.org/lang_select.html
         user = db.execute(
@@ -86,27 +86,27 @@ def challenge_login():
         ).fetchone()
 
         if not user or not check_password_hash(user["password"], password):
-            flask.flash("Access denied: Invalid credentials")
-            return flask.redirect("/login")
+            flash("Access denied: Invalid credentials")
+            return redirect("/login")
 
-        flask.session["username"] = username
-        return flask.redirect("/")
+        session["username"] = username
+        return redirect("/")
 
-    return flask.render_template("login.html")
+    return render_template("login.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
 def challenge_register():
-    if flask.session.get("username"):
-        return flask.redirect("/")
+    if session.get("username"):
+        return redirect("/")
 
-    if flask.request.method == "POST":
-        username = flask.request.form.get("username")
-        password = flask.request.form.get("password")
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         if not username or not password:
-            flask.flash("Identity credentials required")
-            return flask.redirect("/register")
+            flash("Identity credentials required")
+            return redirect("/register")
 
         user = db.execute(
             "SELECT * FROM users WHERE username = ?",
@@ -114,72 +114,72 @@ def challenge_register():
         ).fetchone()
 
         if user:
-            flask.flash("Username already taken")
-            return flask.redirect("/register")
+            flash("Username already taken")
+            return redirect("/register")
 
         db.execute(
             "INSERT INTO users (username, password) VALUES (?, ?)",
             (username, generate_password_hash(password)),
         )
 
-        flask.flash("Account created! Please log in.")
-        return flask.redirect("/login")
+        flash("Account created! Please log in.")
+        return redirect("/login")
 
-    return flask.render_template("register.html")
+    return render_template("register.html")
 
 
 @app.route("/draft", methods=["POST"])
 def challenge_draft():
-    username = flask.session.get("username", None)
+    username = session.get("username", None)
     if not username:
-        flask.abort(403, "Log in first!")
+        abort(403, "Log in first!")
 
     if username == "admin":
-        flask.abort(
+        abort(
             400,
             "pwnpost doesn't support admin posting",
         )
 
-    content = flask.request.form.get("content", "")
+    content = request.form.get("content", "")
     # https://www.sqlite.org/lang_insert.html
     db.execute(
         "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
-        (content, username, bool(flask.request.form.get("publish"))),
+        (content, username, bool(request.form.get("publish"))),
     )
-    return flask.redirect("/")
+    return redirect("/")
 
 
 @app.route("/publish", methods=["POST"])
 def challenge_publish():
-    username = flask.session.get("username", None)
+    username = session.get("username", None)
     if not username:
-        flask.abort(403, "Log in first!")
+        abort(403, "Log in first!")
 
     if username == "admin":
-        flask.abort(
+        abort(
             400,
             "pwnpost doesn't support admin posting",
         )
 
     # https://www.sqlite.org/lang_update.html
     db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
-    return flask.redirect("/")
+    return redirect("/")
 
 
 @app.route("/", methods=["GET"])
 def challenge_get():
-    username = flask.session.get("username")
+    username = session.get("username")
     if not username:
-        return flask.redirect("/login")
+        return redirect("/login")
 
     posts = db.execute("SELECT * FROM posts").fetchall()
-    return flask.render_template("index.html", username=username, posts=posts)
+    return render_template("index.html", username=username, posts=posts)
 
 
 @app.route("/logout")
 def challenge_logout():
-    flask.session.clear()
-    return flask.redirect("/")
+    session.clear()
+    return redirect("/")
 
 
 app.secret_key = os.urandom(64)

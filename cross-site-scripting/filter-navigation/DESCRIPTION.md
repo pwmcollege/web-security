@@ -6,10 +6,5 @@ In this challenge, the following element is allowed:
 
 The following APIs are banned:
 
-- `fetch`
-- `XMLHttpRequest`
-- `sendBeacon`
-- `location`
-- `open()`
-- `assign()`
-- `replace()`
+- `fetch`, `XMLHttpRequest`, `sendBeacon`
+- `location`, `open()`, `assign()`, `replace()`
