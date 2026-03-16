@@ -6,6 +6,4 @@ In this challenge, the following element is allowed:
 
 The following APIs are banned:
 
-- `fetch`
-- `XMLHttpRequest`
-- `sendBeacon`
+- `fetch`, `XMLHttpRequest`, `sendBeacon`

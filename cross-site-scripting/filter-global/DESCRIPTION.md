@@ -6,97 +6,21 @@ In this challenge, the following element is allowed:
 
 The following APIs and globals are banned:
 
-- `fetch`
-- `XMLHttpRequest`
-- `sendBeacon`
-- `location`
-- `open()`
-- `assign()`
-- `replace()`
-- `pushState`
-- `replaceState`
-- `submit`
-- `requestSubmit`
-- `click`
-- `createElement`
-- `createElementNS`
-- `adoptNode`
-- `importNode`
-- `cloneNode`
-- `append`
-- `appendChild`
-- `prepend`
-- `before`
-- `after`
-- `insertBefore`
-- `insertAdjacentHTML`
-- `insertAdjacentText`
-- `insertAdjacentElement`
-- `replaceChildren`
-- `replaceChild`
-- `replaceWith`
-- `remove`
-- `removeChild`
-- `innerHTML`
-- `outerHTML`
-- `innerText`
-- `outerText`
-- `textContent`
-- `setAttribute`
-- `setAttributeNS`
-- `removeAttribute`
-- `removeAttributeNS`
-- `toggleAttribute`
-- `querySelector`
-- `querySelectorAll`
-- `getElementById`
-- `getElementsByTagName`
-- `getElementsByClassName`
-- `getElementsByName`
-- `write`
-- `writeln`
-- `href`
-- `src`
-- `action`
-- `formAction`
-- `srcdoc`
-- `cookieStore`
-- `cookie`
-- `localStorage`
-- `sessionStorage`
-- `FormData`
-- `URL`
-- `URLSearchParams`
-- `Request`
-- `Headers`
-- `Response`
-- `media`
-- `Image`
-- `Audio`
-- `Video`
-- `Track`
-- `Source`
-- `Bitmap`
-- `Canvas`
-- `Blob`
-- `File`
-- `navigator`
-- `postMessage`
-- `document`
-- `window`
-- `globalThis`
-- `global`
-- `self`
-- `this`
-- `top`
-- `parent`
-- `frames`
-- `form`
-- `element`
-- `eval`
-- `Function`
-- `constructor`
-- `setTimeout`
-- `setInterval`
+- `fetch`, `XMLHttpRequest`, `sendBeacon`
+- `location`, `open()`, `assign()`, `replace()`, `pushState`, `replaceState`
+- `submit`, `requestSubmit`, `click`, `write`, `writeln`
+- `createElement`, `createElementNS`, `adoptNode`, `importNode`, `cloneNode`
+- `append`, `appendChild`, `prepend`, `before`, `after`, `insertBefore`
+- `insertAdjacentHTML`, `insertAdjacentText`, `insertAdjacentElement`
+- `replaceChildren`, `replaceChild`, `replaceWith`, `remove`, `removeChild`
+- `innerHTML`, `outerHTML`, `innerText`, `outerText`, `textContent`
+- `setAttribute`, `setAttributeNS`, `removeAttribute`, `removeAttributeNS`, `toggleAttribute`
+- `querySelector`, `querySelectorAll`, `getElementById`, `getElementsByTagName`, `getElementsByClassName`, `getElementsByName`
+- `href`, `src`, `action`, `formAction`, `srcdoc`
+- `cookie`, `cookieStore`, `localStorage`, `sessionStorage`
+- `FormData`, `URL`, `URLSearchParams`, `Request`, `Headers`, `Response`
+- `media`, `Image`, `Audio`, `Video`, `Track`, `Source`, `Bitmap`, `Canvas`, `Blob`, `File`
+- `navigator`, `postMessage`, `document`, `window`, `globalThis`, `global`, `self`, `this`, `top`, `parent`, `frames`, `form`, `element`, `constructor`
+- `eval`, `Function`, `setTimeout`, `setInterval`
 
 String literals are also limited to one character.

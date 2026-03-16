@@ -1,0 +1,42 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+
+from bs4 import BeautifulSoup
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+BLOCKED_TAGS = {"script", "img", "object", "embed", "link", "meta", "base"}
+
+
+def sanitize(html):
+    soup = BeautifulSoup(html, "html5lib")
+    for tag in soup.find_all(True):
+        if tag.name in BLOCKED_TAGS:
+            tag.decompose()
+            continue
+        for attr in list(tag.attrs):
+            if attr.lower().startswith("on"):
+                del tag.attrs[attr]
+    body = soup.body
+    return "".join(str(c) for c in body.children) if body else ""
+
+
+@app.route("/", methods=["GET"])
+def ephemeral():
+    msg = request.args.get("msg", "")
+    sanitized = sanitize(msg) if msg else ""
+    return render_template("ephemeral.html", msg=msg, sanitized=sanitized)
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

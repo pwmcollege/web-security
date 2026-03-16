@@ -1,0 +1,102 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+import sqlite3
+import tempfile
+import threading
+
+import flask
+from werkzeug.security import check_password_hash, generate_password_hash
+
+app = flask.Flask(__name__)
+
+
+class TemporaryDB:
+    def __init__(self):
+        self.db_file = tempfile.NamedTemporaryFile("x", suffix=".db")
+        self.connection = sqlite3.connect(self.db_file.name, check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self._lock = threading.Lock()
+
+    def execute(self, sql, parameters=()):
+        with self._lock:
+            cursor = self.connection.cursor()
+            result = cursor.execute(sql, parameters)
+            self.connection.commit()
+            return result
+
+
+flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
+
+db = TemporaryDB()
+db.execute(
+    """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
+    [generate_password_hash(flag)],
+)
+db.execute(
+    """INSERT INTO users SELECT "hacker" as username, ? as password""",
+    [generate_password_hash("1337")],
+)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def challenge_login():
+    if flask.session.get("username"):
+        return flask.redirect("/")
+
+    if flask.request.method == "POST":
+        username = flask.request.form.get("username")
+        password = flask.request.form.get("password")
+
+        if not username or not password:
+            flask.flash("Identity credentials required")
+            return flask.redirect("/login")
+
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ?",
+            (username,),
+        ).fetchone()
+
+        if not user or not check_password_hash(user["password"], password):
+            flask.flash("Access denied: Invalid credentials")
+            return flask.redirect("/login")
+
+        flask.session["username"] = username
+        return flask.redirect("/")
+
+    return flask.render_template("login.html")
+
+
+@app.route("/", methods=["GET"])
+def challenge_get():
+    username = flask.session.get("username")
+    if not username:
+        return flask.redirect("/login")
+
+    msg = flask.request.args.get("msg", "")
+    token = flag if username == "admin" else "n/a"
+
+    response = flask.make_response(
+        flask.render_template("index.html", username=username, msg=msg, token=token)
+    )
+    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'none'"
+    return response
+
+
+@app.route("/logout")
+def challenge_logout():
+    flask.session.clear()
+    return flask.redirect("/")
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.config["SESSION_COOKIE_HTTPONLY"] = False
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

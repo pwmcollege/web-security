@@ -2,40 +2,17 @@ Through this series of challenges, you will become familiar with the concept of 
 
 In this challenge, the following elements are banned:
 
-- `script`
-- `img`
-- `svg`
-- `iframe`
-- `input`
-- `video`
-- `audio`
-- `source`
-- `track`
-- `html`
-- `body`
-- `frameset`
-- `details`
-- `dialog`
-- `marquee`
+- `script`, `img`, `svg`, `iframe`, `input`
+- `video`, `audio`, `source`, `track`
+- `html`, `body`, `frameset`, `details`, `dialog`, `marquee`
 
 The following handlers are also banned:
 
-- `ontoggle`
-- `onstart`
-- `onload`
-- `onerror`
-- `onclick`
-- `onfocus`
-- `onfocusin`
-- `onfocusout`
-- `autofocus`
-- `onanimationstart`
-- `onanimationiteration`
-- `onanimationend`
-- `onanimationcancel`
+- `ontoggle`, `onstart`
+- `onload`, `onerror`, `onclick`
+- `onfocus`, `onfocusin`, `onfocusout`, `autofocus`
+- `onanimationstart`, `onanimationiteration`, `onanimationend`, `onanimationcancel`
 
 The following attributes are also banned:
 
-- `style=`
-- `animation`
-- `keyframes`
+- `style=`, `animation`, `keyframes`

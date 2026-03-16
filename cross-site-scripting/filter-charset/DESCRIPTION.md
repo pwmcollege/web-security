@@ -6,9 +6,4 @@ In this challenge, the following element is allowed:
 
 Within that script block, only the following characters are allowed:
 
-- `[`
-- `]`
-- `(`
-- `)`
-- `!`
-- `+`
+- `[`, `]`, `(`, `)`, `!`, `+`
