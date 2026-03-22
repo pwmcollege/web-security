@@ -6,9 +6,9 @@ resources:
     - id: inline-reflect-alert
       name: A Reflective Start
       type: challenge
-    - id: inline-reflect-cookie
-      name: A Crumb in the Reflection
-      type: challenge
+    # - id: inline-reflect-cookie
+    #   name: A Crumb in the Reflection
+    #   type: challenge
     - id: inline-reflect-attribute
       name: Quote Me If You Can
       type: challenge
@@ -36,9 +36,9 @@ resources:
     - id: reflect-json-parse
       name: Wrapped in JSON
       type: challenge
-    - id: reflect-iframe-src
-      name: Frame of Reference
-      type: challenge
+    # - id: reflect-iframe-src
+    #   name: Frame of Reference
+    #   type: challenge
     - id: reflect-log
       name: Paper Trail
       type: challenge
@@ -56,9 +56,9 @@ resources:
     - id: stored-username
       name: Username Checks Out
       type: challenge
-    - id: stored-publish
-      name: Publish or Perish
-      type: challenge
+    # - id: stored-publish
+    #   name: Publish or Perish
+    #   type: challenge
     - id: stored-post-to-sender
       name: Air-Gap Reply
       type: challenge
@@ -82,9 +82,9 @@ resources:
     - id: dom-hash
       name: Hashing It Out
       type: challenge
-    - id: dom-query
-      name: Query Me This
-      type: challenge
+    # - id: dom-query
+    #   name: Query Me This
+    #   type: challenge
     - id: dom-title
       name: Title Fight
       type: challenge
@@ -107,51 +107,51 @@ resources:
     - id: filter-script
       name: Only You
       type: challenge
-    - id: filter-img
-      name: Picture Imperfect
-      type: challenge
+    # - id: filter-img
+    #   name: Picture Imperfect
+    #   type: challenge
     - id: filter-encoding
       name: Lost in Translation
       type: challenge
     - id: filter-media
       name: Media Blackout
       type: challenge
-    - id: filter-object
-      name: Old Faithful
-      type: challenge
-    - id: filter-toggle
-      name: Toggle Off
-      type: challenge
-    - id: filter-handlers
-      name: Family Filter
-      type: challenge
-    - id: filter-style
-      name: No Dress Code
-      type: challenge
-    - id: filter-animation
-      name: The Last Frame
-      type: challenge
-    - id: filter-stylesheet
-      name: No Style Points
-      type: challenge
+    # - id: filter-object
+    #   name: Old Faithful
+    #   type: challenge
+    # - id: filter-toggle
+    #   name: Toggle Off
+    #   type: challenge
+    # - id: filter-handlers
+    #   name: Family Filter
+    #   type: challenge
+    # - id: filter-style
+    #   name: No Dress Code
+    #   type: challenge
+    # - id: filter-animation
+    #   name: The Last Frame
+    #   type: challenge
+    # - id: filter-stylesheet
+    #   name: No Style Points
+    #   type: challenge
     - id: filter-shadow
       name: Shadow Banned
       type: challenge
-    - id: filter-shadow-side-channel
-      name: Ghost in the DOM
-      type: challenge
+    # - id: filter-shadow-side-channel
+    #   name: Ghost in the DOM
+    #   type: challenge
     - id: filter-fetch
       name: Request Denied
       type: challenge
-    - id: filter-navigation
-      name: Wrong Turn
-      type: challenge
+    # - id: filter-navigation
+    #   name: Wrong Turn
+    #   type: challenge
     - id: filter-dom
       name: DOM and Gloom
       type: challenge
-    - id: filter-apis
-      name: API Calypse
-      type: challenge
+    # - id: filter-apis
+    #   name: API Calypse
+    #   type: challenge
     - id: filter-global
       name: Think Small
       type: challenge
