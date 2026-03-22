@@ -12,9 +12,9 @@ resources:
     - id: inline-reflect-attribute
       name: Quote Me If You Can
       type: challenge
-    - id: inline-reflect-unquoted
-      name: Unquoted and Unhinged
-      type: challenge
+    # - id: inline-reflect-unquoted
+    #   name: Unquoted and Unhinged
+    #   type: challenge
     - id: inline-reflect-href
       name: The Missing Link
       type: challenge
@@ -30,9 +30,9 @@ resources:
     - id: reflect-script-literal
       name: Literally Dangerous
       type: challenge
-    - id: reflect-script-object
-      name: Objectively Dangerous
-      type: challenge
+    # - id: reflect-script-object
+    #   name: Objectively Dangerous
+    #   type: challenge
     - id: reflect-json-parse
       name: Wrapped in JSON
       type: challenge
@@ -50,18 +50,18 @@ resources:
     - id: stored-post
       name: Post Haste
       type: challenge
-    - id: stored-cookie
-      name: Cookie Influencer
-      type: challenge
+    # - id: stored-cookie
+    #   name: Cookie Influencer
+    #   type: challenge
     - id: stored-username
       name: Username Checks Out
       type: challenge
     # - id: stored-publish
     #   name: Publish or Perish
     #   type: challenge
-    - id: stored-post-to-sender
-      name: Air-Gap Reply
-      type: challenge
+    # - id: stored-post-to-sender
+    #   name: Air-Gap Reply
+    #   type: challenge
     - id: stored-keylogger
       name: Keys to the Kingdom
       type: challenge
@@ -104,18 +104,18 @@ resources:
       type: challenge
     - type: header
       content: Filters
-    - id: filter-script
-      name: Only You
-      type: challenge
+    # - id: filter-script
+    #   name: Only You
+    #   type: challenge
     # - id: filter-img
     #   name: Picture Imperfect
     #   type: challenge
     - id: filter-encoding
       name: Lost in Translation
       type: challenge
-    - id: filter-media
-      name: Media Blackout
-      type: challenge
+    # - id: filter-media
+    #   name: Media Blackout
+    #   type: challenge
     # - id: filter-object
     #   name: Old Faithful
     #   type: challenge
