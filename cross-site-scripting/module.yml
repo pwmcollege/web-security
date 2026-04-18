@@ -1,163 +1,163 @@
 name: Cross-site Scripting
 privileged: true
 resources:
-    - type: header
-      content: Reflected XSS
-    - id: inline-reflect-alert
-      name: A Reflective Start
-      type: challenge
-    # - id: inline-reflect-cookie
-    #   name: A Crumb in the Reflection
-    #   type: challenge
-    - id: inline-reflect-attribute
-      name: Quote Me If You Can
-      type: challenge
-    # - id: inline-reflect-unquoted
-    #   name: Unquoted and Unhinged
-    #   type: challenge
-    - id: inline-reflect-href
-      name: The Missing Link
-      type: challenge
-    - id: inline-reflect-href-breakout
-      name: Click Around and Find Out
-      type: challenge
-    - id: reflect-script-src
-      name: Source Material
-      type: challenge
-    - id: reflect-script
-      name: Scriptmaxxing
-      type: challenge
-    - id: reflect-script-literal
-      name: Literally Dangerous
-      type: challenge
-    # - id: reflect-script-object
-    #   name: Objectively Dangerous
-    #   type: challenge
-    - id: reflect-json-parse
-      name: Wrapped in JSON
-      type: challenge
-    # - id: reflect-iframe-src
-    #   name: Frame of Reference
-    #   type: challenge
-    - id: reflect-log
-      name: Paper Trail
-      type: challenge
-    - id: reflect-side-channel
-      name: Side Effects
-      type: challenge
-    - type: header
-      content: Stored XSS
-    - id: stored-post
-      name: Post Haste
-      type: challenge
-    # - id: stored-cookie
-    #   name: Cookie Influencer
-    #   type: challenge
-    - id: stored-username
-      name: Username Checks Out
-      type: challenge
-    # - id: stored-publish
-    #   name: Publish or Perish
-    #   type: challenge
-    # - id: stored-post-to-sender
-    #   name: Air-Gap Reply
-    #   type: challenge
-    - id: stored-keylogger
-      name: Keys to the Kingdom
-      type: challenge
-    - id: inject-dangling
-      name: Hanging by a Thread
-      type: challenge
-    - id: stored-svg
-      name: Scalable Vector XSS
-      type: challenge
-    - id: stored-blind
-      name: Blind Spot
-      type: challenge
-    - id: stored-blind-headers
-      name: Reading Between the Lines
-      type: challenge
-    - type: header
-      content: DOM XSS
-    - id: dom-hash
-      name: Hashing It Out
-      type: challenge
-    # - id: dom-query
-    #   name: Query Me This
-    #   type: challenge
-    - id: dom-title
-      name: Title Fight
-      type: challenge
-    - id: dom-data-attr
-      name: Data Exposure
-      type: challenge
-    - id: dom-postmessage
-      name: Message Received
-      type: challenge
-    - type: header
-      content: Mutation XSS
-    - id: mxss-table
-      name: Table Manners
-      type: challenge
-    - id: mxss-namespace
-      name: Namespace Invaders
-      type: challenge
-    - type: header
-      content: Filters
-    # - id: filter-script
-    #   name: Only You
-    #   type: challenge
-    # - id: filter-img
-    #   name: Picture Imperfect
-    #   type: challenge
-    - id: filter-encoding
-      name: Lost in Translation
-      type: challenge
-    # - id: filter-media
-    #   name: Media Blackout
-    #   type: challenge
-    # - id: filter-object
-    #   name: Old Faithful
-    #   type: challenge
-    # - id: filter-toggle
-    #   name: Toggle Off
-    #   type: challenge
-    # - id: filter-handlers
-    #   name: Family Filter
-    #   type: challenge
-    # - id: filter-style
-    #   name: No Dress Code
-    #   type: challenge
-    # - id: filter-animation
-    #   name: The Last Frame
-    #   type: challenge
-    # - id: filter-stylesheet
-    #   name: No Style Points
-    #   type: challenge
-    - id: filter-shadow
-      name: Shadow Banned
-      type: challenge
-    # - id: filter-shadow-side-channel
-    #   name: Ghost in the DOM
-    #   type: challenge
-    - id: filter-fetch
-      name: Request Denied
-      type: challenge
-    # - id: filter-navigation
-    #   name: Wrong Turn
-    #   type: challenge
-    - id: filter-dom
-      name: DOM and Gloom
-      type: challenge
-    # - id: filter-apis
-    #   name: API Calypse
-    #   type: challenge
-    - id: filter-global
-      name: Think Small
-      type: challenge
-    - id: filter-charset
-      name: Lost for Words
-      type: challenge
-    - id: filter-shadow-global
-      name: The Great XSS Filter
-      type: challenge
+  - type: header
+    content: Reflected XSS
+  - id: inline-reflect-alert
+    name: A Reflective Start
+    type: challenge
+  - id: inline-reflect-cookie
+    name: A Crumb in the Reflection
+    type: challenge
+  - id: inline-reflect-attribute
+    name: Quote Me If You Can
+    type: challenge
+  - id: inline-reflect-unquoted
+    name: Unquoted and Unhinged
+    type: challenge
+  - id: inline-reflect-href
+    name: The Missing Link
+    type: challenge
+  - id: inline-reflect-href-breakout
+    name: Click Around and Find Out
+    type: challenge
+  - id: reflect-script-src
+    name: Source Material
+    type: challenge
+  - id: reflect-script
+    name: Scriptmaxxing
+    type: challenge
+  - id: reflect-script-literal
+    name: Literally Dangerous
+    type: challenge
+  - id: reflect-script-object
+    name: Objectively Dangerous
+    type: challenge
+  - id: reflect-json-parse
+    name: Wrapped in JSON
+    type: challenge
+  - id: reflect-iframe-src
+    name: Frame of Reference
+    type: challenge
+  - id: reflect-log
+    name: Paper Trail
+    type: challenge
+  - id: reflect-side-channel
+    name: Side Effects
+    type: challenge
+  - type: header
+    content: Stored XSS
+  - id: stored-post
+    name: Post Haste
+    type: challenge
+  - id: stored-cookie
+    name: Cookie Influencer
+    type: challenge
+  - id: stored-username
+    name: Username Checks Out
+    type: challenge
+  - id: stored-publish
+    name: Publish or Perish
+    type: challenge
+  - id: stored-post-to-sender
+    name: Air-Gap Reply
+    type: challenge
+  - id: stored-keylogger
+    name: Keys to the Kingdom
+    type: challenge
+  - id: inject-dangling
+    name: Hanging by a Thread
+    type: challenge
+  - id: stored-svg
+    name: Scalable Vector XSS
+    type: challenge
+  - id: stored-blind
+    name: Blind Spot
+    type: challenge
+  - id: stored-blind-headers
+    name: Reading Between the Lines
+    type: challenge
+  - type: header
+    content: DOM XSS
+  - id: dom-hash
+    name: Hashing It Out
+    type: challenge
+  - id: dom-query
+    name: Query Me This
+    type: challenge
+  - id: dom-title
+    name: Title Fight
+    type: challenge
+  - id: dom-data-attr
+    name: Data Exposure
+    type: challenge
+  - id: dom-postmessage
+    name: Message Received
+    type: challenge
+  - type: header
+    content: Mutation XSS
+  - id: mxss-table
+    name: Table Manners
+    type: challenge
+  - id: mxss-namespace
+    name: Namespace Invaders
+    type: challenge
+  - type: header
+    content: Filters
+  - id: filter-script
+    name: Only You
+    type: challenge
+  - id: filter-img
+    name: Picture Imperfect
+    type: challenge
+  - id: filter-encoding
+    name: Lost in Translation
+    type: challenge
+  - id: filter-media
+    name: Media Blackout
+    type: challenge
+  - id: filter-object
+    name: Old Faithful
+    type: challenge
+  - id: filter-toggle
+    name: Toggle Off
+    type: challenge
+  - id: filter-handlers
+    name: Family Filter
+    type: challenge
+  - id: filter-style
+    name: No Dress Code
+    type: challenge
+  - id: filter-animation
+    name: The Last Frame
+    type: challenge
+  - id: filter-stylesheet
+    name: No Style Points
+    type: challenge
+  - id: filter-shadow
+    name: Shadow Banned
+    type: challenge
+  - id: filter-shadow-side-channel
+    name: Ghost in the DOM
+    type: challenge
+  - id: filter-fetch
+    name: Request Denied
+    type: challenge
+  - id: filter-navigation
+    name: Wrong Turn
+    type: challenge
+  - id: filter-dom
+    name: DOM and Gloom
+    type: challenge
+  - id: filter-apis
+    name: API Calypse
+    type: challenge
+  - id: filter-global
+    name: Think Small
+    type: challenge
+  - id: filter-charset
+    name: Lost for Words
+    type: challenge
+  - id: filter-shadow-global
+    name: The Great XSS Filter
+    type: challenge
