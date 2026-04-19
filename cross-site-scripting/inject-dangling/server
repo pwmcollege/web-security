@@ -1,6 +1,7 @@
 #!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
 import os
+import secrets
 import sqlite3
 import tempfile
 import threading
@@ -87,13 +88,20 @@ def challenge_get():
 
     msg = request.args.get("msg", "")
     token = flag if username == "admin" else "n/a"
+    csp_nonce = secrets.token_urlsafe(32)
 
     response = make_response(
-        render_template("index.html", username=username, msg=msg, token=token)
+        render_template(
+            "index.html",
+            username=username,
+            msg=msg,
+            token=token,
+            csp_nonce=csp_nonce,
+        )
     )
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
-        "script-src 'none'; "
+        f"script-src 'nonce-{csp_nonce}' https://cdn.internal; "
         "style-src 'self' https://cdn.internal 'unsafe-inline'; "
         "font-src 'self' https://cdn.internal; "
         "img-src 'self' https://cdn.internal"
