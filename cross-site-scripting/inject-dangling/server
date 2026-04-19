@@ -5,7 +5,15 @@ import sqlite3
 import tempfile
 import threading
 
-from flask import Flask, flash, make_response, redirect, render_template, request, session
+from flask import (
+    Flask,
+    flash,
+    make_response,
+    redirect,
+    render_template,
+    request,
+    session,
+)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
@@ -32,6 +40,10 @@ db = TemporaryDB()
 db.execute(
     """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
     [generate_password_hash(flag)],
+)
+db.execute(
+    """INSERT INTO users SELECT "guest" as username, ? as password""",
+    [generate_password_hash("password")],
 )
 db.execute(
     """INSERT INTO users SELECT "hacker" as username, ? as password""",
@@ -79,7 +91,13 @@ def challenge_get():
     response = make_response(
         render_template("index.html", username=username, msg=msg, token=token)
     )
-    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'none'"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'none'; "
+        "style-src 'self' https://cdn.internal 'unsafe-inline'; "
+        "font-src 'self' https://cdn.internal; "
+        "img-src 'self' https://cdn.internal"
+    )
     return response
 
 
