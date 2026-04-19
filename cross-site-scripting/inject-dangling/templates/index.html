@@ -38,23 +38,16 @@
         </div>
 
         {% if username == "admin" %}
-        <div class="border-t border-slate-100 pt-6 space-y-3">
+        <div class="border-t border-slate-100 pt-6 space-y-2">
             <h3
                 class="text-[10px] font-black text-slate-400 uppercase tracking-widest"
             >
-                ADMIN PORTAL
+                Session token
             </h3>
-            <div class="space-y-2">
-                <p
-                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
-                >
-                    Session token
-                </p>
-                <div
-                    class="font-mono text-xs bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 break-all shadow-inner"
-                >
-                    {{ token }}
-                </div>
+            <div
+                class="font-mono text-xs bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 break-all shadow-inner"
+            >
+                {{ token }}
             </div>
         </div>
         {% endif %}

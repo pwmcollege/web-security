@@ -56,7 +56,7 @@ for author, content in [
     ("admin", "Reminder: rotate your session tokens regularly."),
     ("guest", "First!"),
     ("guest", "Anyone else McLovin the new redesign?"),
-    ("hacker", "pwn.college is pretty cool, init? 🇬🇧"),
+    ("hacker", "pwn.college is pretty cool, innit? 🇬🇧"),
     ("hacker", "Testing 1337 2 3."),
 ]:
     db.execute(
