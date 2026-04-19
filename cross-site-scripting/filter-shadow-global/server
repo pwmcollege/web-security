@@ -144,7 +144,7 @@ def ephemeral():
         )
     )
     response.headers["Content-Security-Policy"] = (
-        f"style-src 'nonce-{csp_nonce}'; style-src-attr 'none'"
+        f"style-src https://cdn.internal 'nonce-{csp_nonce}'; style-src-attr 'none'"
     )
     return response
 

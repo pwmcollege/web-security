@@ -124,9 +124,8 @@ def challenge_get():
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
         f"script-src 'nonce-{csp_nonce}' https://cdn.internal; "
-        "style-src 'self' https://cdn.internal 'unsafe-inline'; "
-        "font-src 'self' https://cdn.internal; "
-        "img-src 'self' https://cdn.internal"
+        f"style-src 'self' 'nonce-{csp_nonce}' https://cdn.internal; "
+        "font-src 'self' https://cdn.internal"
     )
     return response
 

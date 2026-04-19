@@ -49,8 +49,8 @@ db.execute("INSERT INTO golfer (username,password) VALUES ('guest', 'password')"
 @app.after_request
 def add_headers(response: Response):
     response.headers["Content-Security-Policy"] = (
-        "default-src 'self';"
-        f"script-src 'nonce-{g.nonce}' 'strict-dynamic';"
+        "default-src 'self' https://cdn.internal;"
+        f"script-src 'nonce-{g.nonce}' 'strict-dynamic' https://cdn.internal;"
         "base-uri 'none';"
         "frame-ancestors 'none';"
     )
