@@ -53,6 +53,28 @@
             </p>
         </div>
         {% endif %}
+
+        <div class="border-t border-slate-100 pt-6 space-y-4">
+            <h3
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest"
+            >
+                {% if msg %}RESULTS{% else %}FEED{% endif %}
+            </h3>
+            {% for post in posts %}
+            <div
+                class="p-4 rounded-2xl border border-slate-100 bg-slate-50/60 space-y-2"
+            >
+                <p class="text-[10px] font-bold text-slate-400 italic">
+                    Author: {{ post.author }}
+                </p>
+                <p class="text-sm text-slate-900 leading-relaxed font-medium">
+                    {{ post.content }}
+                </p>
+            </div>
+            {% else %}
+            <p class="text-xs text-slate-400 italic">No posts found.</p>
+            {% endfor %}
+        </div>
     </div>
 
     <a

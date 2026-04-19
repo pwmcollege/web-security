@@ -50,6 +50,19 @@ db.execute(
     """INSERT INTO users SELECT "hacker" as username, ? as password""",
     [generate_password_hash("1337")],
 )
+db.execute("""CREATE TABLE posts (content TEXT, author TEXT)""")
+for author, content in [
+    ("admin", "Welcome to pwnpost!"),
+    ("admin", "Reminder: rotate your session tokens regularly."),
+    ("guest", "First!"),
+    ("guest", "Anyone else McLovin the new redesign?"),
+    ("hacker", "pwn.college is pretty cool, init? 🇬🇧"),
+    ("hacker", "Testing 1337 2 3."),
+]:
+    db.execute(
+        "INSERT INTO posts (content, author) VALUES (?, ?)",
+        (content, author),
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -90,12 +103,21 @@ def challenge_get():
     token = flag if username == "admin" else "n/a"
     csp_nonce = secrets.token_urlsafe(32)
 
+    if msg:
+        posts = db.execute(
+            "SELECT * FROM posts WHERE INSTR(content, ?) > 0",
+            (msg,),
+        ).fetchall()
+    else:
+        posts = db.execute("SELECT * FROM posts").fetchall()
+
     response = make_response(
         render_template(
             "index.html",
             username=username,
             msg=msg,
             token=token,
+            posts=posts,
             csp_nonce=csp_nonce,
         )
     )
