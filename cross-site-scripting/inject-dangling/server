@@ -57,6 +57,8 @@ for author, content in [
     ("zardus", "Hello hackers!"),
     ("sudraz", "Goodbye hackers!"),
     ("amateurhour", "pwn.college is pretty cool, innit? 🇬🇧"),
+    ("zeeshan1234", "It's over chat"),
+    ("hanto", "🤖"),
     ("kanak", "Would you like to know the best honey mustard?"),
     ("hacker", "Hello zardus!"),
 ]:
