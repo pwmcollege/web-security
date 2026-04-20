@@ -53,11 +53,12 @@ db.execute(
 db.execute("""CREATE TABLE posts (content TEXT, author TEXT)""")
 for author, content in [
     ("admin", "Welcome to pwnpost!"),
-    ("admin", "Reminder: rotate your session tokens regularly."),
     ("guest", "First!"),
-    ("guest", "Anyone else McLovin the new redesign?"),
-    ("hacker", "pwn.college is pretty cool, innit? 🇬🇧"),
-    ("hacker", "Testing 1337 2 3."),
+    ("zardus", "Hello hackers!"),
+    ("sudraz", "Goodbye hackers!"),
+    ("amateurhour", "pwn.college is pretty cool, innit? 🇬🇧"),
+    ("kanak", "Would you like to know the best honey mustard?"),
+    ("hacker", "Hello zardus!"),
 ]:
     db.execute(
         "INSERT INTO posts (content, author) VALUES (?, ?)",
@@ -124,7 +125,7 @@ def challenge_get():
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
         f"script-src 'nonce-{csp_nonce}' https://cdn.internal; "
-        f"style-src 'self' 'nonce-{csp_nonce}' https://cdn.internal; "
+        f"style-src 'self' 'unsafe-inline' https://cdn.internal; "
         "font-src 'self' https://cdn.internal"
     )
     return response
