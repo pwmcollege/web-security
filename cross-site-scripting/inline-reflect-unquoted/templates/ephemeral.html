@@ -20,13 +20,17 @@
             >
                 MESSAGE
             </h3>
-            <input
-                type="text"
-                disabled
-                class="w-full min-h-[140px] bg-slate-50 border border-slate-200 rounded-2xl px-6 py-3 text-sm font-medium text-slate-900 shadow-inner transition-all hover:bg-white hover:border-[#007AFF]/20 disabled:text-slate-900 disabled:opacity-100"
-                value={% if msg %}{{ msg|safe }}{% else %}none{% endif %}
-                placeholder="(none)"
-            />
+            <div
+                class="w-full min-h-[140px] flex items-center justify-center bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-inner transition-all hover:bg-white hover:border-[#007AFF]/20"
+            >
+                <input
+                    type="text"
+                    disabled
+                    class="w-full bg-transparent border-none outline-none text-center text-sm font-sans font-medium text-slate-900 disabled:text-slate-900 disabled:opacity-100"
+                    value={% if msg %}{{ msg|safe }}{% else %}none{% endif %}
+                    placeholder="(none)"
+                />
+            </div>
 
             {% if msg %}
             <div

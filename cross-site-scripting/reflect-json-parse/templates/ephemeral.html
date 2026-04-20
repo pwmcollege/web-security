@@ -24,12 +24,20 @@
                 id="messageBox"
                 class="w-full min-h-[140px] flex items-center justify-center text-center bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-inner transition-all hover:bg-white hover:border-[#007AFF]/20 group"
             >
+                {% if msg %}
                 <p
                     id="messageText"
                     class="text-sm font-medium text-slate-900 leading-relaxed"
                 >
-                    {% if msg %}(loading){% else %}(none){% endif %}
+                    (loading)
                 </p>
+                {% else %}
+                <p
+                    class="text-[11px] font-bold text-slate-300 uppercase italic"
+                >
+                    (none)
+                </p>
+                {% endif %}
             </div>
             {% if msg %}
             <script nonce="{{ csp_nonce }}">
