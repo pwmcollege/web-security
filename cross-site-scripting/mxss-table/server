@@ -7,17 +7,21 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-BLOCKED_TAGS = {"script", "object", "embed", "link", "meta", "base"}
+ALLOWED_TAGS = {"html", "head", "body", "math", "mtext", "mglyph", "style", "table"}
+ALLOWED_ATTRS = {
+    "table": {"id"},
+}
 
 
 def sanitize(html):
     soup = BeautifulSoup(html, "html5lib")
     for tag in soup.find_all(True):
-        if tag.name in BLOCKED_TAGS:
+        if tag.name not in ALLOWED_TAGS:
             tag.decompose()
             continue
         for attr in list(tag.attrs):
-            if attr.lower().startswith("on"):
+            allowed = ALLOWED_ATTRS.get(tag.name, set())
+            if attr.lower() not in allowed:
                 del tag.attrs[attr]
     body = soup.body
     return "".join(str(c) for c in body.children) if body else ""
