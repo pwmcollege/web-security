@@ -96,6 +96,9 @@ resources:
     type: challenge
   - type: header
     content: Mutation XSS
+  - name: Other Resources
+    type: markdown
+    file: mxss-resources.md
   - id: mxss-table
     name: Table Manners
     type: challenge
