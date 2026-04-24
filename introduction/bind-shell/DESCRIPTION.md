@@ -11,9 +11,3 @@ This technique has its place in specific scenarios, perhaps you're already insid
 In this challenge, the server is automatically started; you can access the website at: `https://challenge.internal`
 
 The server is listening for a request at `https://challenge.internal/bind` endpoint in order to bind and start a shell at `localhost` on port `1337`.
-
----
-
-### Resources
-
-- [Reverse Shell vs Bind Shell](https://www.darkrelay.com/post/bind-and-reverse-shells/)

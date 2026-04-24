@@ -1,0 +1,3 @@
+- [What Is a Reverse Shell?](https://www.imperva.com/learn/application-security/reverse-shell/)
+- [Reverse Shell vs Bind Shell](https://www.darkrelay.com/post/bind-and-reverse-shells/)
+- [Reverse Shell Generator](https://www.revshells.com/)

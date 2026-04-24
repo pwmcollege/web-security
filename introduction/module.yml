@@ -1,23 +1,26 @@
 name: Introduction
 resources:
-    - name: "Web Security: Introduction"
-      type: lecture
-      video: AKTYVWCi6ss
-      playlist: PL-ymxv0nOtqrvXLSALV5SQ5v3oyKY4DWg
-      slides: 1ATO_U0aUlk2LRhlnIwdqTkDfu-lWRb5xoLDv0NQLPs8
-    - type: header
-      content: Shell
-    - id: reverse-shell
-      name: Reverse Shell
-      type: challenge
-    - id: bind-shell
-      name: Bind Shell
-      type: challenge
-    - type: header
-      content: URL & Encoding
-    - id: separator-smuggling
-      name: Query Me This
-      type: challenge
-    - id: elf-delivery
-      name: ELFpress Delivery
-      type: challenge
+  - name: "Web Security: Introduction"
+    type: lecture
+    video: AKTYVWCi6ss
+    playlist: PL-ymxv0nOtqrvXLSALV5SQ5v3oyKY4DWg
+    slides: 1ATO_U0aUlk2LRhlnIwdqTkDfu-lWRb5xoLDv0NQLPs8
+  - type: header
+    content: Shell
+  - name: Other Resources
+    type: markdown
+    file: shell-resources.md
+  - id: reverse-shell
+    name: Reverse Shell
+    type: challenge
+  - id: bind-shell
+    name: Bind Shell
+    type: challenge
+  - type: header
+    content: URL & Encoding
+  - id: separator-smuggling
+    name: Query Me This
+    type: challenge
+  - id: elf-delivery
+    name: ELFpress Delivery
+    type: challenge

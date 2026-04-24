@@ -15,11 +15,3 @@ It's like having the fortress call you with the keys, rather than trying to brea
 In this challenge, the server is automatically started; you can access the website at: `https://challenge.internal`
 
 The server is listening for a request at `https://challenge.internal/reverse` endpoint in order to trigger a reverse shell connecting to `localhost` on port `1337`.
-
----
-
-### Resources
-
-- [What Is a Reverse Shell?](https://www.imperva.com/learn/application-security/reverse-shell/)
-- [Reverse Shell vs Bind Shell](https://www.darkrelay.com/post/bind-and-reverse-shells/)
-- [Reverse Shell Generator](https://www.revshells.com/)
