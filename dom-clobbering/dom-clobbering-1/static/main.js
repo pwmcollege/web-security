@@ -9,7 +9,7 @@ let recording = false;
 let strokes = [];
 const startRecord = document.getElementById("start-record");
 const stopRecord = document.getElementById("stop-record");
-const submitRecord = document.getElementById("submit-record");
+const publishRecord = document.getElementById("publish-record");
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
 
@@ -27,7 +27,7 @@ startRecord?.addEventListener("click", async () => {
     recording = true;
     startRecord.disabled = true;
     stopRecord.disabled = false;
-    submitRecord.disabled = true;
+    publishRecord.disabled = true;
     startGame();
 });
 
@@ -38,11 +38,11 @@ stopRecord?.addEventListener("click", () => {
     recording = false;
     stopRecord.disabled = true;
     startRecord.disabled = false;
-    submitRecord.disabled = false;
+    publishRecord.disabled = false;
     console.log(strokes);
 });
 
-submitRecord?.addEventListener("click", () => {
+publishRecord?.addEventListener("click", () => {
     fetch("http://challenge.internal:80/record", {
         method: "POST",
         headers: {
@@ -50,7 +50,7 @@ submitRecord?.addEventListener("click", () => {
         },
         body: JSON.stringify(strokes),
     });
-    submitRecord.disabled = true; // Let the user know that the recording was submitted
+    publishRecord.disabled = true; // Let the user know that the recording was submitted
     console.log("Submitted recording!");
 });
 
@@ -107,3 +107,5 @@ document.addEventListener("mouseup", async (e) => {
     await moveBall(xDiff, yDiff);
     moving = false;
 });
+
+startGame();
