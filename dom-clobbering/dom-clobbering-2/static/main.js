@@ -107,3 +107,5 @@ document.addEventListener("mouseup", async (e) => {
     await moveBall(xDiff, yDiff);
     moving = false;
 });
+
+startGame();
