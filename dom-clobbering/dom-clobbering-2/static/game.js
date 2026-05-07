@@ -178,4 +178,4 @@ async function startGame() {
 }
 
 
-export { moveBall, startGame }
+export { moveBall, startGame, updateCanvas }

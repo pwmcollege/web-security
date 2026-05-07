@@ -14,7 +14,8 @@
 }
 
 /* Keep people from accidentally dragging the ball/hole/canvas */
-img, canvas {
+img,
+canvas {
     -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;

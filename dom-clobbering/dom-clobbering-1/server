@@ -47,7 +47,9 @@ db.execute("INSERT INTO golfer (username,password) VALUES ('guest', 'password')"
 @app.after_request
 def add_headers(response: Response):
     response.headers["Content-Security-Policy"] = (
-        "default-src 'self' https://cdn.internal;base-uri 'none';frame-ancestors 'none';"
+        "default-src 'self' https://cdn.internal;"
+        "base-uri 'none';"
+        "frame-ancestors 'none';"
     )
     return response
 
@@ -58,7 +60,9 @@ def golf_menu():
     if "username" in session:
         username = session["username"]
     return render_template(
-        "mainpage.html", username=username, logged_in="username" in session
+        "mainpage.html",
+        username=username,
+        logged_in="username" in session
     )
 
 
@@ -67,7 +71,9 @@ def display_recording():
     if "username" in request.args:
         username = request.args.get("username")
         return render_template(
-            "share.html", username=username, logged_in="username" in session
+            "share.html",
+            username=username,
+            logged_in="username" in session
         )
     else:
         return Response("No Username Provided", 404)
