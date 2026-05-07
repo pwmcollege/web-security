@@ -1,5 +1,6 @@
-import { moveBall, startGame, initCanvas } from "./game.js";
-initCanvas();
+import { moveBall, startGame } from "./game.js";
+startGame();
+
 // Load game record from the server
 const urlParams = new URLSearchParams(window.location.search);
 const username = urlParams.get('username');
@@ -11,11 +12,13 @@ const strokes = await (await fetch("/record?" + new URLSearchParams({
 let replaying = false
 const replayButton = document.getElementById("start-replay")
 replayButton.addEventListener("click", async () => {
+    console.log("click")
     if (replaying) {
         return; // Replay already in progress
     }
     replaying = true
     startGame();
+    console.log("game started")
     replayButton.disabled = true;
     for (const stroke of strokes) {
         const strokeX = stroke[0];
