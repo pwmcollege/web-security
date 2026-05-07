@@ -1,5 +1,5 @@
-import { moveBall, startGame } from "./game.js";
-startGame();
+import { moveBall, startGame, updateCanvas } from "./game.js";
+updateCanvas();
 // Load game record from the server
 const urlParams = new URLSearchParams(window.location.search);
 const username = urlParams.get('username');
