@@ -1,7 +1,7 @@
 // "real size" (display size) of canvas, different from the size used by graphics
 const CANVAS_HEIGHT = 400;
 const CANVAS_WIDTH = 400;
-const BALL_RADIUS = 14/2;
+const BALL_RADIUS = 14 / 2;
 const DELTA = 1e-6; // Delta value to reduce chance of ball clipping
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d")
@@ -13,8 +13,8 @@ let ballX;
 let ballY;
 
 // Data format for walls: [x,[yMin,yMax]] for vertical, [y, [xMin,xMax]] for horizontal
-const vertWalls = [[0,[0,CANVAS_HEIGHT]],[100,[0,300]],[200,[0,300]],[300,[100,200]],[CANVAS_WIDTH,[0,CANVAS_HEIGHT]]];
-const horizWalls = [[0,[0,CANVAS_WIDTH]],[100,[300,400]],[200,[300,400]],[300,[100,200]],[CANVAS_HEIGHT,[0,CANVAS_WIDTH]]];
+const vertWalls = [[0, [0, CANVAS_HEIGHT]], [100, [0, 300]], [200, [0, 300]], [300, [100, 200]], [CANVAS_WIDTH, [0, CANVAS_HEIGHT]]];
+const horizWalls = [[0, [0, CANVAS_WIDTH]], [100, [300, 400]], [200, [300, 400]], [300, [100, 200]], [CANVAS_HEIGHT, [0, CANVAS_WIDTH]]];
 
 function win() {
     won = true;
@@ -24,7 +24,11 @@ function win() {
 function ballInHole() {
     const ballRect = ball.getBoundingClientRect();
     const holeRect = hole.getBoundingClientRect();
-    return ballRect.left >= holeRect.left && ballRect.right <= holeRect.right && ballRect.top >= holeRect.top && ballRect.bottom <= holeRect.bottom;
+    return (ballRect.left >= holeRect.left &&
+        ballRect.right <= holeRect.right &&
+        ballRect.top >= holeRect.top &&
+        ballRect.bottom <= holeRect.bottom
+    );
 }
 
 /* A helper function to enable sleep-like behavior based on promises */
@@ -35,11 +39,11 @@ function sleep(ms) {
 function distanceToWall(ballMajor, ballMinor, normMajor, normMinor, wall) {
     if (normMajor > 0 && wall[0] < ballMajor) return null; // No way to hit this wall
     if (normMajor < 0 && wall[0] > ballMajor) return null; // No way to hit this wall
-    const majorDist = Math.abs(wall[0]-ballMajor)-BALL_RADIUS;
-    const dist = Math.abs(majorDist/normMajor);
+    const majorDist = Math.abs(wall[0] - ballMajor) - BALL_RADIUS;
+    const dist = Math.abs(majorDist / normMajor);
     // Check for an actual collision with the wall
-    const minorLoc = ballMinor + dist*normMinor;
-    if (wall[1][0]-BALL_RADIUS-DELTA < minorLoc && wall[1][1]+BALL_RADIUS+DELTA > minorLoc) {
+    const minorLoc = ballMinor + dist * normMinor;
+    if (wall[1][0] - BALL_RADIUS - DELTA < minorLoc && wall[1][1] + BALL_RADIUS + DELTA > minorLoc) {
         return dist;
     } else {
         return null;
@@ -49,27 +53,27 @@ function distanceToWall(ballMajor, ballMinor, normMajor, normMinor, wall) {
 /* Moves ball, taking into account the wall. Returns updated xNorm and yNorm in case a bounce occurred. */
 function moveWithBounce(xNorm, yNorm, dist) {
     if (dist < 0.001) {
-        return [xNorm,yNorm]
+        return [xNorm, yNorm]
     }
-    
+
     let minDistVertWall = Number.MAX_VALUE;
     for (const wall of vertWalls) {
         const currDist = distanceToWall(ballX, ballY, xNorm, yNorm, wall);
         if (currDist != null) {
-            minDistVertWall = Math.min(minDistVertWall,currDist);
+            minDistVertWall = Math.min(minDistVertWall, currDist);
         }
     }
     let minDistHorizWall = Number.MAX_VALUE;
     for (const wall of horizWalls) {
         const currDist = distanceToWall(ballY, ballX, yNorm, xNorm, wall);
         if (currDist != null) {
-            minDistHorizWall = Math.min(minDistHorizWall,currDist);
+            minDistHorizWall = Math.min(minDistHorizWall, currDist);
         }
     }
     let newDist = dist;
     let newXNorm = xNorm;
     let newYNorm = yNorm;
-    
+
     if (minDistVertWall < dist || minDistHorizWall < dist) {
         // There is some bouncing
         if (minDistVertWall < minDistHorizWall) {
@@ -87,7 +91,7 @@ function moveWithBounce(xNorm, yNorm, dist) {
     ballX = ballX + xNorm * newDist;
     ball.style.top = ballY + "px";
     ball.style.left = ballX + "px";
-    return moveWithBounce(newXNorm,newYNorm,dist-newDist);
+    return moveWithBounce(newXNorm, newYNorm, dist - newDist);
 }
 
 async function moveBall(xDiff, yDiff) {
@@ -98,7 +102,8 @@ async function moveBall(xDiff, yDiff) {
     magnitude = Math.min(magnitude, 100); // Cap out magnitude
     let stepDist = magnitude / 3;
     while (stepDist > 0) {
-        [xNorm, yNorm] = moveWithBounce(xNorm,yNorm,stepDist);
+        [xNorm, yNorm] = moveWithBounce(xNorm, yNorm, stepDist);
+        updateCanvas();
         await sleep(50);
         stepDist -= 1;
     }
@@ -107,9 +112,9 @@ async function moveBall(xDiff, yDiff) {
     }
 }
 
-function initCanvas() {
-    const scaleX = canvas.width/CANVAS_WIDTH;
-    const scaleY = canvas.height/CANVAS_HEIGHT;
+function updateCanvas() {
+    const scaleX = canvas.width / CANVAS_WIDTH;
+    const scaleY = canvas.height / CANVAS_HEIGHT;
     // Decorate the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "green";
@@ -119,14 +124,14 @@ function initCanvas() {
     ctx.strokeStyle = "blue";
     for (const wall of vertWalls) {
         ctx.beginPath();
-        ctx.moveTo(wall[0]*scaleX,wall[1][0]*scaleY);
-        ctx.lineTo(wall[0]*scaleX,wall[1][1]*scaleY);
+        ctx.moveTo(wall[0] * scaleX, wall[1][0] * scaleY);
+        ctx.lineTo(wall[0] * scaleX, wall[1][1] * scaleY);
         ctx.stroke();
     }
     for (const wall of horizWalls) {
         ctx.beginPath();
-        ctx.moveTo(wall[1][0]*scaleX,wall[0]*scaleY);
-        ctx.lineTo(wall[1][1]*scaleX,wall[0]*scaleY);
+        ctx.moveTo(wall[1][0] * scaleX, wall[0] * scaleY);
+        ctx.lineTo(wall[1][1] * scaleX, wall[0] * scaleY);
         ctx.stroke();
     }
 }
@@ -139,10 +144,13 @@ async function startGame() {
     ballX = parseInt(window.getComputedStyle(ball).left);
     strokes = 0
     won = false;
+
+    updateCanvas();
+
     if (ballInHole()) { // Lucky user gets a cosmic bit flip??
-        win()
+        win();
     }
 }
 
 
-export { moveBall, startGame, initCanvas }
+export { moveBall, startGame }

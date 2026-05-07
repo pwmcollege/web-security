@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <head>
+    <script src="/static/game.js" type="module" nonce="{{nonce}}"></script>
     <script src="/static/game.js" type="module" nonce="{{nonce}}" defer></script>
     <link rel="stylesheet" href="/static/main.css"></link>
     <title>pwn.golf</title>
@@ -20,9 +21,7 @@
     <div>{{username|safe}}'s Game</div>
     {% endif %}
     <div class="x-center">
-        <div class="absolute-container">
-            <img src="/static/hole.svg" id="hole" draggable="false">
-            <img src="/static/golf-ball.svg" id="ball" draggable="false">
+        <div class="relative-container">
             <canvas id="game-canvas" width="500" height="500"></canvas>
         </div>
         <div class="flex-vertical">

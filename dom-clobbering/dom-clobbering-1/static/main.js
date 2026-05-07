@@ -1,5 +1,5 @@
-import { moveBall, startGame, initCanvas } from "./game.js";
-initCanvas();
+import { moveBall, startGame } from "./game.js";
+startGame();
 
 let clicked = false;
 let moving = false;
@@ -9,8 +9,8 @@ let recording = false;
 let strokes = [];
 const startRecord = document.getElementById("start-record");
 const stopRecord = document.getElementById("stop-record");
-const publishRecord = document.getElementById("publish-record");
-const canvas = document.getElementById("game-canvas");
+const submitRecord = document.getElementById("submit-record");
+const canvas = document.getElementById("user-canvas");
 const ctx = canvas.getContext("2d");
 
 startRecord?.addEventListener("click", async () => {
@@ -27,7 +27,7 @@ startRecord?.addEventListener("click", async () => {
     recording = true;
     startRecord.disabled = true;
     stopRecord.disabled = false;
-    publishRecord.disabled = true;
+    submitRecord.disabled = true;
     startGame();
 });
 
@@ -38,11 +38,11 @@ stopRecord?.addEventListener("click", () => {
     recording = false;
     stopRecord.disabled = true;
     startRecord.disabled = false;
-    publishRecord.disabled = false;
+    submitRecord.disabled = false;
     console.log(strokes);
 });
 
-publishRecord?.addEventListener("click", () => {
+submitRecord?.addEventListener("click", () => {
     fetch("http://challenge.internal:80/record", {
         method: "POST",
         headers: {
@@ -50,12 +50,12 @@ publishRecord?.addEventListener("click", () => {
         },
         body: JSON.stringify(strokes),
     });
-    publishRecord.disabled = true; // Let the user know that the recording was submitted
+    submitRecord.disabled = true; // Let the user know that the recording was submitted
     console.log("Submitted recording!");
 });
 
 document.body.addEventListener("mousedown", (e) => {
-    if (document.getElementById("game-canvas").contains(e.target)) {
+    if (canvas.contains(e.target)) {
         clicked = true;
         lastX = e.clientX;
         lastY = e.clientY;
@@ -74,14 +74,12 @@ document.addEventListener("mousemove", (e) => {
                 (yDiff * canvas.height) / parseInt(canvasStyles.height),
             ];
         }
-        window.requestAnimationFrame(() => {
-            initCanvas();
-            ctx.strokeStyle = "rgb(255,0,0)";
-            ctx.beginPath();
-            ctx.moveTo(...getCanvasXY(lastX, lastY));
-            ctx.lineTo(...getCanvasXY(e.clientX, e.clientY));
-            ctx.stroke();
-        });
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "rgb(255,0,0)";
+        ctx.beginPath();
+        ctx.moveTo(...getCanvasXY(lastX, lastY));
+        ctx.lineTo(...getCanvasXY(e.clientX, e.clientY));
+        ctx.stroke();
     }
 });
 
@@ -90,12 +88,10 @@ document.addEventListener("mouseup", async (e) => {
         return; // We did not start off by clicking within the canvas
     }
     clicked = false;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (moving) {
         return; // Don't allow multiple hits of the ball at once
     }
-    window.requestAnimationFrame(() => {
-        initCanvas();
-    });
     moving = true;
     const newX = e.clientX;
     const newY = e.clientY;
@@ -107,5 +103,3 @@ document.addEventListener("mouseup", async (e) => {
     await moveBall(xDiff, yDiff);
     moving = false;
 });
-
-startGame();
