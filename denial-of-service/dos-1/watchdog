@@ -46,7 +46,7 @@ def format_flag(flag):
 
 def ok():
     try:
-        r = session.get("https://challenge.internal:443/health", timeout=(1, 2), verify=False)
+        r = session.get("https://challenge.internal:443/health", timeout=(1, 2), verify="/etc/ssl/certs/internal.cert.pem")
         return r.status_code == 200
     except requests.RequestException:
         return False
