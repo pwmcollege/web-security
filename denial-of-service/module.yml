@@ -17,6 +17,3 @@ resources:
     - id: dos-4
       name: Multi-threaded
       type: challenge
-    - id: dos-to-shell
-      name: Side Effects - Arbitrary Write
-      type: challenge
