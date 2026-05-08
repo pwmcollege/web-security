@@ -1,11 +1,11 @@
-Welcome to The Art of Web dojo.
+Welcome to The Art of Web.
 
-This dojo is dedicated to exploring web vulnerabilities and building practical web security skills. We created it to help fill the web-focused gap in pwn.college's content, with the long-term goal of growing it into an official pwn.college web belt.
+This dojo is about breaking web apps and building real web security skills along the way. We put it together to fill the web-shaped gap in pwn.college, and we'd love to see it grow into an official web belt one day.
 
-Each module begins with foundational concepts and ramps up quickly in difficulty. Along the way, you'll find a generous number of hints designed to guide your learning without spoiling the challenge.
+Each module starts with the fundamentals and ramps up fast. You'll find plenty of hints to nudge you forward without giving the answer away.
 
-Whether you're a complete beginner taking your first steps into web security or an experienced web hacker looking for something fun and challenging, this dojo is built for you.
+Whether this is your first time touching web security or you've been at it for years, there's something here for you.
 
-The project is open source — contributions are welcome! Check it out on [Github](https://github.com/pwmcollege/the-art-of-web).
+The project is open source and contributions are very welcome. The code lives on [Github](https://github.com/pwmcollege/the-art-of-web).
 
-Have questions, found an unintended solution, want more hints, or craving harder challenges? Reach out to [Gus](https://pwn.college/hacker/65661), [RenegadePenguin](https://pwn.college/hacker/66698), or [Fluffy](https://pwn.college/hacker/36708) on Discord.
+Got questions, found an unintended solution, want more hints, or craving harder challenges? Ping [Gus](https://pwn.college/hacker/65661), [RenegadePenguin](https://pwn.college/hacker/66698), or [Fluffy](https://pwn.college/hacker/36708) on Discord.

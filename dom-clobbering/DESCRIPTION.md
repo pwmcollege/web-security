@@ -1,5 +1,3 @@
-So, you've learned about Content-Security-Policy and how it can block attempts at XSS by stopping untrusted scripts from running. 
+So you've met Content-Security-Policy, the thing that ruins your day by refusing to run untrusted scripts. But almost every site ships JavaScript of its own, and CSP can't block that. If you can't bring your own script, you can try to hijack the one that's already there.
 
-But there is a weakness in this design. Most modern websites have at least a little bit of JavaScript, so our CSP can't stop all JavaScript from running. What if we were able to hijack the JavaScript already on the page and bend it to our own goals?
-
-In this module, you'll learn how to leverage [DOM Clobbering](https://en.wikipedia.org/wiki/DOM_clobbering) to influence the JavaScript on a webpage without having direct access.
+This module walks through [DOM Clobbering](https://en.wikipedia.org/wiki/DOM_clobbering): using plain HTML to overwrite JavaScript variables and bend existing code to your goals.

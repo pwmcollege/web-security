@@ -1,15 +1,5 @@
-Modern systems are built to be available. Web servers respond to requests, APIs process data, and services remain online so users can access them at any time.
+Servers have limits. CPU, memory, bandwidth, open connections, file descriptors. A [Denial of Service (DoS)](https://en.wikipedia.org/wiki/Denial-of-service_attack) attack doesn't steal anything or run code, it just burns those limits until the service stops keeping up with real users.
 
-But what happens when availability itself becomes the target?
+Sometimes that's a flood of traffic. Other times it's one cheap request that costs the server a lot. When many machines pitch in, it becomes a [Distributed Denial of Service (DDoS)](https://www.cloudflare.com/learning/ddos/what-is-a-ddos-attack/).
 
-A [Denial of Service (DoS)](https://en.wikipedia.org/wiki/Denial-of-service_attack) attack aims to render a system, application, or network unavailable for legitimate users. The attacker doesn't steal data or run code; instead, they use up resources like CPU, memory, bandwidth, file descriptors, or application limits until the service slows down or stops responding completely.
-
-Sometimes this is done by overwhelming a system with traffic. Other times, it's achieved by triggering expensive operations, exploiting inefficient code paths, or abusing logical flaws that consume excessive resources.
-
-When many machines coordinate the attack, it becomes a [Distributed Denial of Service (DDoS)](https://www.cloudflare.com/learning/ddos/what-is-a-ddos-attack/).
-
-At its core, [DoS](https://en.wikipedia.org/wiki/Denial-of-service_attack) is about imbalance: forcing a system to spend more resources handling malicious input than it can sustain.
-
-In this module, you'll explore how availability can be disrupted, why resource management matters, and how seemingly small inefficiencies can escalate into full service outages.
-
-Let's stress the [system](https://pwn.college).
+This module walks through how availability breaks and how small inefficiencies turn into full outages.
