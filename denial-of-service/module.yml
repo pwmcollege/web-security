@@ -1,7 +1,4 @@
 name: Denial of Service
-required: false
-visibility:
-  start: "2067-06-07T00:00:00-07:00"
 resources:
   - name: What is Denial of Service?
     type: lecture
@@ -30,3 +27,7 @@ resources:
   - id: slow-read
     name: Slow Read
     type: challenge
+  - id: shared-resources
+    name: Shared Resources
+    type: challenge
+    privileged: true

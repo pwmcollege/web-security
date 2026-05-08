@@ -1,0 +1,15 @@
+#!/bin/bash
+
+mkdir -p /var/log/gunicorn
+echo -e "127.0.0.1\tchallenge.internal" >> /etc/hosts
+
+cd /challenge
+gunicorn --daemon
+
+until curl -fs https://challenge.internal/health >/dev/null; do sleep 0.1; done
+
+iptables-legacy -A OUTPUT -p tcp --dport 443 -m owner --uid-owner 1000 -j REJECT
+
+/challenge/watchdog &
+
+find -L /challenge -type f -exec chmod 0444 {} +
