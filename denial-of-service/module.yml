@@ -1,22 +1,32 @@
 name: Denial of Service
+required: false
 visibility:
-    start: "2067-06-07T00:00:00-07:00"
+  start: "2067-06-07T00:00:00-07:00"
 resources:
-    - name: What is Denial of Service?
-      type: lecture
-      video: BOkOn0gIGK0
-    - id: single-worker
-      name: Single-threaded
-      type: challenge
-    - id: multi-workers
-      name: Multi-process
-      type: challenge
-    - id: memory-exhaustion
-      name: Out of Memory
-      type: challenge
-    - id: io-bottleneck
-      name: I/O Saturation
-      type: challenge
-    - id: cpu-bottleneck
-      name: CPU Saturation
-      type: challenge
+  - name: What is Denial of Service?
+    type: lecture
+    video: BOkOn0gIGK0
+  - id: single-worker
+    name: Single-threaded
+    type: challenge
+  - id: multi-workers
+    name: Multi-process
+    type: challenge
+  - id: memory-exhaustion
+    name: Out of Memory
+    type: challenge
+  - id: io-bottleneck
+    name: I/O Saturation
+    type: challenge
+  - id: cpu-bottleneck
+    name: CPU Saturation
+    type: challenge
+  - id: decompression-bomb
+    name: Compression Bomb
+    type: challenge
+  - id: parser-bomb
+    name: Parser Bomb
+    type: challenge
+  - id: slow-read
+    name: Slow Read
+    type: challenge
