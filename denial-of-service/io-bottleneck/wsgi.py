@@ -13,10 +13,10 @@ def health():
     return "OK\n", 200
 
 
-@app.post("/hello")
-def hackers():
+@app.post("/log")
+def log():
     fields = {
-        "hello": str,
+        "message": str,
     }
 
     for field in fields:
@@ -32,9 +32,7 @@ def hackers():
     with tempfile.TemporaryFile(mode="w+t") as f:
         f.write(json.dumps(data))
 
-    return {
-        "hello": "hackers!",
-    }
+    return {"status": "ok"}
 
 
 application = app
