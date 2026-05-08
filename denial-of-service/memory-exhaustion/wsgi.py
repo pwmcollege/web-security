@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.get("/health")
 def health():
-    return "ok", 200
+    return "OK\n", 200
 
 
 @app.post("/hello")
