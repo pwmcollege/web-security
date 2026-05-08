@@ -7,6 +7,6 @@ accesslog = "/var/log/gunicorn/access.log"
 errorlog = "/var/log/gunicorn/error.log"
 
 workers = 1
-threads = 32
+threads = 64
 worker_class = "gthread"
 keepalive = 1
