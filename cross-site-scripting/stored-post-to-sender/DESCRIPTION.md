@@ -1,5 +1,7 @@
 What happens in ***pwnpost™***, stays in ***pwnpost™*** for real this time.
 
+Same visibility rules as before: admin does not see non-admin post bodies. The author name is still rendered next to each post, and this time there is no content filter to work around.
+
 ---
 
 ### Challenge Environment

@@ -2,8 +2,6 @@
 
 In this level, you'll explore how reflected input can turn into executable code. Your goal is simple: trigger a JavaScript [alert()](https://developer.mozilla.org/en-US/docs/Web/API/Window/alert).
 
-*Every security journey starts with understanding the basics, and this is where reflection begins.*
-
 ---
 
 ### Challenge Environment

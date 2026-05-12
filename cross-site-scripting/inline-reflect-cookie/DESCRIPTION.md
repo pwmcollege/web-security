@@ -3,5 +3,3 @@
 In practice, that means an attacker's code can access sensitive information stored in the browser, including [session cookies](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie) that keep users authenticated.
 
 In this level, you'll explore how a simple reflected XSS vulnerability can be used to retrieve a victim's cookie.
-
-*Sometimes all it takes is a single crumb to expose the whole session.*
