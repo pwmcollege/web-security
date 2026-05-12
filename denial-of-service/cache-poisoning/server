@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+
+@app.get("/health")
+def health():
+    port = request.headers.get("X-Forwarded-Port", "")
+    if port:
+        try:
+            p = int(port)
+            if not 1 <= p <= 65535:
+                raise ValueError
+        except ValueError:
+            return "Bad Request\n", 400
+
+    rng = request.headers.get("Range", "")
+    if rng:
+        if not rng.startswith("bytes="):
+            return "Range Not Satisfiable\n", 416
+        try:
+            lo, hi = rng[6:].split("-")
+            int(lo)
+            int(hi)
+        except (ValueError, AttributeError):
+            return "Range Not Satisfiable\n", 416
+
+    return "OK\n", 200
+
+
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

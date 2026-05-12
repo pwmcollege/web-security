@@ -4,4 +4,4 @@ The server has a small template language. Send `{"$repeat": [n, inner]}` and the
 
 Body size is capped at **16 KB**. The compression-bomb defense doesn't catch this one. The request really is small. Only the **result** of parsing it is huge.
 
-The endpoint here is `POST /render`. Get the server to detect a 1 GB+ expansion, and the watchdog will hand you the flag.
+The endpoint here is `POST /render`. Get the server to detect a 1 GB+ expansion.

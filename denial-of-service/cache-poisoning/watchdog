@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+
+import datetime
+import glob
+import os
+import resource
+import time
+
+import requests
+
+session = requests.Session()
+adapter = requests.adapters.HTTPAdapter(
+    pool_connections=2, pool_maxsize=4, max_retries=0
+)
+session.mount("http://", adapter)
+session.mount("https://", adapter)
+
+FAILED_ATTEMPTS_TO_FLAG = 5
+ATTEMPT_INTERVAL = 1
+BROADCAST_INTERVAL = 10  # s
+
+CLEAR = "\033[2J\033[H"
+RED = "\033[1;31m"
+GREEN = "\033[1;32m"
+ORANGE = "\033[1;33m"
+PURPLE = "\033[1;35m"
+GOLD = "\033[0;33m"
+RESET = "\033[0m"
+
+
+def format_flag(flag):
+    today = datetime.date.today()
+    if today.month == 12:
+        banner = f"🎅 🎄 🎁 {RED}Ho Ho Ho{RESET}, {GREEN}Merry Christmas!{RESET}\n"
+        return f"{banner}{flag}\n"
+    if today.month == 11:
+        banner = f"🦃 🍂 🥧 {GOLD}Happy Thanksgiving!{RESET}\n"
+        return f"{banner}{flag}\n"
+    if today.month == 10:
+        banner = (
+            f"🎃 👻 🕸️ {ORANGE}Happy Halloween{RESET}, {PURPLE}stay spooky!{RESET}\n"
+        )
+        return f"{banner}{flag}\n"
+    return f"The server is down! Your flag is: {flag}\n"
+
+
+def ok():
+    try:
+        r = session.get("https://proxy.internal:443/health", timeout=(1, 2), verify="/etc/ssl/certs/internal.cert.pem")
+        return r.status_code == 200
+    except requests.RequestException:
+        return False
+
+
+def list_ttys():
+    pts = glob.glob("/dev/pts/[0-9]*")
+    vts = glob.glob("/dev/tty[0-9]*")
+
+    seen, out = set(), []
+
+    for p in pts + vts:
+        if p not in seen:
+            seen.add(p)
+            out.append(p)
+    return out
+
+
+def broadcast_flag(flag):
+    wrote_any = False
+    message = format_flag(flag)
+
+    for tty in list_ttys():
+        try:
+            with open(tty, "w", buffering=1, errors="ignore") as f:
+                f.write(CLEAR)
+                f.write(message)
+                wrote_any = True
+        except Exception:
+            pass
+    return wrote_any
+
+
+def main():
+    fails = 0
+    while True:
+        if ok():
+            fails = 0
+        else:
+            fails += 1
+        if fails >= FAILED_ATTEMPTS_TO_FLAG:
+            with open("/flag", "r") as f:
+                flag = f.read().strip()
+            if os.getuid() == 0:
+                while True:
+                    broadcast_flag(flag)
+                    time.sleep(BROADCAST_INTERVAL)
+            else:  # only print once if rootless
+                print(flag, flush=True)
+            break
+        time.sleep(ATTEMPT_INTERVAL)
+
+
+if __name__ == "__main__":
+    try:
+        resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        main()
+    except KeyboardInterrupt:
+        pass
+    except Exception:
+        exit(1)

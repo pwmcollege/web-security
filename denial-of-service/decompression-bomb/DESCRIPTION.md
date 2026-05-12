@@ -4,4 +4,4 @@ This server caps the body too. `Content-Length` is limited to **2 MB**. But it a
 
 A small, well-crafted compressed payload can decompress into something thousands of times its size. The lesson: a length cap on the wire doesn't tell you anything about the cost of what's inside.
 
-The endpoint here is `POST /upload`. Get the server to detect a 1 GB+ payload, and the watchdog will hand you the flag.
+The endpoint here is `POST /upload`. Get the server to detect a 1 GB+ payload.

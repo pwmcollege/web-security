@@ -27,6 +27,10 @@ resources:
   - id: slow-read
     name: Slow Read
     type: challenge
+  - id: cache-poisoning
+    name: Cache Poisoning
+    type: challenge
+    privileged: true
   - id: shared-resources
     name: Shared Resources
     type: challenge
