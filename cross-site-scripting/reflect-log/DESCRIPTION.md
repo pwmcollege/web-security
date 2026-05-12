@@ -1,8 +1,8 @@
 The ability to read a server's log is powerful.
 
-The victim visits whatever URL you hand them, but before they do, they get a cookie containing the flag. The cookie is readable from JavaScript on `challenge.internal`.
+When the victim runs, they pick up a [cookie](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie) containing the flag, and then visit whatever URL you handed them on `challenge.internal`. The cookie is readable from JavaScript on that origin.
 
-You cannot exfiltrate to an external server because the victim is air-gapped, but the server is still right there logging every request that comes in. Anything that reaches the access log is something you can read.
+You cannot exfiltrate it to an external server because the victim is air-gapped. But the server logs every request that comes in, and you can read its access log from your shell. Anything the victim's browser sends to the server ends up in the log.
 
 ---
 

@@ -1,10 +1,10 @@
 What happens in ***pwnpost™***, stays in ***pwnpost™***.
 
-Non-admin posts are now hidden from the admin's feed view. The admin only sees their own content, so your XSS payload no longer reaches them through the post body.
+Non-admin posts are now hidden from admin's feed view. When admin opens the feed, the body of your post is replaced with a placeholder, so a script in the content never runs in their tab.
 
-But the author name is rendered next to every post, and admin still sees that.
+There is also a content filter on drafts that rejects anything containing the obvious flag prefix.
 
-There is also a content filter on drafts that blocks the obvious flag prefix.
+But the page admin loads still has plenty going on. The post body is not the only place a server can render attacker-controlled text.
 
 ---
 

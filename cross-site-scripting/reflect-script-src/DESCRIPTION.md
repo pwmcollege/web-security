@@ -1,5 +1,3 @@
-The message box still trusts your input, but no inline JavaScript.
+The message box still trusts your input, but the page no longer wraps it in JavaScript. Your message goes straight into the HTML this time, as the content of a regular tag.
 
-Your message goes straight into the HTML this time. There's no script block wrapping it, so there's no string to break out of.
-
-A Content Security Policy is in place, but it only restricts where scripts may come from, not whether they can run. Pick the right source.
+There is no script block to escape from, so the string-breakout trick from the previous levels does not apply. But a [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) is in place. The policy does not stop scripts from running, it just restricts where they may be loaded from.

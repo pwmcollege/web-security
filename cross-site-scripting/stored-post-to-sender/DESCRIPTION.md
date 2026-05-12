@@ -1,6 +1,8 @@
 What happens in ***pwnpost™***, stays in ***pwnpost™*** for real this time.
 
-Same visibility rules as before: admin does not see non-admin post bodies. The author name is still rendered next to each post, and this time there is no content filter to work around.
+Same visibility rules as before: non-admin post bodies are hidden when admin views the feed, replaced with a placeholder. Your content does not reach them through there.
+
+This time there is no content filter on drafts, so you have cleaner room to operate on whatever does still get rendered to admin on the feed page.
 
 ---
 

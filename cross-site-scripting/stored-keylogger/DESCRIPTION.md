@@ -2,9 +2,9 @@ How to stop hackers from leaking admin's private posts? By not posting at all!!!
 
 Modern problems require modern solutions.
 
-The admin still opens the feed and starts typing a draft containing the flag, but the draft never gets submitted. The text only exists in their browser, inside the textarea.
+The admin now opens the feed, starts typing a draft that contains the flag, and never submits it. The text only exists in their browser, inside the textarea on the page.
 
-You still get one stored payload running in their tab. Read the keys as they are typed.
+You still get one stored payload running in their tab when they view the feed. The keys are typed in front of you, before the page ever sees a submitted post.
 
 ---
 
