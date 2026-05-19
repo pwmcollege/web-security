@@ -58,12 +58,26 @@ def extract_script(value):
     if tag.attrs:
         return None
 
-    return tag.get_text()
+    return tag.decode_contents()
+
+
+_JS_ESCAPE = re.compile(r"\\u\{([0-9a-fA-F]+)\}|\\u([0-9a-fA-F]{4})")
+
+
+def _decode_js_escapes(text):
+    def repl(match):
+        try:
+            return chr(int(match.group(1) or match.group(2), 16))
+        except (ValueError, OverflowError):
+            return match.group(0)
+
+    return _JS_ESCAPE.sub(repl, text)
 
 
 def is_blocked(script_text):
+    decoded = _decode_js_escapes(script_text)
     return any(
-        re.search(pattern, script_text, flags=flags) for pattern, flags in BLOCKLIST
+        re.search(pattern, decoded, flags=flags) for pattern, flags in BLOCKLIST
     )
 
 
