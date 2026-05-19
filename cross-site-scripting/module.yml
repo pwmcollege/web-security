@@ -155,8 +155,8 @@ resources:
   - id: filter-apis
     name: API Calypse
     type: challenge
-  - id: filter-global
-    name: Think Small
+  - id: filter-unicode
+    name: Escape Artist
     type: challenge
   - id: filter-charset
     name: Lost for Words

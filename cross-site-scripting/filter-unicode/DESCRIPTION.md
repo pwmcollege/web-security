@@ -21,6 +21,6 @@ The following APIs and globals are banned:
 - `FormData`, `URL`, `URLSearchParams`, `Request`, `Headers`, `Response`
 - `media`, `Image`, `Audio`, `Video`, `Track`, `Source`, `Bitmap`, `Canvas`, `Blob`, `File`
 - `navigator`, `postMessage`, `document`, `window`, `globalThis`, `global`, `self`, `this`, `top`, `parent`, `frames`, `form`, `element`, `constructor`
-- `eval`, `Function`, `setTimeout`, `setInterval`
+- `eval`, `Function`, `setTimeout`, `setInterval`, `import()`
 
-String literals are also limited to one character.
+Computed member access via square brackets (`[`, `]`) is also disallowed.

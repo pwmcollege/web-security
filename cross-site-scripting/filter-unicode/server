@@ -86,9 +86,10 @@ BLOCKLIST = [
     (r"function", re.IGNORECASE),
     (r"constructor", re.IGNORECASE),
     (r"set(?:timeout|interval)", re.IGNORECASE),
+    (r"import", re.IGNORECASE),
+    (r"\[", re.IGNORECASE),
+    (r"\]", re.IGNORECASE),
 ]
-
-STRING_LITERAL = re.compile(r"""(["'`])((?:\\.|(?!\1).)*)\1""", re.DOTALL)
 
 
 def _is_ignorable_text(node):
@@ -129,30 +130,9 @@ def extract_script(value):
     return tag.decode_contents()
 
 
-def has_long_string_literal(script_text):
-    for match in STRING_LITERAL.finditer(script_text):
-        if len(match.group(2)) > 1:
-            return True
-    return False
-
-
-_JS_ESCAPE = re.compile(r"\\u\{([0-9a-fA-F]+)\}|\\u([0-9a-fA-F]{4})")
-
-
-def _decode_js_escapes(text):
-    def repl(match):
-        try:
-            return chr(int(match.group(1) or match.group(2), 16))
-        except (ValueError, OverflowError):
-            return match.group(0)
-
-    return _JS_ESCAPE.sub(repl, text)
-
-
 def is_blocked(script_text):
-    decoded = _decode_js_escapes(script_text)
-    return has_long_string_literal(script_text) or any(
-        re.search(pattern, decoded, flags=flags) for pattern, flags in BLOCKLIST
+    return any(
+        re.search(pattern, script_text, flags=flags) for pattern, flags in BLOCKLIST
     )
 
 
