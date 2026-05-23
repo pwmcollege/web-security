@@ -140,9 +140,6 @@ resources:
   - id: filter-shadow
     name: Shadow Banned
     type: challenge
-  - id: filter-shadow-side-channel
-    name: Ghost in the DOM
-    type: challenge
   - id: filter-fetch
     name: Request Denied
     type: challenge
@@ -160,6 +157,9 @@ resources:
     type: challenge
   - id: filter-charset
     name: Lost for Words
+    type: challenge
+  - id: filter-mismatch
+    name: Double Take
     type: challenge
   - id: filter-shadow-global
     name: The Great XSS Filter

@@ -8,16 +8,6 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-ALLOWLIST = [
-    "script",
-]
-
-BLOCKLIST = [
-    (r"fetch", re.IGNORECASE),
-    (r"xmlhttprequest", re.IGNORECASE),
-    (r"sendbeacon", re.IGNORECASE),
-]
-
 
 def _is_ignorable_text(node):
     return isinstance(node, NavigableString) and not node.strip()
@@ -34,42 +24,41 @@ def _document_nodes(soup):
     return nodes
 
 
-def is_allowed_tag(tag):
-    return tag.name in ALLOWLIST
+_JS_ESCAPE = re.compile(r"\\u\{([0-9a-fA-F]+)\}|\\u([0-9a-fA-F]{4})")
 
 
-def extract_script(value):
-    soup = BeautifulSoup(value, "html5lib")
+def _decode_js_escapes(text):
+    def repl(match):
+        try:
+            return chr(int(match.group(1) or match.group(2), 16))
+        except (ValueError, OverflowError):
+            return match.group(0)
+
+    return _JS_ESCAPE.sub(repl, text)
+
+
+def extract_text(value):
+    decoded = _decode_js_escapes(value)
+    soup = BeautifulSoup(decoded, "html5lib")
     nodes = _document_nodes(soup)
+
     if len(nodes) != 1:
         return None
 
-    tag = nodes[0]
-    if not isinstance(tag, Tag):
+    node = nodes[0]
+    if not isinstance(node, NavigableString):
         return None
 
-    if not is_allowed_tag(tag):
-        return None
-
-    if tag.attrs:
-        return None
-
-    return tag.get_text()
-
-
-def is_blocked(script_text):
-    return any(
-        re.search(pattern, script_text, flags=flags) for pattern, flags in BLOCKLIST
-    )
+    return str(node)
 
 
 @app.route("/", methods=["GET"])
 def ephemeral():
     msg = request.args.get("msg")
-    script_text = extract_script(msg) if msg else None
-    banned = bool(msg and (script_text is None or is_blocked(script_text)))
+    text = extract_text(msg) if msg else None
+    banned = bool(msg and text is None)
 
-    return render_template("ephemeral.html", msg=msg, banned=banned)
+    return render_template("ephemeral.html", msg=text, banned=banned)
 
 
 app.secret_key = os.urandom(64)
