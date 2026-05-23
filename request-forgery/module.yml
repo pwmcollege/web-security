@@ -8,6 +8,7 @@ resources:
   - id: stored-httponly
     name: OnlyHttp
     type: challenge
+    required: false
   - type: header
     content: Cross-Site
   - type: header
