@@ -1,0 +1,10 @@
+name: SQL Injection
+visibility:
+  start: "2067-06-07T00:00:00-07:00"
+privileged: true
+resources:
+  - type: header
+    content: In-band Classics
+  - id: auth-bypass-login
+    name: The Front Door
+    type: challenge
