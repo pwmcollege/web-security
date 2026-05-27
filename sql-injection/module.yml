@@ -6,5 +6,5 @@ resources:
   - type: header
     content: In-band Classics
   - id: auth-bypass-login
-    name: The Front Door
+    name: Who Am I
     type: challenge

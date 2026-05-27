@@ -1,8 +1,8 @@
-Somewhere between the login form and the database, a string gets built. That string is SQL. If you can sneak a quote into it, you stop being a *user* and start being a *query author*.
+SQL Injection happens when a web app builds a database query by sticking user input directly into the SQL string. The database can't tell the difference between data and code, so whatever the attacker types becomes part of the query.
 
-The portal will happily check whether your credentials exist in the `users` table. It will not, however, check whether the question it's asking the database is the question it meant to ask.
+In this challenge, the pwnpost login checks your username and password by running a SELECT against the `users` table. The query is built by string concatenation.
 
-Walk in as `admin`.
+Your goal: log in as `admin` without knowing the password.
 
 ---
 
