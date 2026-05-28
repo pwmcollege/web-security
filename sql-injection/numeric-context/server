@@ -41,6 +41,14 @@ db.execute(
     [flag],
 )
 db.execute(
+    """INSERT INTO posts (content, author, published) VALUES (?, "guest", TRUE)""",
+    ["Loving the new pwnpost so far!"],
+)
+db.execute(
+    """INSERT INTO posts (content, author, published) VALUES (?, "hacker", TRUE)""",
+    ["the dev parameterized /login but i bet /post is a different story"],
+)
+db.execute(
     """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
     [flag],
 )
@@ -115,7 +123,7 @@ def challenge_post():
     post_id = request.args.get("id", "1")
     query = (
         "SELECT id, content, author, published FROM posts "
-        f"WHERE id = {post_id} AND author = '{username}'"
+        f"WHERE id = {post_id} AND (published = TRUE OR author = '{username}')"
     )
 
     try:
