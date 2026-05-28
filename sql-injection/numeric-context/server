@@ -1,12 +1,13 @@
 #!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
 import os
-import secrets
 import sqlite3
 import tempfile
 import threading
 
 from flask import Flask, abort, flash, redirect, render_template, request, session
+
+app = Flask(__name__)
 
 
 class TemporaryDB:
@@ -24,39 +25,33 @@ class TemporaryDB:
             return result
 
 
-app = Flask(__name__)
-
 flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
 
 db = TemporaryDB()
-db.execute("CREATE TABLE users (username TEXT PRIMARY KEY, password TEXT NOT NULL)")
-for username, password in [
-    ("admin", secrets.token_hex(32)),
-    ("guest", "password"),
-    ("hacker", "1337"),
-]:
-    db.execute(
-        "INSERT INTO users (username, password) VALUES (?, ?)",
-        (username, password),
-    )
-
 db.execute(
-    "CREATE TABLE posts ("
-    "id INTEGER PRIMARY KEY, "
-    "author TEXT NOT NULL, "
-    "content TEXT NOT NULL, "
-    "published INTEGER NOT NULL"
-    ")"
+    """CREATE TABLE posts (
+        id INTEGER PRIMARY KEY,
+        content TEXT,
+        author TEXT,
+        published INTEGER
+    )"""
 )
-for author, content, published in [
-    ("admin", flag, 0),
-    ("guest", "Loving the new pwnpost so far!", 1),
-    ("hacker", "shoutout to the dev who finally parameterized the login query", 1),
-]:
-    db.execute(
-        "INSERT INTO posts (author, content, published) VALUES (?, ?, ?)",
-        (author, content, published),
-    )
+db.execute(
+    """INSERT INTO posts (content, author, published) VALUES (?, "admin", FALSE)""",
+    [flag],
+)
+db.execute(
+    """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
+    [flag],
+)
+db.execute(
+    """INSERT INTO users SELECT "guest" as username, ? as password""",
+    ["password"],
+)
+db.execute(
+    """INSERT INTO users SELECT "hacker" as username, ? as password""",
+    ["1337"],
+)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -65,19 +60,23 @@ def challenge_login():
         return redirect("/")
 
     if request.method == "POST":
-        username = request.form.get("username", "")
-        password = request.form.get("password", "")
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-        row = db.execute(
-            "SELECT username FROM users WHERE username = ? AND password = ?",
+        if not username or not password:
+            flash("Identity credentials required")
+            return redirect("/login")
+
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ? AND password = ?",
             (username, password),
         ).fetchone()
 
-        if not row:
+        if not user:
             flash("Access denied: Invalid credentials")
             return redirect("/login")
 
-        session["username"] = row["username"]
+        session["username"] = user["username"]
         return redirect("/")
 
     return render_template("login.html")
@@ -85,75 +84,67 @@ def challenge_login():
 
 @app.route("/draft", methods=["POST"])
 def challenge_draft():
-    username = session.get("username")
-
+    username = session.get("username", None)
     if not username:
         abort(403, "Log in first!")
 
     content = request.form.get("content", "")
-
-    if not content:
-        return redirect("/")
-
     db.execute(
         "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
-        (content, username, 1 if request.form.get("publish") else 0),
+        (content, username, bool(request.form.get("publish"))),
     )
     return redirect("/")
 
 
 @app.route("/publish", methods=["POST"])
 def challenge_publish():
-    username = session.get("username")
-
+    username = session.get("username", None)
     if not username:
         abort(403, "Log in first!")
 
-    db.execute("UPDATE posts SET published = 1 WHERE author = ?", (username,))
+    db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
     return redirect("/")
 
 
 @app.route("/post", methods=["GET"])
 def challenge_post():
     username = session.get("username")
-
     if not username:
         return redirect("/login")
 
     post_id = request.args.get("id", "1")
     query = (
-        "SELECT id, author, content, published FROM posts "
+        "SELECT id, content, author, published FROM posts "
         f"WHERE id = {post_id} AND author = '{username}'"
     )
 
     try:
-        row = db.execute(query).fetchone()
+        post = db.execute(query).fetchone()
     except sqlite3.Error as error:
         flash(f"Database error: {error}")
         return redirect("/")
 
-    if not row:
+    if not post:
         flash("Post not found")
         return redirect("/")
 
-    return render_template("post.html", username=username, post=row)
+    return render_template("post.html", username=username, post=post)
 
 
 @app.route("/", methods=["GET"])
-def challenge_index():
+def challenge_get():
     username = session.get("username")
-
     if not username:
         return redirect("/login")
 
-    posts = db.execute("SELECT * FROM posts ORDER BY id").fetchall()
+    posts = db.execute("SELECT * FROM posts").fetchall()
     return render_template("index.html", username=username, posts=posts)
 
 
 @app.route("/logout")
 def challenge_logout():
     session.clear()
-    return redirect("/login")
+    return redirect("/")
 
 
 app.secret_key = os.urandom(64)

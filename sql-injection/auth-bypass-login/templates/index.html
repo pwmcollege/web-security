@@ -20,7 +20,7 @@
                 >
                     {{ username[0] }}
                 </div>
-                <p class="text-sm font-bold text-slate-900 leading-none break-all">
+                <p class="text-sm font-bold text-slate-900 leading-none">
                     {{ username }}
                 </p>
             </div>
@@ -37,18 +37,6 @@
                 >
             </div>
         </div>
-
-        {% with messages = get_flashed_messages() %} {% if messages %}
-        <div class="mx-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
-            {% for message in messages %}
-            <div
-                class="bg-red-50 border border-red-100 text-red-500 px-4 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-wider shadow-sm shadow-red-500/5"
-            >
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %} {% endwith %}
 
         <!-- Posting Section -->
         <div
@@ -71,7 +59,9 @@
                         placeholder="Write something!"
                     ></textarea>
                     <div class="flex items-center justify-between">
-                        <label class="flex items-center space-x-3 cursor-pointer group">
+                        <label
+                            class="flex items-center space-x-3 cursor-pointer group"
+                        >
                             <div class="relative">
                                 <input
                                     type="checkbox"
@@ -123,7 +113,6 @@
                         class="text-[11px] font-bold text-slate-400 italic font-medium"
                     >
                         Author: {{ post.author }}
-                        <span class="not-italic font-mono text-slate-300 ml-2">#{{ post.id }}</span>
                     </h2>
                     {% if post.author == username %}
                     <span
@@ -134,11 +123,10 @@
                 </div>
 
                 <div
-                    class="text-sm text-slate-900 leading-relaxed font-medium px-2 break-words whitespace-pre-wrap"
+                    class="text-sm text-slate-900 leading-relaxed font-medium px-2"
                 >
-                    {% if post.author == username or username == "admin" or post.published %}
-                    {{ post.content }}
-                    {% else %}
+                    {% if post.author == username or username == "admin" or
+                    post.published %} {{ post.content|safe }} {% else %}
                     <div class="text-[11px] font-bold text-slate-400 italic">
                         (Draft post, showing first 12 characters):<br />
                         <div

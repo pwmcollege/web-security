@@ -1,6 +1,7 @@
 {% extends "layout.html" %} {% block content %}
 <div class="w-full max-w-2xl flex-grow flex flex-col py-12 items-center">
     <div class="w-full space-y-6">
+        <!-- User Hub -->
         <div
             class="glass mx-4 p-5 rounded-3xl border border-slate-200 shadow-xl shadow-black/[0.04] flex items-center justify-between bg-white/70"
         >
@@ -10,7 +11,7 @@
                 >
                     {{ username[0] }}
                 </div>
-                <p class="text-sm font-bold text-slate-900 leading-none break-all">
+                <p class="text-sm font-bold text-slate-900 leading-none">
                     {{ username }}
                 </p>
             </div>
@@ -28,27 +29,32 @@
             </div>
         </div>
 
-        <article
-            class="glass mx-4 rounded-3xl p-8 border border-slate-200 shadow-lg bg-white/70 space-y-4"
-        >
-            <div class="flex items-center justify-between px-2">
-                <h2 class="text-[11px] font-bold text-slate-400 italic">
-                    Author: {{ post.author }}
-                    <span class="not-italic font-mono text-slate-300 ml-2">#{{ post.id }}</span>
-                </h2>
-                {% if not post.published %}
-                <span
-                    class="text-[9px] font-bold bg-amber-500/10 text-amber-600 px-3 py-1 rounded-lg uppercase tracking-widest ring-1 ring-amber-500/20"
-                    >Draft</span
-                >
-                {% endif %}
-            </div>
-            <p
-                class="text-sm text-slate-900 leading-relaxed font-medium px-2 break-words whitespace-pre-wrap"
+        <!-- Single Post -->
+        <div class="mx-4 pt-4 space-y-4">
+            <div
+                class="glass p-6 rounded-3xl border border-slate-200 bg-white/80 space-y-4 shadow-sm transition-all hover:border-[#007AFF]/30"
             >
-                {{ post.content }}
-            </p>
-        </article>
+                <div class="flex items-center justify-between px-2">
+                    <h2
+                        class="text-[11px] font-bold text-slate-400 italic font-medium"
+                    >
+                        Author: {{ post.author }}
+                    </h2>
+                    {% if post.author == username %}
+                    <span
+                        class="text-[9px] font-bold bg-[#007AFF]/10 text-[#007AFF] px-3 py-1 rounded-lg uppercase tracking-widest ring-1 ring-[#007AFF]/20"
+                        >You</span
+                    >
+                    {% endif %}
+                </div>
+
+                <div
+                    class="text-sm text-slate-900 leading-relaxed font-medium px-2"
+                >
+                    {{ post.content|safe }}
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="text-center opacity-30 pt-12 pb-8 mt-auto shrink-0">

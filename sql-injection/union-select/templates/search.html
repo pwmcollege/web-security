@@ -1,6 +1,7 @@
 {% extends "layout.html" %} {% block content %}
 <div class="w-full max-w-2xl flex-grow flex flex-col py-12 items-center">
     <div class="w-full space-y-6">
+        <!-- User Hub -->
         <div
             class="glass mx-4 p-5 rounded-3xl border border-slate-200 shadow-xl shadow-black/[0.04] flex items-center justify-between bg-white/70"
         >
@@ -10,7 +11,7 @@
                 >
                     {{ username[0] }}
                 </div>
-                <p class="text-sm font-bold text-slate-900 leading-none break-all">
+                <p class="text-sm font-bold text-slate-900 leading-none">
                     {{ username }}
                 </p>
             </div>
@@ -28,66 +29,77 @@
             </div>
         </div>
 
-        <form
-            action="/search"
-            method="get"
-            class="glass mx-4 p-5 rounded-3xl border border-slate-200 shadow-lg bg-white/70 flex items-center space-x-3"
-        >
-            <input
-                type="text"
-                name="q"
-                value="{{ q }}"
-                placeholder="Search published posts…"
-                class="flex-grow bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
-            />
-            <button
-                type="submit"
-                class="px-5 py-3 bg-[#007AFF] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg shadow-black/10 hover:brightness-110 active:scale-95"
-            >
-                Search
-            </button>
-        </form>
-
-        {% if error %}
+        <!-- Search Form -->
         <div
-            class="mx-4 bg-red-50 border border-red-100 text-red-500 px-4 py-3 rounded-2xl text-[11px] font-mono font-bold shadow-sm shadow-red-500/5"
-        >
-            Database error: {{ error }}
-        </div>
-        {% endif %}
-
-        <div
-            class="glass mx-4 rounded-3xl p-8 border border-slate-200 shadow-lg bg-white/70 space-y-4"
+            class="glass mx-4 rounded-3xl p-8 border border-slate-200 shadow-lg bg-white/70 space-y-6"
         >
             <div class="flex items-center space-x-2">
                 <h3
                     class="text-[11px] font-black uppercase tracking-widest text-[#007AFF]"
                 >
-                    Results for "{{ q }}"
+                    Search
                 </h3>
                 <div class="h-px flex-grow bg-slate-100"></div>
             </div>
 
-            {% if results %}
-            <ul class="space-y-3">
-                {% for row in results %}
-                <li
-                    class="px-4 py-3 rounded-2xl border border-slate-100 bg-white space-y-2"
+            <form
+                action="/search"
+                method="get"
+                class="flex items-center space-x-3"
+            >
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ q }}"
+                    placeholder="Search published posts..."
+                    class="flex-grow bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                />
+                <button
+                    type="submit"
+                    class="px-6 py-3 bg-[#007AFF] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg active:scale-95 shadow-black/10"
                 >
-                    <p class="text-[11px] font-bold text-slate-400 italic">
+                    Go
+                </button>
+            </form>
+
+            {% if error %}
+            <div
+                class="bg-red-50 border border-red-100 text-red-500 px-4 py-3 rounded-2xl text-[11px] font-mono font-bold shadow-sm shadow-red-500/5"
+            >
+                Database error: {{ error }}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Results -->
+        <div class="mx-4 pt-4 space-y-4">
+            {% if results %}
+            {% for row in results %}
+            <div
+                class="glass p-6 rounded-3xl border border-slate-200 bg-white/80 space-y-4 shadow-sm transition-all hover:border-[#007AFF]/30"
+            >
+                <div class="flex items-center justify-between px-2">
+                    <h2
+                        class="text-[11px] font-bold text-slate-400 italic font-medium"
+                    >
                         Author: {{ row["author"] }}
-                        <span class="not-italic font-mono text-slate-300 ml-2">#{{ row["id"] }}</span>
-                    </p>
-                    <p class="text-sm text-slate-900 font-medium break-words whitespace-pre-wrap">
-                        {{ row["content"] }}
-                    </p>
-                </li>
-                {% endfor %}
-            </ul>
+                    </h2>
+                </div>
+                <div
+                    class="text-sm text-slate-900 leading-relaxed font-medium px-2"
+                >
+                    {{ row["content"]|safe }}
+                </div>
+            </div>
+            {% endfor %}
             {% elif not error %}
-            <p class="text-sm text-slate-500 font-medium">
-                No posts matched your search.
-            </p>
+            <div
+                class="glass p-6 rounded-3xl border border-slate-200 bg-white/80 text-center"
+            >
+                <p class="text-sm text-slate-500 font-medium">
+                    No posts matched your search.
+                </p>
+            </div>
             {% endif %}
         </div>
     </div>
