@@ -51,7 +51,7 @@ db.execute(
 for author, content, published in [
     ("admin", flag, 0),
     ("guest", "Loving the new pwnpost so far!", 1),
-    ("hacker", "the dev shipped /login at 2am, anything is possible", 1),
+    ("hacker", "shoutout to the dev who finally parameterized the login query", 1),
 ]:
     db.execute(
         "INSERT INTO posts (author, content, published) VALUES (?, ?, ?)",
@@ -68,16 +68,10 @@ def challenge_login():
         username = request.form.get("username", "")
         password = request.form.get("password", "")
 
-        query = (
-            "SELECT username FROM users "
-            f"WHERE username = '{username}' AND password = '{password}'"
-        )
-
-        try:
-            row = db.execute(query).fetchone()
-        except sqlite3.Error as error:
-            flash(f"Database error: {error}")
-            return redirect("/login")
+        row = db.execute(
+            "SELECT username FROM users WHERE username = ? AND password = ?",
+            (username, password),
+        ).fetchone()
 
         if not row:
             flash("Access denied: Invalid credentials")
@@ -117,6 +111,32 @@ def challenge_publish():
 
     db.execute("UPDATE posts SET published = 1 WHERE author = ?", (username,))
     return redirect("/")
+
+
+@app.route("/post", methods=["GET"])
+def challenge_post():
+    username = session.get("username")
+
+    if not username:
+        return redirect("/login")
+
+    post_id = request.args.get("id", "1")
+    query = (
+        "SELECT id, author, content, published FROM posts "
+        f"WHERE id = {post_id} AND author = '{username}'"
+    )
+
+    try:
+        row = db.execute(query).fetchone()
+    except sqlite3.Error as error:
+        flash(f"Database error: {error}")
+        return redirect("/")
+
+    if not row:
+        flash("Post not found")
+        return redirect("/")
+
+    return render_template("post.html", username=username, post=row)
 
 
 @app.route("/", methods=["GET"])

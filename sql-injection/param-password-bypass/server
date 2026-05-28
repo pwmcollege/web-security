@@ -69,12 +69,11 @@ def challenge_login():
         password = request.form.get("password", "")
 
         query = (
-            "SELECT username FROM users "
-            f"WHERE username = '{username}' AND password = '{password}'"
+            f"SELECT username FROM users WHERE username = '{username}' AND password = ?"
         )
 
         try:
-            row = db.execute(query).fetchone()
+            row = db.execute(query, (password,)).fetchone()
         except sqlite3.Error as error:
             flash(f"Database error: {error}")
             return redirect("/login")

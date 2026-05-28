@@ -1,0 +1,62 @@
+{% extends "layout.html" %} {% block content %}
+<div class="w-full max-w-2xl flex-grow flex flex-col py-12 items-center">
+    <div class="w-full space-y-6">
+        <div
+            class="glass mx-4 p-5 rounded-3xl border border-slate-200 shadow-xl shadow-black/[0.04] flex items-center justify-between bg-white/70"
+        >
+            <div class="flex items-center space-x-3">
+                <div
+                    class="h-10 w-10 rounded-full bg-[#007AFF] flex items-center justify-center text-white text-xs font-bold uppercase tracking-widest shadow-sm"
+                >
+                    {{ username[0] }}
+                </div>
+                <p class="text-sm font-bold text-slate-900 leading-none break-all">
+                    {{ username }}
+                </p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a
+                    href="/"
+                    class="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-[#007AFF] transition-colors px-3 py-1.5 rounded-xl border border-slate-200 bg-white shadow-sm"
+                    >Feed</a
+                >
+                <a
+                    href="/logout"
+                    class="text-[10px] font-bold uppercase tracking-widest text-red-500/70 hover:text-red-700 transition-colors px-3 py-1.5 rounded-xl border border-red-100 bg-white shadow-sm"
+                    >Logout</a
+                >
+            </div>
+        </div>
+
+        <article
+            class="glass mx-4 rounded-3xl p-8 border border-slate-200 shadow-lg bg-white/70 space-y-4"
+        >
+            <div class="flex items-center justify-between px-2">
+                <h2 class="text-[11px] font-bold text-slate-400 italic">
+                    Author: {{ post.author }}
+                    <span class="not-italic font-mono text-slate-300 ml-2">#{{ post.id }}</span>
+                </h2>
+                {% if not post.published %}
+                <span
+                    class="text-[9px] font-bold bg-amber-500/10 text-amber-600 px-3 py-1 rounded-lg uppercase tracking-widest ring-1 ring-amber-500/20"
+                    >Draft</span
+                >
+                {% endif %}
+            </div>
+            <p
+                class="text-sm text-slate-900 leading-relaxed font-medium px-2 break-words whitespace-pre-wrap"
+            >
+                {{ post.content }}
+            </p>
+        </article>
+    </div>
+
+    <footer class="text-center opacity-30 pt-12 pb-8 mt-auto shrink-0">
+        <p
+            class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-900 italic"
+        >
+            pwnpost
+        </p>
+    </footer>
+</div>
+{% endblock %}

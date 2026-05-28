@@ -49,14 +49,22 @@ db.execute(
     ")"
 )
 for author, content, published in [
-    ("admin", flag, 0),
-    ("guest", "Loving the new pwnpost so far!", 1),
-    ("hacker", "the dev shipped /login at 2am, anything is possible", 1),
+    (
+        "admin",
+        "Flag has been relocated to its own table for security. Trust me, this is much safer.",
+        0,
+    ),
+    ("guest", "I'm sure the admin knows what they're doing.", 1),
+    ("hacker", "narrator: the admin did not, in fact, know what they were doing", 1),
 ]:
     db.execute(
         "INSERT INTO posts (author, content, published) VALUES (?, ?, ?)",
         (author, content, published),
     )
+
+flag_table = "flag_" + secrets.token_hex(8)
+db.execute(f"CREATE TABLE {flag_table} (val TEXT NOT NULL)")
+db.execute(f"INSERT INTO {flag_table} (val) VALUES (?)", (flag,))
 
 
 @app.route("/login", methods=["GET", "POST"])
