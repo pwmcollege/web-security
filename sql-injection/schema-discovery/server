@@ -46,7 +46,7 @@ db.execute(
     ["1337"],
 )
 
-flag_table = "flag_" + secrets.token_hex(8)
+flag_table = "flag_" + secrets.token_hex(32)
 db.execute(f"CREATE TABLE {flag_table} (val TEXT NOT NULL)")
 db.execute(f"INSERT INTO {flag_table} (val) VALUES (?)", (flag,))
 
@@ -64,9 +64,7 @@ def challenge_login():
             flash("Identity credentials required")
             return redirect("/login")
 
-        query = (
-            f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
-        )
+        query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
 
         try:
             user = db.execute(query).fetchone()
