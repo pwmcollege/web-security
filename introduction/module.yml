@@ -29,15 +29,20 @@ resources:
   - id: session-in-url
     name: Hello, Admin
     type: challenge
+    privileged: true
   - id: session-in-cookie
     name: Have a Cookie
     type: challenge
+    privileged: true
   - id: trusted-header
     name: Trust Issues
     type: challenge
+    privileged: true
   - id: http-basic-admin
     name: Basic Instinct
     type: challenge
+    privileged: true
   - id: login-logic-flaw
     name: Off by One Check
     type: challenge
+    privileged: true
