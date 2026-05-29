@@ -1,0 +1,91 @@
+{% extends "layout.html" %} {% block content %}
+<div class="w-full max-w-2xl flex-grow flex flex-col py-12 items-center">
+    <div class="text-center px-4 mb-8 shrink-0">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+            pwnbox
+        </h1>
+        <p class="text-slate-500 text-sm mt-1 font-medium">{{ subtitle }}</p>
+    </div>
+
+    <div class="w-full space-y-6">
+        <!-- Command Bar -->
+        <div
+            class="glass mx-4 rounded-3xl p-8 border border-slate-200 shadow-lg space-y-6 bg-white/70"
+        >
+            <div class="flex items-center space-x-2">
+                <h3
+                    class="text-[11px] font-black uppercase tracking-widest text-[#007AFF]"
+                >
+                    {{ action }}
+                </h3>
+                <div class="h-px flex-grow bg-slate-100"></div>
+            </div>
+
+            <form action="/" method="get" class="flex items-center space-x-3">
+                <input
+                    type="text"
+                    name="{{ field }}"
+                    value="{{ value or '' }}"
+                    class="flex-grow bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                    placeholder="{{ placeholder }}"
+                />
+                <button
+                    type="submit"
+                    class="px-8 py-4 bg-[#007AFF] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg active:scale-95 shadow-black/10"
+                >
+                    Run
+                </button>
+            </form>
+        </div>
+
+        {% if error %}
+        <!-- Error -->
+        <div class="mx-4">
+            <div
+                class="bg-red-50 border border-red-100 text-red-500 px-6 py-4 rounded-2xl text-[11px] font-bold uppercase tracking-wider flex items-center space-x-2 shadow-sm shadow-red-500/5"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 shrink-0"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+                <span>{{ error }}</span>
+            </div>
+        </div>
+        {% elif output is not none %}
+        <!-- Output -->
+        <div class="mx-4">
+            <div
+                class="glass p-6 rounded-3xl border border-slate-200 bg-white/80 space-y-4 shadow-sm"
+            >
+                <div class="flex items-center justify-between px-2">
+                    <h2
+                        class="text-[11px] font-bold text-slate-400 italic font-medium"
+                    >
+                        Output
+                    </h2>
+                </div>
+                <pre
+                    class="text-sm text-slate-900 leading-relaxed font-mono whitespace-pre-wrap break-words bg-slate-50 border border-slate-100 p-4 rounded-2xl shadow-inner"
+                >{{ output }}</pre>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <footer class="text-center opacity-30 pt-12 pb-8 mt-auto shrink-0">
+        <p
+            class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-900 italic"
+        >
+            pwnbox
+        </p>
+    </footer>
+</div>
+{% endblock %}

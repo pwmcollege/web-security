@@ -1,15 +1,18 @@
-#!/usr/bin/env python
+#!/usr/bin/exec-suid --environ=none --real -- /usr/local/bin/python -I
 
 import subprocess
 
-from flask import Flask, request
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-USAGE = "Directory listing tool. Usage: /?path=<dir>\n"
+PAGE = dict(
+    subtitle="List the contents of any directory.",
+    action="List",
+    field="path",
+    placeholder="/var/www",
+)
 
-# We learned our lesson: strip the shell separators an attacker would use to
-# chain on a second command.
 BLOCKED = [";", "&", "|"]
 
 
@@ -17,16 +20,18 @@ BLOCKED = [";", "&", "|"]
 def list_dir():
     path = request.args.get("path")
     if not path:
-        return USAGE, 400
+        return render_template("console.html", output=None, **PAGE)
 
     if any(token in path for token in BLOCKED):
-        return "Nice try.\n", 400
+        return render_template(
+            "console.html", value=path, error="Nice try.", **PAGE
+        )
 
     command = f"ls -la {path}"
-    result = subprocess.run(
-        command, shell=True, capture_output=True, text=True
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return render_template(
+        "console.html", value=path, output=result.stdout + result.stderr, **PAGE
     )
-    return result.stdout + result.stderr
 
 
 app.config["SERVER_NAME"] = "challenge.internal"

