@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+import shlex
+import subprocess
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+USAGE = "Backup tool. Archives the paths you name. Usage: /?target=<paths>\n"
+
+
+@app.route("/", methods=["GET"])
+def backup():
+    target = request.args.get("target")
+    if not target:
+        return USAGE, 400
+
+    # No shell at all this time: we split the input ourselves and hand argv
+    # straight to the program. Shell metacharacters are just literal bytes now.
+    args = ["tar", "cf", "/tmp/backup.tar"] + shlex.split(target)
+    result = subprocess.run(args, capture_output=True, text=True)
+    return result.stdout + result.stderr
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

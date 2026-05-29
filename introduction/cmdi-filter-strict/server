@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+import string
+import subprocess
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+USAGE = "Directory listing tool. Usage: /?path=<dir>\n"
+
+# Blocklists kept missing characters, so this time we flip it around: allow only
+# the harmless ones (letters, digits, and the handful of path characters a real
+# directory name needs) and reject everything else.
+ALLOWED = set(string.ascii_letters + string.digits + " /._-\n")
+
+
+@app.route("/", methods=["GET"])
+def list_dir():
+    path = request.args.get("path")
+    if not path:
+        return USAGE, 400
+
+    if any(char not in ALLOWED for char in path):
+        return "Nice try.\n", 400
+
+    command = f"ls -la {path}"
+    result = subprocess.run(
+        command, shell=True, capture_output=True, text=True
+    )
+    return result.stdout + result.stderr
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
