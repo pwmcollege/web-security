@@ -35,11 +35,11 @@ resources:
     type: challenge
     privileged: true
   - id: trusted-header
-    name: Trust Issues
+    name: Internal Affairs
     type: challenge
     privileged: true
   - id: http-basic-admin
-    name: Basic Instinct
+    name: Who Needs a Password
     type: challenge
     privileged: true
   - id: login-logic-flaw
@@ -53,7 +53,7 @@ resources:
     type: challenge
     privileged: true
   - id: cmdi-filter
-    name: Nice Try
+    name: Plan B
     type: challenge
     privileged: true
   - id: cmdi-quotes
@@ -61,17 +61,17 @@ resources:
     type: challenge
     privileged: true
   - id: cmdi-filter-strict
-    name: The Great Filter
+    name: Plan C
     type: challenge
     privileged: true
   - id: cmdi-argv
-    name: No Shell, No Problem
+    name: Argument Settled
     type: challenge
     privileged: true
   - type: header
     content: Path Traversal
   - id: trav-basic
-    name: Up and Out
+    name: One Level Up
     type: challenge
     privileged: true
     visibility:
@@ -90,6 +90,12 @@ resources:
       start: "2067-06-07T00:00:00-07:00"
   - id: trav-encoding
     name: Layers
+    type: challenge
+    privileged: true
+    visibility:
+      start: "2067-06-07T00:00:00-07:00"
+  - id: trav-lstrip
+    name: Left Untouched
     type: challenge
     privileged: true
     visibility:

@@ -24,9 +24,7 @@ def view():
             "viewer.html", filename=filename, error="Path traversal is not allowed."
         )
 
-    decoded = urllib.parse.unquote(filename)
-
-    path = os.path.join(BASE, decoded)
+    path = os.path.join(BASE, urllib.parse.unquote(filename))
     try:
         with open(path) as handle:
             content = handle.read()

@@ -1,0 +1,3 @@
+The encoding trick worked because the old filter inspected your input before decoding it. This version fixes that order: it decodes your input all the way down first, and only then cleans it. With the name fully decoded, there is no hidden layer left to smuggle a traversal through.
+
+The cleaning step is where it gets interesting. The developer assumed a traversal always announces itself the same way at the same place, and wrote the sanitizer to match that assumption exactly. Read what that step actually does to your input, and ask whether your traversal is really obliged to look the way the developer pictured it.
