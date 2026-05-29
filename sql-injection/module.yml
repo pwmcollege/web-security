@@ -8,15 +8,20 @@ resources:
   - id: auth-bypass-login
     name: Who Am I
     type: challenge
+    required: false
   - id: param-password-bypass
     name: Know Your Enemy
     type: challenge
+    required: false
   - id: numeric-context
     name: Numeric Intent
     type: challenge
+    required: false
   - id: union-select
     name: Union Jack
     type: challenge
+    required: false
   - id: schema-discovery
     name: Schema Surveyor
     type: challenge
+    required: false

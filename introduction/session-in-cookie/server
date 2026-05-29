@@ -1,0 +1,95 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+import sqlite3
+import tempfile
+import threading
+
+from flask import Flask, flash, make_response, redirect, render_template, request
+
+app = Flask(__name__)
+
+
+class TemporaryDB:
+    def __init__(self):
+        self.db_file = tempfile.NamedTemporaryFile("x", suffix=".db")
+        self.connection = sqlite3.connect(self.db_file.name, check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self._lock = threading.Lock()
+
+    def execute(self, sql, parameters=()):
+        with self._lock:
+            cursor = self.connection.cursor()
+            result = cursor.execute(sql, parameters)
+            self.connection.commit()
+            return result
+
+
+flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
+
+db = TemporaryDB()
+db.execute(
+    """CREATE TABLE posts AS SELECT ? AS content, "admin" AS author, FALSE AS published""",
+    [flag],
+)
+db.execute(
+    """CREATE TABLE users AS SELECT "admin" AS username, ? AS password""",
+    [os.urandom(16).hex()],
+)
+db.execute("""INSERT INTO users SELECT "guest" AS username, "password" AS password""")
+db.execute("""INSERT INTO users SELECT "hacker" AS username, "1337" AS password""")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def challenge_login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username or not password:
+            flash("Identity credentials required")
+            return redirect("/login")
+
+        user = db.execute(
+            "SELECT username FROM users WHERE username = ? AND password = ?",
+            (username, password),
+        ).fetchone()
+
+        if not user:
+            flash("Access denied: Invalid credentials")
+            return redirect("/login")
+
+        response = make_response(redirect("/"))
+        response.set_cookie("session_user", user["username"])
+        return response
+
+    return render_template("login.html")
+
+
+@app.route("/", methods=["GET"])
+def challenge_get():
+    username = request.cookies.get("session_user")
+    if not username:
+        return redirect("/login")
+
+    posts = db.execute("SELECT * FROM posts").fetchall()
+    return render_template("index.html", username=username, posts=posts)
+
+
+@app.route("/logout")
+def challenge_logout():
+    response = make_response(redirect("/login"))
+    response.delete_cookie("session_user")
+    return response
+
+
+app.secret_key = os.urandom(64)
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

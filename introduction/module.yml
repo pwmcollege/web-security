@@ -24,3 +24,20 @@ resources:
   - id: elf-delivery
     name: ELFpress Delivery
     type: challenge
+  - type: header
+    content: Authentication Bypass
+  - id: session-in-url
+    name: Hello, Admin
+    type: challenge
+  - id: session-in-cookie
+    name: Have a Cookie
+    type: challenge
+  - id: trusted-header
+    name: Trust Issues
+    type: challenge
+  - id: http-basic-admin
+    name: Basic Instinct
+    type: challenge
+  - id: login-logic-flaw
+    name: Off by One Check
+    type: challenge
