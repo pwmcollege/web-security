@@ -52,29 +52,23 @@ resources:
     name: Just Listing
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
+
   - id: cmdi-filter
     name: Nice Try
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
-  - id: cmdi-filter-strict
-    name: The Great Filter
-    type: challenge
-    privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
+
   - id: cmdi-quotes
     name: Out of Quotes
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
+
+  - id: cmdi-filter-strict
+    name: The Great Filter
+    type: challenge
+    privileged: true
+
   - id: cmdi-argv
     name: No Shell, No Problem
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"

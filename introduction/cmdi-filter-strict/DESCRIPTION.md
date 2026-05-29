@@ -1,5 +1,5 @@
-Picking off separators one at a time clearly left gaps, so this version gives up on guessing what's dangerous and does the opposite: it allows only a small set of harmless characters and throws out everything else. No `;`, no `|`, no `&`, no `$`, no backticks, no quotes. On paper, there's nothing left to inject with.
+The last filter only swatted away a handful of separators, so this version shows up with a much longer blocklist. Every shell metacharacter the author could think of gets rejected on sight: the chaining operators, command substitution, redirection, quotes, the lot. Throw the usual payloads at it and you'll just be turned away.
 
-Except the author was thinking about the characters you type and forgot about the one you press. A shell happily treats a line break the same way it treats a semicolon: as the end of one command and the start of the next. If that key slipped through the allowlist, it's all you need.
+The trouble with a blocklist is that it can only reject what someone thought to put on it, and a shell recognizes more ways to end one command and start another than most people picture. Somewhere in that gap is a separator that never made the list. Read the source, work out what it forgot, and slip through.
 
-Same tool, same goal. Check the source to see exactly what survives the filter, then use it to run a command that prints `/flag`.
+Same tool, same goal: run a command that prints `/flag`.
