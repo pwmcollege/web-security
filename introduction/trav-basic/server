@@ -1,0 +1,39 @@
+#!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
+
+import os
+
+from flask import Flask, render_template, request
+
+os.chdir("/challenge")
+
+app = Flask(__name__)
+
+BASE = "."
+
+
+@app.route("/", methods=["GET"])
+def view():
+    filename = request.args.get("file")
+    if not filename:
+        documents = sorted(n for n in os.listdir(BASE) if n.endswith(".txt"))
+        return render_template("viewer.html", content=None, documents=documents)
+
+    path = os.path.join(BASE, filename)
+    try:
+        with open(path) as handle:
+            content = handle.read()
+    except OSError as error:
+        return render_template("viewer.html", filename=filename, error=str(error))
+
+    return render_template("viewer.html", filename=filename, content=content)
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

@@ -52,23 +52,45 @@ resources:
     name: Just Listing
     type: challenge
     privileged: true
-
   - id: cmdi-filter
     name: Nice Try
     type: challenge
     privileged: true
-
   - id: cmdi-quotes
     name: Out of Quotes
     type: challenge
     privileged: true
-
   - id: cmdi-filter-strict
     name: The Great Filter
     type: challenge
     privileged: true
-
   - id: cmdi-argv
     name: No Shell, No Problem
     type: challenge
     privileged: true
+  - type: header
+    content: Path Traversal
+  - id: trav-basic
+    name: Up and Out
+    type: challenge
+    privileged: true
+    visibility:
+      start: "2067-06-07T00:00:00-07:00"
+  - id: trav-strip
+    name: Strip Search
+    type: challenge
+    privileged: true
+    visibility:
+      start: "2067-06-07T00:00:00-07:00"
+  - id: trav-absolute
+    name: Dot Dot Denied
+    type: challenge
+    privileged: true
+    visibility:
+      start: "2067-06-07T00:00:00-07:00"
+  - id: trav-encoding
+    name: Layers
+    type: challenge
+    privileged: true
+    visibility:
+      start: "2067-06-07T00:00:00-07:00"
