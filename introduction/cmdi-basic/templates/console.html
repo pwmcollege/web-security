@@ -22,13 +22,12 @@
             </div>
 
             <form action="/" method="get" class="flex items-center space-x-3">
-                <input
-                    type="text"
+                <textarea
                     name="{{ field }}"
-                    value="{{ value or '' }}"
-                    class="flex-grow bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                    rows="2"
+                    class="flex-grow bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold font-mono focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all resize-none placeholder:text-slate-300 shadow-inner"
                     placeholder="{{ placeholder }}"
-                />
+                >{{ value or '' }}</textarea>
                 <button
                     type="submit"
                     class="px-8 py-4 bg-[#007AFF] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg active:scale-95 shadow-black/10"
