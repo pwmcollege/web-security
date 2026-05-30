@@ -74,29 +74,19 @@ resources:
     name: One Level Up
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
   - id: trav-strip
     name: Strip Search
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
   - id: trav-absolute
     name: Dot Dot Denied
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
   - id: trav-encoding
     name: Layers
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
   - id: trav-lstrip
     name: Left Untouched
     type: challenge
     privileged: true
-    visibility:
-      start: "2067-06-07T00:00:00-07:00"
