@@ -4,6 +4,8 @@ body {
 
 button:not(:disabled),
 [role="button"]:not(:disabled),
+a[href],
+label[for],
 summary {
     cursor: pointer;
 }
