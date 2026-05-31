@@ -7,24 +7,17 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-PAGE = dict(
-    subtitle="Back up the files you name.",
-    action="Backup",
-    field="target",
-    placeholder="/var/www/uploads",
-)
-
 
 @app.route("/", methods=["GET"])
 def backup():
     target = request.args.get("target")
     if not target:
-        return render_template("console.html", output=None, **PAGE)
+        return render_template("console.html", output=None)
 
     args = ["tar", "cf", "/tmp/backup.tar"] + shlex.split(target)
     result = subprocess.run(args, capture_output=True, text=True)
     return render_template(
-        "console.html", value=target, output=result.stdout + result.stderr, **PAGE
+        "console.html", value=target, output=result.stdout + result.stderr
     )
 
 

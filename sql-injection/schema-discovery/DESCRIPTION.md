@@ -1,9 +1,9 @@
-The login query is concatenated again, same shape as the first challenge:
+Back to a user lookup:
 
 ```sql
-SELECT username FROM users WHERE username = '<input>' AND password = '<input>'
+SELECT username FROM users WHERE username LIKE '<username>'
 ```
 
-The flag is no longer in admin's draft. On every server start, a new table with a randomly generated name is created and the flag is stored inside it. Logging in as admin and reading the feed will not get you the flag.
+But `users` isn't the real table name. On every start the table is created with a randomly generated name, and the echo **redacts it** (it just prints `users`), so you can't read it off the page. `admin`'s secret in that table is the flag.
 
-Look up the table name in `sqlite_master`. Whatever your injection puts into the `username` column becomes your displayed username on the home page.
+Every SQLite database keeps a catalog of its own tables in `sqlite_master`. `UNION SELECT` against it to recover the real table name, then read the secret out of it.

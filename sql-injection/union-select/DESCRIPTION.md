@@ -1,7 +1,7 @@
-Login and `/post` are parameterized. The search bar at `/search?q=<input>` is not. The query stuffs your input into a `LIKE` clause and filters out unpublished posts:
+This lookup returns two columns, `username` and `role`:
 
 ```sql
-SELECT content, author FROM posts WHERE content LIKE '%<input>%' AND published = TRUE
+SELECT username, role FROM users WHERE username LIKE '<username>'
 ```
 
-Two visible columns. Admin's draft is unpublished so the search will never surface it, but the `users` table is sitting right next door. `UNION SELECT` can pull data of your choosing into those two columns.
+Every user also has a private `secret` that the query never selects, and `admin`'s secret is the flag. A `UNION SELECT` lets you append rows of your own choosing (as long as you match the column count), so you can pull that secret into the visible output.

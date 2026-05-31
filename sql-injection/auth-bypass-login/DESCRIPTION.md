@@ -1,11 +1,9 @@
-SQL injection happens when an app builds a query by concatenating user input into the SQL string. The database parses the result as code, so attacker input becomes part of the query.
+SQL injection happens when an app builds a query by pasting user input straight into the SQL string. The database then parses your input as part of the query, so you can change what the query *does*, not just what it searches for.
 
-pwnpost is a feed app. Each user can write drafts and publish them. Drafts are visible only to their author and to admin. The admin account has stored the flag inside an unpublished draft.
-
-The login route builds its query by string concatenation:
+The challenge is a login form that checks your credentials by concatenating both fields straight into a query:
 
 ```sql
-SELECT username FROM users WHERE username = '<input>' AND password = '<input>'
+SELECT username FROM users WHERE username = '<username>' AND password = '<password>'
 ```
 
-Log in as `admin` and read the draft.
+You're signed in under whatever username you submit, as long as those credentials check out. Your goal is to sign in as `admin` without knowing the password.

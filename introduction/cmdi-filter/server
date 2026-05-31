@@ -6,13 +6,6 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-PAGE = dict(
-    subtitle="List the contents of any directory.",
-    action="List",
-    field="path",
-    placeholder="/var/www",
-)
-
 BLOCKED = [";", "&", "|"]
 
 
@@ -20,17 +13,17 @@ BLOCKED = [";", "&", "|"]
 def list_dir():
     path = request.args.get("path")
     if not path:
-        return render_template("console.html", output=None, **PAGE)
+        return render_template("console.html", output=None)
 
     if any(token in path for token in BLOCKED):
         return render_template(
-            "console.html", value=path, error="Nice try.", **PAGE
+            "console.html", value=path, error="Nice try."
         )
 
     command = f"ls -la {path}"
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return render_template(
-        "console.html", value=path, output=result.stdout + result.stderr, **PAGE
+        "console.html", value=path, output=result.stdout + result.stderr
     )
 
 

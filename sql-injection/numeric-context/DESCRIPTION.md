@@ -1,9 +1,7 @@
-Both fields of the login form are now parameterized. The auth path is no longer injectable.
-
-Every post in the feed links to a single-post viewer at `/post?id=<n>`. A published post is visible to anyone, but a draft is only visible to its author:
+This tool opens a record by its ID. The lookup only returns public records:
 
 ```sql
-SELECT id, content, author, published FROM posts WHERE id = <input> AND (published = TRUE OR author = '<session_user>')
+SELECT id, title, body FROM records WHERE id = <id> AND public = 1
 ```
 
-The `id` parameter is concatenated. Since it is an integer field, there are no surrounding quotes.
+`id` is an integer column, so it's spliced in **without surrounding quotes**. You don't need to break out of a string. One of the records is marked private. Read it.

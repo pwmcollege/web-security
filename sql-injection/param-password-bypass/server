@@ -5,7 +5,7 @@ import sqlite3
 import tempfile
 import threading
 
-from flask import Flask, abort, flash, redirect, render_template, request, session
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -28,95 +28,39 @@ class TemporaryDB:
 flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
 
 db = TemporaryDB()
-db.execute(
-    """CREATE TABLE posts AS SELECT ? AS content, "admin" AS author, FALSE AS published""",
-    [flag],
-)
-db.execute(
-    """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
-    [flag],
-)
-db.execute(
-    """INSERT INTO users SELECT "guest" as username, ? as password""",
-    ["password"],
-)
-db.execute(
-    """INSERT INTO users SELECT "hacker" as username, ? as password""",
-    ["1337"],
-)
-
-
-@app.route("/login", methods=["GET", "POST"])
-def challenge_login():
-    if session.get("username"):
-        return redirect("/")
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if not username or not password:
-            flash("Identity credentials required")
-            return redirect("/login")
-
-        query = (
-            f"SELECT * FROM users WHERE username = '{username}' AND password = ?"
-        )
-
-        try:
-            user = db.execute(query, (password,)).fetchone()
-        except sqlite3.Error as error:
-            flash(f"Database error: {error}")
-            return redirect("/login")
-
-        if not user:
-            flash("Access denied: Invalid credentials")
-            return redirect("/login")
-
-        session["username"] = user["username"]
-        return redirect("/")
-
-    return render_template("login.html")
-
-
-@app.route("/draft", methods=["POST"])
-def challenge_draft():
-    username = session.get("username", None)
-    if not username:
-        abort(403, "Log in first!")
-
-    content = request.form.get("content", "")
-    db.execute(
-        "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
-        (content, username, bool(request.form.get("publish"))),
-    )
-    return redirect("/")
-
-
-@app.route("/publish", methods=["POST"])
-def challenge_publish():
-    username = session.get("username", None)
-    if not username:
-        abort(403, "Log in first!")
-
-    db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
-    return redirect("/")
+db.execute("CREATE TABLE users (username TEXT, password TEXT)")
+db.execute("INSERT INTO users VALUES ('guest', 'password')")
+db.execute("INSERT INTO users VALUES ('hacker', '1337')")
+db.execute("INSERT INTO users VALUES ('admin', ?)", [os.urandom(16).hex()])
 
 
 @app.route("/", methods=["GET"])
-def challenge_get():
-    username = session.get("username")
-    if not username:
-        return redirect("/login")
+def login():
+    username = request.args.get("username")
+    password = request.args.get("password")
+    if username is None or password is None:
+        return render_template("login.html", query=None, attempted=False)
 
-    posts = db.execute("SELECT * FROM posts").fetchall()
-    return render_template("index.html", username=username, posts=posts)
+    sql = f"SELECT username FROM users WHERE username = '{username}' AND password = ?"
 
+    user = None
+    error = None
+    try:
+        row = db.execute(sql, (password,)).fetchone()
+        user = row["username"] if row else None
+    except sqlite3.Error as exc:
+        error = f"SQL error: {exc}"
 
-@app.route("/logout")
-def challenge_logout():
-    session.clear()
-    return redirect("/")
+    return render_template(
+        "login.html",
+        query=sql,
+        username_value=username,
+        password_value=password,
+        attempted=True,
+        user=user,
+        flag=flag if user == "admin" else None,
+        error=error,
+    )
 
 
 app.secret_key = os.urandom(64)

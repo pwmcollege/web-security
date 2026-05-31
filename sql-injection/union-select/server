@@ -5,9 +5,10 @@ import sqlite3
 import tempfile
 import threading
 
-from flask import Flask, abort, flash, redirect, render_template, request, session
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
+
 
 
 class TemporaryDB:
@@ -28,117 +29,32 @@ class TemporaryDB:
 flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
 
 db = TemporaryDB()
-db.execute(
-    """CREATE TABLE posts AS SELECT ? AS content, "admin" AS author, FALSE AS published""",
-    [flag],
-)
-db.execute(
-    """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
-    [flag],
-)
-db.execute(
-    """INSERT INTO users SELECT "guest" as username, ? as password""",
-    ["password"],
-)
-db.execute(
-    """INSERT INTO users SELECT "hacker" as username, ? as password""",
-    ["1337"],
-)
-
-
-@app.route("/login", methods=["GET", "POST"])
-def challenge_login():
-    if session.get("username"):
-        return redirect("/")
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if not username or not password:
-            flash("Identity credentials required")
-            return redirect("/login")
-
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ? AND password = ?",
-            (username, password),
-        ).fetchone()
-
-        if not user:
-            flash("Access denied: Invalid credentials")
-            return redirect("/login")
-
-        session["username"] = user["username"]
-        return redirect("/")
-
-    return render_template("login.html")
-
-
-@app.route("/draft", methods=["POST"])
-def challenge_draft():
-    username = session.get("username", None)
-    if not username:
-        abort(403, "Log in first!")
-
-    content = request.form.get("content", "")
-    db.execute(
-        "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
-        (content, username, bool(request.form.get("publish"))),
-    )
-    return redirect("/")
-
-
-@app.route("/publish", methods=["POST"])
-def challenge_publish():
-    username = session.get("username", None)
-    if not username:
-        abort(403, "Log in first!")
-
-    db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
-    return redirect("/")
-
-
-@app.route("/search", methods=["GET"])
-def challenge_search():
-    username = session.get("username")
-    if not username:
-        return redirect("/login")
-
-    q = request.args.get("q", "")
-    query = (
-        f"SELECT content, author FROM posts WHERE content LIKE '%{q}%' AND published = TRUE"
-    )
-
-    results = None
-    error = None
-    try:
-        results = db.execute(query).fetchall()
-    except sqlite3.Error as exc:
-        error = str(exc)
-
-    return render_template(
-        "search.html",
-        username=username,
-        q=q,
-        results=results,
-        error=error,
-    )
+db.execute("CREATE TABLE users (username TEXT, role TEXT, secret TEXT)")
+db.execute("INSERT INTO users VALUES ('guest', 'reader', 'nothing-to-see-here')")
+db.execute("INSERT INTO users VALUES ('hacker', 'hacker', 'hacking')")
+db.execute("INSERT INTO users VALUES ('admin', 'superuser', ?)", [flag])
 
 
 @app.route("/", methods=["GET"])
-def challenge_get():
-    username = session.get("username")
-    if not username:
-        return redirect("/login")
+def console():
+    value = request.args.get("username")
+    if value is None:
+        return render_template(
+            "console.html", query=None, rows=None, error=None
+        )
 
-    posts = db.execute("SELECT * FROM posts").fetchall()
-    return render_template("index.html", username=username, posts=posts)
+    sql = f"SELECT username, role FROM users WHERE username LIKE '{value}'"
 
+    rows = None
+    error = None
+    try:
+        rows = db.execute(sql).fetchall()
+    except sqlite3.Error as exc:
+        error = f"SQL error: {exc}"
 
-@app.route("/logout")
-def challenge_logout():
-    session.clear()
-    return redirect("/")
+    return render_template(
+        "console.html", query=sql, value=value, rows=rows, error=error
+    )
 
 
 app.secret_key = os.urandom(64)

@@ -5,9 +5,10 @@ import sqlite3
 import tempfile
 import threading
 
-from flask import Flask, abort, flash, redirect, render_template, request, session
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
+
 
 
 class TemporaryDB:
@@ -29,130 +30,38 @@ flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_
 
 db = TemporaryDB()
 db.execute(
-    """CREATE TABLE posts (
-        id INTEGER PRIMARY KEY,
-        content TEXT,
-        author TEXT,
-        published INTEGER
-    )"""
+    "CREATE TABLE records (id INTEGER PRIMARY KEY, title TEXT, body TEXT, public INTEGER)"
 )
-db.execute(
-    """INSERT INTO posts (content, author, published) VALUES (?, "admin", FALSE)""",
-    [flag],
-)
-db.execute(
-    """INSERT INTO posts (content, author, published) VALUES (?, "guest", TRUE)""",
-    ["Loving the new pwnpost so far!"],
-)
-db.execute(
-    """INSERT INTO posts (content, author, published) VALUES (?, "hacker", TRUE)""",
-    ["the dev parameterized /login but i bet /post is a different story"],
-)
-db.execute(
-    """CREATE TABLE users AS SELECT "admin" AS username, ? as password""",
-    [flag],
-)
-db.execute(
-    """INSERT INTO users SELECT "guest" as username, ? as password""",
-    ["password"],
-)
-db.execute(
-    """INSERT INTO users SELECT "hacker" as username, ? as password""",
-    ["1337"],
-)
-
-
-@app.route("/login", methods=["GET", "POST"])
-def challenge_login():
-    if session.get("username"):
-        return redirect("/")
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if not username or not password:
-            flash("Identity credentials required")
-            return redirect("/login")
-
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ? AND password = ?",
-            (username, password),
-        ).fetchone()
-
-        if not user:
-            flash("Access denied: Invalid credentials")
-            return redirect("/login")
-
-        session["username"] = user["username"]
-        return redirect("/")
-
-    return render_template("login.html")
-
-
-@app.route("/draft", methods=["POST"])
-def challenge_draft():
-    username = session.get("username", None)
-    if not username:
-        abort(403, "Log in first!")
-
-    content = request.form.get("content", "")
+for title, body, public in [
+    ("Welcome", "Welcome to pwnquery.", 1),
+    ("Classified", flag, 0),
+]:
     db.execute(
-        "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
-        (content, username, bool(request.form.get("publish"))),
+        "INSERT INTO records (title, body, public) VALUES (?, ?, ?)",
+        (title, body, public),
     )
-    return redirect("/")
-
-
-@app.route("/publish", methods=["POST"])
-def challenge_publish():
-    username = session.get("username", None)
-    if not username:
-        abort(403, "Log in first!")
-
-    db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
-    return redirect("/")
-
-
-@app.route("/post", methods=["GET"])
-def challenge_post():
-    username = session.get("username")
-    if not username:
-        return redirect("/login")
-
-    post_id = request.args.get("id", "1")
-    query = (
-        "SELECT id, content, author, published FROM posts "
-        f"WHERE id = {post_id} AND (published = TRUE OR author = '{username}')"
-    )
-
-    try:
-        post = db.execute(query).fetchone()
-    except sqlite3.Error as error:
-        flash(f"Database error: {error}")
-        return redirect("/")
-
-    if not post:
-        flash("Post not found")
-        return redirect("/")
-
-    return render_template("post.html", username=username, post=post)
 
 
 @app.route("/", methods=["GET"])
-def challenge_get():
-    username = session.get("username")
-    if not username:
-        return redirect("/login")
+def console():
+    value = request.args.get("id")
+    if value is None:
+        return render_template(
+            "console.html", query=None, rows=None, error=None
+        )
 
-    posts = db.execute("SELECT * FROM posts").fetchall()
-    return render_template("index.html", username=username, posts=posts)
+    sql = f"SELECT id, title, body FROM records WHERE id = {value} AND public = 1"
 
+    rows = None
+    error = None
+    try:
+        rows = db.execute(sql).fetchall()
+    except sqlite3.Error as exc:
+        error = f"SQL error: {exc}"
 
-@app.route("/logout")
-def challenge_logout():
-    session.clear()
-    return redirect("/")
+    return render_template(
+        "console.html", query=sql, value=value, rows=rows, error=error
+    )
 
 
 app.secret_key = os.urandom(64)

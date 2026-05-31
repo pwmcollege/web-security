@@ -21,7 +21,15 @@ resources:
     name: Union Jack
     type: challenge
     required: false
+  - id: union-columns
+    name: Order in the Court
+    type: challenge
+    required: false
   - id: schema-discovery
     name: Schema Surveyor
+    type: challenge
+    required: false
+  - id: type-cast
+    name: Type Cast Away
     type: challenge
     required: false

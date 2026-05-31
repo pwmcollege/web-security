@@ -1,7 +1,6 @@
 #!/usr/bin/exec-suid --environ=none -- /usr/local/bin/python -I
 
 import os
-import secrets
 import sqlite3
 import tempfile
 import threading
@@ -29,23 +28,31 @@ class TemporaryDB:
 
 flag = open("/flag").read().strip() if os.geteuid() == 0 else "pwn.college{fake_flag}"
 
-USERS = "users_" + secrets.token_hex(16)
-
 db = TemporaryDB()
-db.execute(f"CREATE TABLE {USERS} (username TEXT, secret TEXT)")
-db.execute(f"INSERT INTO {USERS} VALUES ('admin', ?)", [flag])
-db.execute(f"INSERT INTO {USERS} VALUES ('guest', 'nothing-to-see-here')")
+db.execute(
+    "CREATE TABLE posts (id INTEGER PRIMARY KEY, title TEXT, body TEXT, author TEXT, created TEXT)"
+)
+for title, body, author, created in [
+    ("Welcome", "Public changelog for everyone.", "guest", "2024-01-02"),
+    ("Release notes", "Five columns walk into a query...", "support", "2024-03-09"),
+]:
+    db.execute(
+        "INSERT INTO posts (title, body, author, created) VALUES (?, ?, ?, ?)",
+        (title, body, author, created),
+    )
+db.execute("CREATE TABLE users (username TEXT, secret TEXT)")
+db.execute("INSERT INTO users VALUES ('admin', ?)", [flag])
 
 
 @app.route("/", methods=["GET"])
 def console():
-    value = request.args.get("username")
+    value = request.args.get("title")
     if value is None:
         return render_template(
             "console.html", query=None, rows=None, error=None
         )
 
-    sql = f"SELECT username FROM {USERS} WHERE username LIKE '{value}'"
+    sql = f"SELECT * FROM posts WHERE title LIKE '{value}'"
 
     rows = None
     error = None
@@ -54,9 +61,8 @@ def console():
     except sqlite3.Error as exc:
         error = f"SQL error: {exc}"
 
-    shown = sql.replace(USERS, "users")
     return render_template(
-        "console.html", query=shown, value=value, rows=rows, error=error
+        "console.html", query=sql, value=value, rows=rows, error=error
     )
 
 

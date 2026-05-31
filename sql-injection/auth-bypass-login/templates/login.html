@@ -1,107 +1,121 @@
 {% extends "layout.html" %} {% block content %}
-<div
-    class="w-full max-w-2xl flex-grow flex flex-col items-center justify-center py-12"
->
-    <div
-        class="text-center px-4 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700"
-    >
-        <h1 class="text-5xl font-black text-slate-900 tracking-tighter">
-            pwnpost
+<div class="w-full max-w-2xl flex-grow flex flex-col py-12 items-center">
+    <div class="text-center px-4 mb-8 shrink-0">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+            pwnquery
         </h1>
-        <p
-            class="text-slate-400 text-sm mt-3 font-semibold tracking-wide uppercase"
-        >
-            Secure Communication Portal
-        </p>
     </div>
 
-    <div
-        class="glass max-w-sm w-full p-10 rounded-[2.5rem] space-y-8 border border-slate-200 bg-white shadow-2xl animate-in zoom-in-95 duration-500 overflow-hidden relative"
-    >
+    <div class="w-full space-y-6">
+        <!-- Login Bar -->
         <div
-            class="absolute -top-24 -right-24 w-48 h-48 bg-[#007AFF]/5 rounded-full blur-3xl"
-        ></div>
-        <div
-            class="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl"
-        ></div>
-
-        <div class="text-center space-y-1 relative">
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight">
-                Welcome Back
-            </h2>
-        </div>
-
-        {% with messages = get_flashed_messages() %} {% if messages %}
-        <div
-            class="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300"
+            class="glass mx-4 rounded-3xl p-8 border border-slate-200 shadow-lg space-y-6 bg-white/70"
         >
-            {% for message in messages %}
-            <div
-                class="bg-red-50 border border-red-100 text-red-500 px-4 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-wider flex items-center space-x-2 shadow-sm shadow-red-500/5"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4 shrink-0"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                >
-                    <path
-                        fill-rule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
-                <span>{{ message }}</span>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %} {% endwith %}
-
-        <form action="/login" method="post" class="space-y-6 relative">
-            <div class="space-y-2">
-                <label
-                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
-                    >Username</label
-                >
-                <div class="relative group">
+            <form action="/" method="get" class="space-y-4">
+                <div class="space-y-2">
+                    <label
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                        >Username</label
+                    >
                     <input
                         type="text"
                         name="username"
-                        required
-                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                        value="{{ username_value or '' }}"
+                        autocomplete="off"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold font-mono focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
                         placeholder="Username"
                     />
                 </div>
-            </div>
-            <div class="space-y-2">
-                <label
-                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
-                    >Password</label
-                >
-                <div class="relative group">
+                <div class="space-y-2">
+                    <label
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                        >Password</label
+                    >
                     <input
                         type="text"
                         name="password"
-                        required
-                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                        value="{{ password_value or '' }}"
+                        autocomplete="off"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold font-mono focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
                         placeholder="••••••••"
                     />
                 </div>
-            </div>
-            <button
-                type="submit"
-                class="w-full py-5 bg-[#007AFF] text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-black/10 hover:brightness-110 active:scale-95"
+                <button
+                    type="submit"
+                    class="w-full py-4 bg-[#007AFF] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg active:scale-95 shadow-black/10"
+                >
+                    Sign in
+                </button>
+            </form>
+        </div>
+
+        {% if query is not none %}
+        <!-- Executed SQL -->
+        <div class="mx-4">
+            <div
+                class="glass p-6 rounded-3xl border border-slate-200 bg-white/80 space-y-3 shadow-sm"
             >
-                Authenticate
-            </button>
-        </form>
+                <h2
+                    class="text-[11px] font-bold text-slate-400 italic font-medium px-1"
+                >
+                    Executed query
+                </h2>
+                <pre
+                    class="text-[13px] text-slate-900 leading-relaxed font-mono whitespace-pre-wrap break-words bg-slate-900/[0.03] border border-slate-100 p-4 rounded-2xl shadow-inner"
+                >{{ query }}</pre>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="mx-4">
+            <div
+                class="bg-red-50 border border-red-100 text-red-500 px-6 py-4 rounded-2xl text-[11px] font-mono font-bold shadow-sm shadow-red-500/5 break-all"
+            >
+                {{ error }}
+            </div>
+        </div>
+        {% elif user %}
+        <div class="mx-4">
+            <div
+                class="glass p-6 rounded-3xl border border-emerald-200 bg-emerald-50/60 space-y-3 shadow-sm"
+            >
+                <div class="flex items-center space-x-2">
+                    <h2
+                        class="text-[11px] font-black uppercase tracking-widest text-emerald-600"
+                    >
+                        Signed in as {{ user }}
+                    </h2>
+                    <div class="h-px flex-grow bg-emerald-100"></div>
+                </div>
+                {% if flag %}
+                <pre
+                    class="text-sm font-mono font-bold text-emerald-700 bg-white border border-emerald-100 rounded-2xl p-4 break-all shadow-inner"
+                >{{ flag }}</pre>
+                {% else %}
+                <p class="text-sm text-slate-600 font-medium px-1">
+                    Only <span class="font-mono font-bold text-slate-900">admin</span>
+                    may read the flag.
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        {% elif attempted %}
+        <div class="mx-4">
+            <div
+                class="bg-red-50 border border-red-100 text-red-500 px-6 py-4 rounded-2xl text-[11px] font-bold uppercase tracking-wider shadow-sm shadow-red-500/5"
+            >
+                Invalid credentials
+            </div>
+        </div>
+        {% endif %}
     </div>
 
-    <footer class="text-center opacity-30 pt-16 pb-8 mt-auto">
+    <footer class="text-center opacity-30 pt-12 pb-8 mt-auto shrink-0">
         <p
             class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-900 italic"
         >
-            pwnpost
+            pwnquery
         </p>
     </footer>
 </div>
