@@ -1,6 +1,3 @@
-// "real size" (display size) of canvas, different from the size used by graphics
-const CANVAS_HEIGHT = 400;
-const CANVAS_WIDTH = 400;
 const BALL_RADIUS = 14 / 2;
 const DELTA = 1e-6; // Delta value to reduce chance of ball clipping
 const canvas = document.getElementById("game-canvas");
@@ -13,8 +10,8 @@ let ballX;
 let ballY;
 
 // Data format for walls: [x,[yMin,yMax]] for vertical, [y, [xMin,xMax]] for horizontal
-const vertWalls = [[0, [0, CANVAS_HEIGHT]], [100, [0, 300]], [200, [0, 300]], [300, [100, 200]], [CANVAS_WIDTH, [0, CANVAS_HEIGHT]]];
-const horizWalls = [[0, [0, CANVAS_WIDTH]], [100, [300, 400]], [200, [300, 400]], [300, [100, 200]], [CANVAS_HEIGHT, [0, CANVAS_WIDTH]]];
+const vertWalls = [[0, [0, 400]], [100, [0, 300]], [200, [0, 300]], [300, [100, 200]], [400, [0, 400]]];
+const horizWalls = [[0, [0, 400]], [100, [300, 400]], [200, [300, 400]], [300, [100, 200]], [400, [0, 400]]];
 
 function win() {
     won = true;
@@ -113,15 +110,31 @@ async function moveBall(xDiff, yDiff) {
 }
 
 function updateCanvas() {
-    const scaleX = canvas.width / CANVAS_WIDTH;
-    const scaleY = canvas.height / CANVAS_HEIGHT;
+    const scaleX = canvas.width / 400;
+    const scaleY = canvas.height / 400;
     // Decorate the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "green";
+    if (Object.hasOwn(window.theme, "green")) { // The golf green not the color green
+        const greenTheme = window.theme["green"];
+        if (Object.hasOwn(greenTheme, "color")) {
+            ctx.fillStyle = greenTheme["color"];
+        }
+    }
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw in the walls
     ctx.strokeStyle = "blue";
+    ctx.lineWidth = 1;
+    if (Object.hasOwn(window.theme, "wall")) {
+        const wallTheme = window.theme["wall"];
+        if (Object.hasOwn(wallTheme, "color")) {
+            ctx.strokeStyle = wallTheme["color"];
+        }
+        if (Object.hasOwn(wallTheme, "width")) {
+            ctx.lineWidth = wallTheme["width"];
+        }
+    }
     for (const wall of vertWalls) {
         ctx.beginPath();
         ctx.moveTo(wall[0] * scaleX, wall[1][0] * scaleY);

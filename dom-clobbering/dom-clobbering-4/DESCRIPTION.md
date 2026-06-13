@@ -1,0 +1,3 @@
+This server has a very strong Content-Security-Policy, so it should be impossible for attackers to manipulate the webpage...
+
+What if a window attribute was misconfigured?

@@ -29,6 +29,12 @@ const hole = {
 let strokes = 0;
 let won = false;
 
+// Import in our game driver (default to the "share" version)
+const driverScript = document.createElement("script");
+driverScript.type = "module";
+driverScript.src = window.mode || "/static/share.js";
+document.body.append(driverScript);
+
 function win() {
     won = true;
     alert(`YOU WIN!!!\n${strokes} strokes`)
@@ -68,14 +74,14 @@ function moveWithBounce(xNorm, yNorm, dist) {
     }
 
     let minDistVertWall = Number.MAX_VALUE;
-    for (const wall of document.vertWalls) {
+    for (const wall of window.walls.vert) {
         const currDist = distanceToWall(ball.x, ball.y, xNorm, yNorm, wall);
         if (currDist != null) {
             minDistVertWall = Math.min(minDistVertWall, currDist);
         }
     }
     let minDistHorizWall = Number.MAX_VALUE;
-    for (const wall of document.horizWalls) {
+    for (const wall of window.walls.horiz) {
         const currDist = distanceToWall(ball.y, ball.x, yNorm, xNorm, wall);
         if (currDist != null) {
             minDistHorizWall = Math.min(minDistHorizWall, currDist);
@@ -151,13 +157,13 @@ function updateCanvas() {
             ctx.lineWidth = wallTheme["width"];
         }
     }
-    for (const wall of document.vertWalls) {
+    for (const wall of window.walls.vert) {
         ctx.beginPath();
         ctx.moveTo(wall[0] * scaleX, wall[1][0] * scaleY);
         ctx.lineTo(wall[0] * scaleX, wall[1][1] * scaleY);
         ctx.stroke();
     }
-    for (const wall of document.horizWalls) {
+    for (const wall of window.walls.horiz) {
         ctx.beginPath();
         ctx.moveTo(wall[1][0] * scaleX, wall[0] * scaleY);
         ctx.lineTo(wall[1][1] * scaleX, wall[0] * scaleY);

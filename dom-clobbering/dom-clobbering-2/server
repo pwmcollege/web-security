@@ -1,14 +1,12 @@
 #!/usr/bin/exec-suid -- /usr/local/bin/python -I
 
 import os
-import secrets
 import sqlite3
 import tempfile
 
 from flask import (
     Flask,
     Response,
-    g,
     redirect,
     render_template,
     request,
@@ -27,12 +25,12 @@ class TemporaryDB:
         self.db_file = tempfile.NamedTemporaryFile("x", suffix=".db")
 
     def execute(self, sql, parameters=()):
-        connection = sqlite3.connect(self.db_file.name)
-        connection.row_factory = sqlite3.Row
-        cursor = connection.cursor()
-        result = cursor.execute(sql, parameters)
-        connection.commit()
-        return result
+        with sqlite3.connect(self.db_file.name) as connection:
+            connection.row_factory = sqlite3.Row
+            cursor = connection.cursor()
+            result = cursor.execute(sql, parameters)
+            connection.commit()
+            return result
 
 
 db = TemporaryDB()
@@ -50,7 +48,6 @@ db.execute("INSERT INTO golfer (username,password) VALUES ('guest', 'password')"
 def add_headers(response: Response):
     response.headers["Content-Security-Policy"] = (
         "default-src 'self' https://cdn.internal;"
-        f"script-src 'nonce-{g.nonce}' 'strict-dynamic' https://cdn.internal;"
         "base-uri 'none';"
         "frame-ancestors 'none';"
     )
@@ -64,9 +61,8 @@ def golf_menu():
         username = session["username"]
     return render_template(
         "mainpage.html",
-        nonce=g.nonce,
         username=username,
-        logged_in="username" in session,
+        logged_in="username" in session
     )
 
 
@@ -76,9 +72,8 @@ def display_recording():
         username = request.args.get("username")
         return render_template(
             "share.html",
-            nonce=g.nonce,
             username=username,
-            logged_in="username" in session,
+            logged_in="username" in session
         )
     else:
         return Response("No Username Provided", 404)
@@ -157,11 +152,6 @@ def register_menu():
 def logout():
     session.clear()
     return redirect("/login")
-
-
-@app.before_request
-def gen_nonce():
-    g.nonce = secrets.token_urlsafe()
 
 
 app.secret_key = os.urandom(8)
