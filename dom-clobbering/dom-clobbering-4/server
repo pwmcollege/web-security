@@ -1,12 +1,15 @@
 #!/usr/bin/exec-suid -- /usr/local/bin/python -I
 
 import os
+import secrets
 import sqlite3
 import tempfile
+import json
 
 from flask import (
     Flask,
     Response,
+    g,
     redirect,
     render_template,
     request,
@@ -38,7 +41,8 @@ db = TemporaryDB()
 db.execute("""CREATE TABLE golfer (
     username TEXT PRIMARY KEY,
     password TEXT,
-    golfSteps DEFAULT '[]'
+    golfSteps DEFAULT '[]',
+    walls DEFAULT '{"vert":[], "horiz":[]}'
 )""")
 db.execute("INSERT INTO golfer (username,password) VALUES ('hacker', '1337')")
 db.execute("INSERT INTO golfer (username,password) VALUES ('guest', 'password')")
@@ -48,6 +52,7 @@ db.execute("INSERT INTO golfer (username,password) VALUES ('guest', 'password')"
 def add_headers(response: Response):
     response.headers["Content-Security-Policy"] = (
         "default-src 'self' https://cdn.internal;"
+        f"script-src 'nonce-{g.nonce}' 'strict-dynamic' https://cdn.internal;"
         "base-uri 'none';"
         "frame-ancestors 'none';"
     )
@@ -61,8 +66,9 @@ def golf_menu():
         username = session["username"]
     return render_template(
         "mainpage.html",
+        nonce=g.nonce,
         username=username,
-        logged_in="username" in session
+        logged_in="username" in session,
     )
 
 
@@ -70,11 +76,21 @@ def golf_menu():
 def display_recording():
     if "username" in request.args:
         username = request.args.get("username")
-        return render_template(
-            "share.html",
-            username=username,
-            logged_in="username" in session
+        wall_info = db.execute(
+            "SELECT walls FROM golfer WHERE username=?", (username,)
+        ).fetchone()[0]
+        print("wall info:",repr(wall_info))
+        resp = Response(
+            render_template(
+                "share.html",
+                nonce=g.nonce,
+                username=username,
+                logged_in="username" in session,
+            )
         )
+        resp.headers["Set-Cookie"] = username+"="+wall_info # Hacky way to keep flask from escaping the quotes in wall_info
+        resp.set_cookie("active", username)
+        return resp
     else:
         return Response("No Username Provided", 404)
 
@@ -100,11 +116,11 @@ def handle_recording():
             print(recording_data)
             # Manually reconstruct recording to minimize shenanigans
             sanitized_data = []
-            for stroke in recording_data:
+            for stroke in recording_data["strokes"]:
                 sanitized_data.append([int(stroke[0]), int(stroke[1])])
             db.execute(
-                "UPDATE golfer SET golfSteps=? WHERE username=?",
-                (str(sanitized_data), username),
+                "UPDATE golfer SET golfSteps=?, walls=? WHERE username=?",
+                (str(sanitized_data), json.dumps(recording_data["walls"]), username),
             )
             return Response("HTTP 200 OK", 200)
         except Exception as e:
@@ -152,6 +168,11 @@ def register_menu():
 def logout():
     session.clear()
     return redirect("/login")
+
+
+@app.before_request
+def gen_nonce():
+    g.nonce = secrets.token_urlsafe()
 
 
 app.secret_key = os.urandom(8)

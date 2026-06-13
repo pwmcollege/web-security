@@ -25,9 +25,9 @@ function setupSequence() {
         sequenceIntArr.push(valueInt);
     }
 
-    head = new FactorialNode();
-    let current = head;
-    let base = 2n;
+    window.head = new FactorialNode();
+    let current = window.head;
+    const base = 2n;
     let height = 1n;
     for (const valueInt of sequenceIntArr) {
         if (valueInt == tetr(base, height)) {
@@ -41,13 +41,14 @@ function setupSequence() {
 }
 
 function validateLength(targetLength) {
-    let current = head;
+    let current = window.head;
     let length = 0;
     while (length < targetLength) {
         if (current.next != null) { // Sanity check: if head.next = null then our tetration sequence did not start with 2 (is length 0)
             current = current.next;
             length++;
         } else {
+            console.log("Reached length "+length);
             return false; // Didn't get to the target length :(
         }
     }
