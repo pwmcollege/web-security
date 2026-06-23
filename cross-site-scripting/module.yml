@@ -92,26 +92,8 @@ resources:
     type: challenge
   - type: header
     content: Filters
-  - id: filter-script
-    name: Only You
-    type: challenge
-  - id: filter-img
-    name: Picture Imperfect
-    type: challenge
   - id: filter-encoding
     name: Lost in Translation
-    type: challenge
-  - id: filter-media
-    name: Media Blackout
-    type: challenge
-  - id: filter-object
-    name: Old Faithful
-    type: challenge
-  - id: filter-toggle
-    name: Toggle Off
-    type: challenge
-  - id: filter-handlers
-    name: Family Filter
     type: challenge
   - id: filter-style
     name: No Dress Code
@@ -125,12 +107,6 @@ resources:
   - id: filter-shadow
     name: Shadow Banned
     type: challenge
-  - id: filter-fetch
-    name: Request Denied
-    type: challenge
-  - id: filter-navigation
-    name: Wrong Turn
-    type: challenge
   - id: filter-dom
     name: DOM and Gloom
     type: challenge
@@ -139,9 +115,6 @@ resources:
     type: challenge
   - id: filter-unicode
     name: Escape Artist
-    type: challenge
-  - id: filter-charset
-    name: Lost for Words
     type: challenge
   - id: filter-mismatch
     name: Double Take
