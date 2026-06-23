@@ -1,19 +1,26 @@
 name: DOM Clobbering
 visibility:
-    start: "2067-06-07T00:00:00-07:00"
+  start: "2067-06-07T00:00:00-07:00"
 privileged: true
 challenges:
-    - id: intro-clobber-selector
-      name: Baby's First DOM Clobbering
-    - id: intro-clobber-regular
-      name: Real DOM Clobbering
-    - id: intro-clobber-attribute
-      name: Clobbering Attributes
-    - id: intro-clobber-multi
-      name: Clobbering Multiple Levels
-    - id: dom-clobbering-1
-      name: Welcome to PWN.GOLF
-    - id: dom-clobbering-2
-      name: Barrier Breaker
-    - id: dom-clobbering-4
-      name: Clobbering Links
+  - id: intro-clobber-selector
+    name: Baby's First DOM Clobbering
+    required: false
+  - id: intro-clobber-regular
+    name: Real DOM Clobbering
+    required: false
+  - id: intro-clobber-attribute
+    name: Clobbering Attributes
+    required: false
+  - id: intro-clobber-multi
+    name: Clobbering Multiple Levels
+    required: false
+  - id: dom-clobbering-1
+    name: Welcome to PWN.GOLF
+    required: false
+  - id: dom-clobbering-2
+    name: Barrier Breaker
+    required: false
+  - id: dom-clobbering-4
+    name: Clobbering Links
+    required: false
