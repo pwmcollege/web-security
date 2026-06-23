@@ -141,7 +141,7 @@ def ephemeral():
     msg = request.args.get("msg")
     script_text = extract_script(msg) if msg else None
     banned = bool(msg and (script_text is None or is_blocked(script_text)))
-    return render_template("ephemeral.html", msg=msg, banned=banned)
+    return render_template("index.html", msg=msg, banned=banned)
 
 
 app.secret_key = os.urandom(64)

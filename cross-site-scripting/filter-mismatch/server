@@ -58,7 +58,7 @@ def ephemeral():
     text = extract_text(msg) if msg else None
     banned = bool(msg and text is None)
 
-    return render_template("ephemeral.html", msg=text, banned=banned)
+    return render_template("index.html", msg=text, banned=banned)
 
 
 app.secret_key = os.urandom(64)

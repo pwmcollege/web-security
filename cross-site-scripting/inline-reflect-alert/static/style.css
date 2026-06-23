@@ -2,14 +2,6 @@ body {
     font-family: "Inter", sans-serif;
 }
 
-button:not(:disabled),
-[role="button"]:not(:disabled),
-a[href],
-label[for],
-summary {
-    cursor: pointer;
-}
-
 .glass {
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(12px);

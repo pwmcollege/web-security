@@ -44,7 +44,7 @@ def is_banned(value):
 def ephemeral():
     msg = request.args.get("msg")
     banned = bool(msg and is_banned(msg))
-    return render_template("ephemeral.html", msg=msg, banned=banned)
+    return render_template("index.html", msg=msg, banned=banned)
 
 
 app.secret_key = os.urandom(64)
