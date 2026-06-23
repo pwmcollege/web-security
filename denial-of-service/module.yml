@@ -15,22 +15,9 @@ resources:
   - id: io-bottleneck
     name: I/O Saturation
     type: challenge
-  - id: cpu-bottleneck
-    name: CPU Saturation
-    type: challenge
-  - id: decompression-bomb
-    name: Compression Bomb
-    type: challenge
-  - id: parser-bomb
-    name: Parser Bomb
-    type: challenge
   - id: slow-read
     name: Slow Read
     type: challenge
-  - id: cache-poisoning
-    name: Cache Poisoning
-    type: challenge
-    privileged: true
   - id: shared-resources
     name: Shared Resources
     type: challenge
