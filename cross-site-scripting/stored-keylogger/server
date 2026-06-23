@@ -90,7 +90,7 @@ def challenge_login():
         session["username"] = username
         return redirect("/")
 
-    return render_template("login.html")
+    return render_template("login.html", hide_chrome=True)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -123,7 +123,7 @@ def challenge_register():
         flash("Account created! Please log in.")
         return redirect("/login")
 
-    return render_template("register.html")
+    return render_template("register.html", hide_chrome=True)
 
 
 @app.route("/draft", methods=["POST"])
@@ -160,7 +160,14 @@ def challenge_publish():
         )
 
     # https://www.sqlite.org/lang_update.html
-    db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
+    post_id = request.form.get("post_id")
+    if post_id:
+        db.execute(
+            "UPDATE posts SET published = TRUE WHERE author = ? AND rowid = ?",
+            [username, post_id],
+        )
+    else:
+        db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
     return redirect("/")
 
 
@@ -170,7 +177,7 @@ def challenge_get():
     if not username:
         return redirect("/login")
 
-    posts = db.execute("SELECT * FROM posts").fetchall()
+    posts = db.execute("SELECT rowid, * FROM posts").fetchall()
     return render_template("index.html", username=username, posts=posts)
 
 

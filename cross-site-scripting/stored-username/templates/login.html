@@ -1,103 +1,57 @@
 {% extends "layout.html" %} {% block content %}
-<div
-    class="w-full max-w-2xl flex-grow flex flex-col items-center justify-center py-12"
->
-    <div
-        class="text-center px-4 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700"
-    >
-        <h1 class="text-5xl font-black text-slate-900 tracking-tighter">
-            pwnpost
-        </h1>
-    </div>
 
-    <div
-        class="glass max-w-sm w-full p-10 rounded-[2.5rem] space-y-8 border border-slate-200 bg-white shadow-2xl animate-in zoom-in-95 duration-500 overflow-hidden relative"
-    >
-        <div
-            class="absolute -top-24 -right-24 w-48 h-48 bg-[#007AFF]/5 rounded-full blur-3xl"
-        ></div>
-        <div
-            class="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl"
-        ></div>
-
-        <div class="text-center space-y-1 relative">
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight">
-                Welcome Back
-            </h2>
+<div class="flex flex-col items-center justify-center min-h-[80vh] px-6">
+    <div class="w-full max-w-[340px]">
+        <div class="text-center mb-10">
+            <h1 class="text-[28px] font-extrabold tracking-tight text-zinc-900">
+                pwnpost<span class="text-zinc-300">.</span>
+            </h1>
         </div>
 
         {% with messages = get_flashed_messages() %} {% if messages %}
-        <div
-            class="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300"
-        >
+        <div class="mb-4 space-y-2">
             {% for message in messages %}
             <div
-                class="bg-red-50 border border-red-100 text-red-500 px-4 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-wider flex items-center space-x-2 shadow-sm shadow-red-500/5"
+                class="rounded-xl bg-rose-50 px-4 py-2.5 text-[13px] font-medium text-rose-600"
             >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4 shrink-0"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                >
-                    <path
-                        fill-rule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
-                <span>{{ message }}</span>
+                {{ message }}
             </div>
             {% endfor %}
         </div>
         {% endif %} {% endwith %}
 
-        <form action="/login" method="post" class="space-y-6 relative">
-            <div class="space-y-2">
-                <label
-                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
-                    >Username</label
-                >
-                <div class="relative group">
-                    <input
-                        type="text"
-                        name="username"
-                        required
-                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
-                        placeholder="Username"
-                    />
-                </div>
-            </div>
-            <div class="space-y-2">
-                <label
-                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
-                    >Password</label
-                >
-                <div class="relative group">
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] focus:bg-white outline-none transition-all placeholder:text-slate-300 shadow-inner"
-                        placeholder="••••••••"
-                    />
-                </div>
-            </div>
+        <form action="/login" method="post" class="space-y-3">
+            <input
+                type="text"
+                name="username"
+                required
+                placeholder="Username"
+                autocomplete="username"
+                class="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-[15px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:bg-white"
+            />
+            <input
+                type="password"
+                name="password"
+                required
+                placeholder="Password"
+                autocomplete="current-password"
+                class="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-[15px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:bg-white"
+            />
             <button
                 type="submit"
-                class="w-full py-5 bg-[#007AFF] text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-black/10 hover:brightness-110 active:scale-95"
+                class="w-full rounded-xl bg-zinc-900 py-3 text-[15px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
             >
-                Authenticate
+                Log in
             </button>
-            <div class="text-center">
-                <a
-                    href="/register"
-                    class="text-[10px] font-bold text-[#007AFF] uppercase tracking-widest hover:underline transition-all"
-                    >New here? Create an account</a
-                >
-            </div>
         </form>
-    </div>
 
+        <p class="mt-6 text-center text-[13px] text-zinc-400">
+            New here?
+            <a href="/register" class="font-medium text-zinc-900 hover:underline"
+                >Create account</a
+            >
+        </p>
+    </div>
 </div>
+
 {% endblock %}

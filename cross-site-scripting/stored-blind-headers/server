@@ -84,6 +84,39 @@ def challenge_login():
     return render_template("login.html")
 
 
+@app.route("/register", methods=["GET", "POST"])
+def challenge_register():
+    if session.get("username"):
+        return redirect("/")
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username or not password:
+            flash("Identity credentials required")
+            return redirect("/register")
+
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ?",
+            (username,),
+        ).fetchone()
+
+        if user:
+            flash("Username already taken")
+            return redirect("/register")
+
+        db.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (username, generate_password_hash(password)),
+        )
+
+        flash("Account created! Please log in.")
+        return redirect("/login")
+
+    return render_template("register.html")
+
+
 @app.route("/draft", methods=["POST"])
 def challenge_draft():
     username = session.get("username", None)
