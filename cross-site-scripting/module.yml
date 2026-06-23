@@ -12,12 +12,6 @@ resources:
   - id: inline-reflect-attribute
     name: Quote Me If You Can
     type: challenge
-  - id: inline-reflect-unquoted
-    name: Unquoted and Unhinged
-    type: challenge
-  - id: inline-reflect-href
-    name: The Missing Link
-    type: challenge
   - id: inline-reflect-href-breakout
     name: Click Around and Find Out
     type: challenge
@@ -29,15 +23,6 @@ resources:
     type: challenge
   - id: reflect-script-literal
     name: Literally Dangerous
-    type: challenge
-  - id: reflect-script-object
-    name: Objectively Dangerous
-    type: challenge
-  - id: reflect-json-parse
-    name: Wrapped in JSON
-    type: challenge
-  - id: reflect-iframe-src
-    name: Frame of Reference
     type: challenge
   - id: reflect-log
     name: Paper Trail
