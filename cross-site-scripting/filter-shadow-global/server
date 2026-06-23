@@ -14,6 +14,7 @@ BLOCKLIST = [
     (r"<\s*/?\s*svg\b", re.IGNORECASE),
     (r"<\s*/?\s*iframe\b", re.IGNORECASE),
     (r"<\s*/?\s*input\b", re.IGNORECASE),
+    (r"<\s*/?\s*object\b", re.IGNORECASE),
     (r"<\s*/?\s*video\b", re.IGNORECASE),
     (r"<\s*/?\s*audio\b", re.IGNORECASE),
     (r"<\s*/?\s*source\b", re.IGNORECASE),

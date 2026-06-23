@@ -2,7 +2,7 @@ Through this series of challenges, you will become familiar with the concept of 
 
 In this challenge, the following elements are banned:
 
-- `script`, `img`, `svg`, `iframe`, `input`
+- `script`, `img`, `svg`, `iframe`, `input`, `object`
 - `video`, `audio`, `source`, `track`
 - `html`, `body`, `frameset`, `details`, `dialog`, `marquee`
 - `style`, `link`, `template`
