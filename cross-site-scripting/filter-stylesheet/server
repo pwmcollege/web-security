@@ -59,7 +59,7 @@ def ephemeral():
 
     response = make_response(
         render_template(
-            "ephemeral.html",
+            "index.html",
             msg=msg,
             banned=banned,
             csp_nonce=csp_nonce,
@@ -67,7 +67,7 @@ def ephemeral():
         )
     )
     response.headers["Content-Security-Policy"] = (
-        f"style-src https://cdn.internal 'nonce-{csp_nonce}'; style-src-attr 'none'"
+        f"style-src 'self' https://cdn.internal 'nonce-{csp_nonce}'; style-src-attr 'none'"
     )
     return response
 
