@@ -1,1 +1,57 @@
-../../stored-cookie/templates/login.html
+{% extends "layout.html" %} {% block content %}
+
+<div class="flex flex-col items-center justify-center min-h-[80vh] px-6">
+    <div class="w-full max-w-[340px]">
+        <div class="text-center mb-10">
+            <h1 class="text-[28px] font-extrabold tracking-tight text-zinc-900">
+                pwnpost<span class="text-zinc-300">.</span>
+            </h1>
+        </div>
+
+        {% with messages = get_flashed_messages() %} {% if messages %}
+        <div class="mb-4 space-y-2">
+            {% for message in messages %}
+            <div
+                class="rounded-xl bg-rose-50 px-4 py-2.5 text-[13px] font-medium text-rose-600"
+            >
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+        <form action="/login" method="post" class="space-y-3">
+            <input
+                type="text"
+                name="username"
+                required
+                placeholder="Username"
+                autocomplete="username"
+                class="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-[15px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:bg-white"
+            />
+            <input
+                type="password"
+                name="password"
+                required
+                placeholder="Password"
+                autocomplete="current-password"
+                class="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-[15px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:bg-white"
+            />
+            <button
+                type="submit"
+                class="w-full rounded-xl bg-zinc-900 py-3 text-[15px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+            >
+                Log in
+            </button>
+        </form>
+
+        <p class="mt-6 text-center text-[13px] text-zinc-400">
+            New here?
+            <a href="/register" class="font-medium text-zinc-900 hover:underline"
+                >Create account</a
+            >
+        </p>
+    </div>
+</div>
+
+{% endblock %}

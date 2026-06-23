@@ -50,32 +50,17 @@ resources:
   - id: stored-post
     name: Post Haste
     type: challenge
-  - id: stored-cookie
-    name: Cookie Influencer
-    type: challenge
-  - id: stored-username
-    name: Username Checks Out
-    type: challenge
-  - id: stored-publish
-    name: Publish or Perish
-    type: challenge
-  - id: stored-post-to-sender
-    name: Air-Gap Reply
-    type: challenge
   - id: stored-keylogger
     name: Keys to the Kingdom
     type: challenge
-  - id: inject-dangling
-    name: Hanging by a Thread
-    type: challenge
+  # - id: inject-dangling
+  #   name: Hanging by a Thread
+  #   type: challenge
   - id: stored-svg
     name: Scalable Vector XSS
     type: challenge
   - id: stored-blind
     name: Blind Spot
-    type: challenge
-  - id: stored-blind-headers
-    name: Reading Between the Lines
     type: challenge
   - type: header
     content: DOM XSS
