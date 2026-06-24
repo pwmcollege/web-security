@@ -31,7 +31,7 @@ def sanitize(html):
 def ephemeral():
     msg = request.args.get("msg", "")
     sanitized = sanitize(msg) if msg else ""
-    return render_template("ephemeral.html", msg=msg, sanitized=sanitized)
+    return render_template("index.html", msg=msg, sanitized=sanitized)
 
 
 app.secret_key = os.urandom(64)

@@ -17,7 +17,7 @@ def ephemeral():
             for char in msg
             if char in set(string.ascii_letters + string.digits + " \"'=;:(),._-?+")
         )
-    return render_template("ephemeral.html", msg=msg)
+    return render_template("index.html", msg=msg)
 
 
 @app.route("/preview", methods=["GET"])
