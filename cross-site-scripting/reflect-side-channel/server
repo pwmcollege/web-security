@@ -26,7 +26,7 @@ if os.getuid() != 0:
 
 @app.route("/", methods=["GET"])
 def ephemeral():
-    return render_template("ephemeral.html", msg=request.args.get("msg"))
+    return render_template("index.html", msg=request.args.get("msg"))
 
 
 app.secret_key = os.urandom(64)

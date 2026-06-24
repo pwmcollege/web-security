@@ -1,22 +1,22 @@
-const shareUrl = document.getElementById("shareUrl");
-const copyBtn = document.getElementById("copyBtn");
-const copyIcon = document.getElementById("copyIcon");
+lucide.createIcons();
 
-if (shareUrl && copyBtn && copyIcon) {
-    shareUrl.value = window.location.href;
+const shareBtn = document.getElementById("shareBtn");
 
-    copyBtn.addEventListener("click", async () => {
-        await navigator.clipboard.writeText(shareUrl.value);
+if (shareBtn) {
+    shareBtn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(window.location.href);
 
-        const originalSvg = copyIcon.innerHTML;
-        const successSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M20 6 9 17l-5-5"/></svg>`;
+        const icon = document.getElementById("shareIcon");
+        const text = document.getElementById("shareText");
 
-        copyIcon.innerHTML = successSvg;
-        copyBtn.classList.add("border-emerald-100", "bg-emerald-50/30");
+        icon.setAttribute("data-lucide", "check");
+        text.textContent = "Link copied";
+        lucide.createIcons();
 
         setTimeout(() => {
-            copyIcon.innerHTML = originalSvg;
-            copyBtn.classList.remove("border-emerald-100", "bg-emerald-50/30");
-        }, 2000);
+            icon.setAttribute("data-lucide", "link");
+            text.textContent = "Share this message";
+            lucide.createIcons();
+        }, 1500);
     });
 }

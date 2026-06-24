@@ -1,1 +1,33 @@
-../../inline-reflect-alert/static/style.css
+body {
+    font-family: "Inter", sans-serif;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.island-nav {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.bg-accent {
+    background-color: #007aff;
+}
+
+.text-accent {
+    color: #007aff;
+}
+
+.border-accent {
+    border-color: #007aff;
+}
+
+.focus-ring-accent:focus {
+    --tw-ring-color: rgba(0, 122, 255, 0.3);
+}

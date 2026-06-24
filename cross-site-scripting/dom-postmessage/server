@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("sender.html")
+    return render_template("index.html")
 
 
 app.secret_key = os.urandom(64)

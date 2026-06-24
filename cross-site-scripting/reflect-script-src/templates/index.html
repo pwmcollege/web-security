@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" class="h-full">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Incognito</title>
+        <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
+        <script src="https://cdn.internal/lucide/lucide.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+
+    <body
+        class="min-h-full bg-white text-zinc-900 font-sans antialiased flex flex-col"
+    >
+        <header
+            class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100"
+        >
+            <div
+                class="mx-auto max-w-[600px] h-[60px] px-5 flex items-center gap-3"
+            >
+                <div
+                    class="h-9 w-9 shrink-0 rounded-full bg-zinc-900 text-white flex items-center justify-center"
+                >
+                    <i data-lucide="message-circle-dashed" class="h-[18px] w-[18px]"></i>
+                </div>
+                <div class="text-[19px] font-extrabold tracking-tight text-zinc-900">
+                    Incognito<span class="text-zinc-300">.</span>
+                </div>
+            </div>
+        </header>
+
+        <main
+            class="flex-grow w-full mx-auto max-w-[600px] sm:border-x border-zinc-100 flex flex-col"
+        >
+            <div class="flex-grow flex flex-col px-5 py-6 gap-4 min-h-[420px]">
+                <div
+                    class="flex items-center gap-3 text-[11px] font-medium text-zinc-300 uppercase tracking-widest"
+                >
+                    <span class="h-px flex-grow bg-zinc-100"></span>
+                    Today
+                    <span class="h-px flex-grow bg-zinc-100"></span>
+                </div>
+
+                {% if msg %}
+                <div class="flex flex-col items-end gap-1.5">
+                    <div
+                        class="max-w-[78%] rounded-[20px] rounded-br-md bg-zinc-900 px-4 py-2.5 text-[15px] leading-6 text-white break-words"
+                    >{{ msg|safe }}</div>
+                    <button
+                        type="button"
+                        id="shareBtn"
+                        class="flex items-center gap-1.5 pr-1 text-[12px] font-medium text-zinc-400 hover:text-zinc-900 transition-colors"
+                    >
+                        <i data-lucide="link" class="h-3.5 w-3.5" id="shareIcon"></i>
+                        <span id="shareText">Share this message</span>
+                    </button>
+                </div>
+                {% else %}
+                <div
+                    class="flex-grow flex flex-col items-center justify-center gap-2 text-center py-10"
+                >
+                    <div
+                        class="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 text-zinc-400"
+                    >
+                        <i data-lucide="message-circle-dashed" class="h-5 w-5"></i>
+                    </div>
+                    <p class="text-[14px] font-semibold text-zinc-900">No messages yet</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <form
+                action="/"
+                method="GET"
+                class="sticky bottom-0 bg-white/80 backdrop-blur-xl border-t border-zinc-100 px-4 py-3"
+            >
+                <div class="flex items-center gap-2">
+                    <input
+                        type="text"
+                        name="msg"
+                        required
+                        autocomplete="off"
+                        placeholder="Message…"
+                        class="flex-grow rounded-full bg-zinc-100 border border-zinc-200 px-4 py-2.5 text-[15px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-300 focus:bg-white"
+                    />
+                    <button
+                        type="submit"
+                        aria-label="Send"
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-zinc-700 active:scale-95 transition-all"
+                    >
+                        <i data-lucide="arrow-up" class="h-5 w-5"></i>
+                    </button>
+                </div>
+            </form>
+        </main>
+
+        <script src="/static/share.js"></script>
+    </body>
+</html>
