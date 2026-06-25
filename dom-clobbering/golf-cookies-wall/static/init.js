@@ -4,7 +4,7 @@ if (params.has("theme")) {
     function deepCopy(dst, src) {
         for (const [key, value] of Object.entries(src)) {
             if (typeof value == "object" && !Array.isArray(value) && value !== null) {
-                if (typeof dst[key] == "object") { // No need to make a new object if it's already been created
+                if (typeof dst[key] == "object" && dst[key] !== null) { // No need to make a new object if it's already been created
                     deepCopy(dst[key], value);
                 } else {
                     const subObj = {}
@@ -19,12 +19,6 @@ if (params.has("theme")) {
     const queryTheme = JSON.parse(params.get("theme"));
     deepCopy(window.theme, queryTheme);
 }
-
-const DEFAULT_WALLS = {
-    vert: [[0, [0, 400]], [100, [0, 300]], [200, [0, 300]], [300, [100, 200]], [400, [0, 400]]],
-    horiz: [[0, [0, 400]], [100, [300, 400]], [200, [300, 400]], [300, [100, 200]], [400, [0, 400]]],
-};
-document.cookie = "default="+JSON.stringify(DEFAULT_WALLS);
 
 const activeLayout = function () {
     const cookies = document.cookie.split(";");
@@ -44,5 +38,9 @@ window.walls = function () {
             }
         }
     }
-    return DEFAULT_WALLS;
+    // Data format for walls: [x,[yMin,yMax]] for vertical, [y, [xMin,xMax]] for horizontal
+    return {
+        vert: [[0, [0, 400]], [100, [0, 300]], [200, [0, 300]], [300, [100, 200]], [400, [0, 400]]],
+        horiz: [[0, [0, 400]], [100, [300, 400]], [200, [300, 400]], [300, [100, 200]], [400, [0, 400]]],
+    };
 }();

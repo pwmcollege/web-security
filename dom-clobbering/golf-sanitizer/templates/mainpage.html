@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<head>
+    <script src="/static/fetch-assets.js" type="module"></script>
+    <script src="/static/init.js" defer></script>
+    <script src="/static/main.js" type="module" defer></script>
+    <link rel="stylesheet" href="/static/main.css"></link>
+    <title>pwn.golf</title>
+</head>
+
+<body class="flex-vertical">
+    <div class="x-center">
+        <header>PWN.GOLF</header>
+    </div>
+    {% if logged_in %}
+    <a href="/logout">Log Out</a>
+    {% else %}
+    <a href="/login">Log In</a>
+    <a href="/register">Register</a>
+    {% endif %}
+    {% if username %}
+    <div><span id="page-username"></span>'s Game</div>
+    {% endif %}
+    <div class="x-center">
+        <div class="relative-container">
+            <canvas id="user-canvas" width="500" height="500"></canvas>
+            <canvas id="game-canvas" width="500" height="500"></canvas>
+        </div>
+        {% if logged_in %}
+        <div class="flex-vertical">
+            <button id="start-record">Start Recording</button>
+            <button id="stop-record" disabled>Stop Recording</button>
+            <button id="submit-record" disabled>Submit Recording</button>
+            <div>Share your recording:<a href="http://challenge.internal/share?username={{username|urlencode}}">http://challenge.internal/share?username={{username|urlencode}}</a></div>
+        </div>
+        {% endif %}
+        <div>
+            <form id="map-select">
+                <input name="map-name" placeholder="Map name to switch to">
+                <button type="submit">Switch to Map</button>
+            </form>
+            </br>
+            <form id="map-add">
+                <input name="map-name" placeholder="New map name">
+                <input name="map-walls" placeholder="JSON of wall layout for map">
+                <button type="submit">Add Map</button>
+            </form>
+        </div>
+    </div>
+</body>

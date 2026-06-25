@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="/static/main.css"></link>
+    <title>Register</title>
+</head>
+<body>
+    {% if status %}
+    <div>
+        {{"Register successful!" if status == "success" else "Register failed"}}
+    </div>
+    {% endif %}
+    <form action="/register" method="POST">
+        <div>Username</div>
+        <input name="username">
+        <div>Password</div>
+        <input name="password">
+        <button type="submit">Register</button>
+    </form>
+    <div>Already registered? Login
+        <a href="/login">here</a>
+    </div>
+</body>
