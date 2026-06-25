@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="/static/main.css">
+    </link>
+    <title>Login</title>
+</head>
+
+<body>
+    {% if status %}
+    <div>
+        {{"Invalid login" if status == "error"}}
+    </div>
+    {% endif %}
+    <form action="/login" method="POST">
+        <div>Username</div>
+        <input name="username">
+        <div>Password</div>
+        <input name="password">
+        <button type="submit">Login</button>
+    </form>
+    <div>No account? Register
+        <a href="/register">here</a>
+    </div>
+</body>

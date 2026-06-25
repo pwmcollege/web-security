@@ -1,0 +1,39 @@
+.relative-container {
+    position: relative;
+}
+
+.x-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.flex-vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Keep people from accidentally dragging the ball/hole/canvas */
+img,
+canvas {
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+canvas {
+    width: 400px;
+    height: 400px;
+}
+
+#game-canvas {
+    position: relative;
+    z-index: 0;
+}
+
+#user-canvas {
+    position: absolute;
+    z-index: 1;
+}

@@ -1,0 +1,109 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+
+import atexit
+import os
+import re
+import sys
+import secrets
+from urllib.parse import urlparse
+
+from selenium import webdriver
+from selenium.common.exceptions import (
+    StaleElementReferenceException,
+    TimeoutException,
+)
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+os.setuid(os.geteuid())
+os.environ.clear()
+os.environ["PATH"] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+options = FirefoxOptions()
+options.add_argument("--headless")
+service = FirefoxService(
+    executable_path="/usr/local/bin/geckodriver", log_path="/dev/null"
+)
+browser = webdriver.Firefox(service=service, options=options)
+atexit.register(browser.quit)
+
+SERVER_URL = "http://challenge.internal"
+
+if len(sys.argv) >= 2:
+    challenge_url = sys.argv[1]
+else:
+    print("What site should I visit?")
+    challenge_url = input()
+
+if urlparse(challenge_url).scheme not in ("http", "https"):
+    print("Invalid url!!!")
+    sys.exit(1)
+
+victim_username = "victim-"+secrets.token_hex(16)
+victim_password = secrets.token_hex(16)
+
+# Make account
+browser.get(SERVER_URL+"/register")
+register_form = WebDriverWait(browser, 5).until(
+    EC.presence_of_element_located((By.TAG_NAME, "form"))
+)
+register_form.find_element(By.NAME, "username").send_keys(victim_username)
+register_form.find_element(By.NAME, "password").send_keys(victim_password)
+register_form.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+# Login
+WebDriverWait(browser, 5).until(
+    EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/login"]'))
+).click()
+login_form = WebDriverWait(browser, 5).until(
+    EC.presence_of_element_located((By.TAG_NAME, "form"))
+)
+login_form.find_element(By.NAME, "username").send_keys(victim_username)
+login_form.find_element(By.NAME, "password").send_keys(victim_password)
+login_form.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+# Add a new map
+new_map_form = WebDriverWait(browser, 5).until(
+    EC.presence_of_element_located((By.ID, "map-add"))
+)
+new_map_form.find_element(By.NAME, "map-name").send_keys(open("/flag").read())
+new_map_form.find_element(By.NAME, "map-walls").send_keys('{"vert":[], "horiz":[]}')
+new_map_form.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+print(f"Visiting {challenge_url}")
+browser.get(challenge_url)
+try:
+    replay_button = WebDriverWait(browser, 5).until(
+        EC.presence_of_element_located((By.ID, "start-replay"))
+    )
+    replay_button.click()
+    WebDriverWait(browser, 10).until(EC.alert_is_present())
+    alert = browser.switch_to.alert
+    alert_content = alert.text
+    alert.dismiss()
+    url = browser.current_url
+    parsed_url = urlparse(url)
+    replay_button.click()
+    if (
+        parsed_url.netloc == "challenge.internal" and parsed_url.path == "/share"
+    ):  # Make sure that we are on the site hosted by /challenge/server
+        stroke_match = re.search(r"\n(\d+) stroke", alert_content)
+        stroke_count = int(
+            stroke_match.group(1)
+        )  # Determine how many strokes it took for the user to win
+        if stroke_count <= 1:
+            print("Congrats on your golf game! No flag though :(")
+        else:
+            print("Too many strokes, I believe in you!")
+    else:
+        print("???")
+        print("DEBUG:", parsed_url)
+        # os.unlink("/flag")
+except TimeoutException:
+    print("Did not score in time?")
+except StaleElementReferenceException:
+    print("?!?!")
+    # os.unlink("/flag")
