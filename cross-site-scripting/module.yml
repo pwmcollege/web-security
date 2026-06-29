@@ -164,19 +164,6 @@ resources:
       - name: Challenge
         port: 80
       - name: SSH
-  - id: stored-blind
-    name: Blind Spot
-    type: challenge
-    interfaces:
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: Challenge
-        port: 80
-      - name: SSH
   - type: header
     content: DOM XSS
   - id: dom-hash
