@@ -4,9 +4,19 @@ import os
 import re
 
 from bs4 import BeautifulSoup, NavigableString, Tag
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def relurl():
+    return {
+        "url_for": lambda endpoint, **values: (
+            url_for(endpoint, **values).lstrip("/") or "."
+        )
+    }
+
 
 ALLOWLIST = [
     "script",
@@ -107,7 +117,7 @@ def is_blocked(script_text):
 
 
 @app.route("/", methods=["GET"])
-def ephemeral():
+def index():
     msg = request.args.get("msg")
     script_text = extract_script(msg) if msg else None
     banned = bool(msg and (script_text is None or is_blocked(script_text)))

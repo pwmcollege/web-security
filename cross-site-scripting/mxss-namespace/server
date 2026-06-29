@@ -3,9 +3,19 @@
 import os
 
 from bs4 import BeautifulSoup
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def relurl():
+    return {
+        "url_for": lambda endpoint, **values: (
+            url_for(endpoint, **values).lstrip("/") or "."
+        )
+    }
+
 
 ALLOWED_TAGS = {"html", "head", "body", "math", "mtext", "annotation-xml", "style", "table"}
 ALLOWED_ATTRS = {
@@ -28,7 +38,7 @@ def sanitize(html):
 
 
 @app.route("/", methods=["GET"])
-def ephemeral():
+def index():
     msg = request.args.get("msg", "")
     sanitized = sanitize(msg) if msg else ""
     return render_template("index.html", msg=msg, sanitized=sanitized)

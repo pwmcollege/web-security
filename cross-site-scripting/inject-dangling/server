@@ -14,10 +14,20 @@ from flask import (
     render_template,
     request,
     session,
+    url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def relurl():
+    return {
+        "url_for": lambda endpoint, **values: (
+            url_for(endpoint, **values).lstrip("/") or "."
+        )
+    }
 
 
 class TemporaryDB:
@@ -69,9 +79,9 @@ for author, content in [
 
 
 @app.route("/login", methods=["GET", "POST"])
-def challenge_login():
+def login():
     if session.get("username"):
-        return redirect("/")
+        return redirect(url_for("index").lstrip("/") or ".")
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -79,7 +89,7 @@ def challenge_login():
 
         if not username or not password:
             flash("Identity credentials required")
-            return redirect("/login")
+            return redirect(url_for("login").lstrip("/") or ".")
 
         user = db.execute(
             "SELECT * FROM users WHERE username = ?",
@@ -88,19 +98,19 @@ def challenge_login():
 
         if not user or not check_password_hash(user["password"], password):
             flash("Access denied: Invalid credentials")
-            return redirect("/login")
+            return redirect(url_for("login").lstrip("/") or ".")
 
         session["username"] = username
-        return redirect("/")
+        return redirect(url_for("index").lstrip("/") or ".")
 
     return render_template("login.html")
 
 
 @app.route("/", methods=["GET"])
-def challenge_get():
+def index():
     username = session.get("username")
     if not username:
-        return redirect("/login")
+        return redirect(url_for("login").lstrip("/") or ".")
 
     msg = request.args.get("msg", "")
     token = flag if username == "admin" else "n/a"
@@ -134,9 +144,9 @@ def challenge_get():
 
 
 @app.route("/logout")
-def challenge_logout():
+def logout():
     session.clear()
-    return redirect("/")
+    return redirect(url_for("index").lstrip("/") or ".")
 
 
 app.secret_key = os.urandom(64)

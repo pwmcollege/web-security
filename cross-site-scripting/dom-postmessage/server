@@ -2,9 +2,18 @@
 
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def relurl():
+    return {
+        "url_for": lambda endpoint, **values: (
+            url_for(endpoint, **values).lstrip("/") or "."
+        )
+    }
 
 
 @app.route("/", methods=["GET"])

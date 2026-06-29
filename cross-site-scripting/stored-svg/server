@@ -15,6 +15,7 @@ from flask import (
     request,
     send_file,
     session,
+    url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -22,6 +23,15 @@ UPLOAD_DIR = "/tmp/avatars"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def relurl():
+    return {
+        "url_for": lambda endpoint, **values: (
+            url_for(endpoint, **values).lstrip("/") or "."
+        )
+    }
 
 
 class TemporaryDB:
@@ -61,9 +71,9 @@ db.execute(
 
 
 @app.route("/login", methods=["GET", "POST"])
-def challenge_login():
+def login():
     if session.get("username"):
-        return redirect("/")
+        return redirect(url_for("index").lstrip("/") or ".")
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -71,7 +81,7 @@ def challenge_login():
 
         if not username or not password:
             flash("Identity credentials required")
-            return redirect("/login")
+            return redirect(url_for("login").lstrip("/") or ".")
 
         user = db.execute(
             "SELECT * FROM users WHERE username = ?",
@@ -80,18 +90,18 @@ def challenge_login():
 
         if not user or not check_password_hash(user["password"], password):
             flash("Access denied: Invalid credentials")
-            return redirect("/login")
+            return redirect(url_for("login").lstrip("/") or ".")
 
         session["username"] = username
-        return redirect("/")
+        return redirect(url_for("index").lstrip("/") or ".")
 
     return render_template("login.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
-def challenge_register():
+def register():
     if session.get("username"):
-        return redirect("/")
+        return redirect(url_for("index").lstrip("/") or ".")
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -99,7 +109,7 @@ def challenge_register():
 
         if not username or not password:
             flash("Identity credentials required")
-            return redirect("/register")
+            return redirect(url_for("register").lstrip("/") or ".")
 
         user = db.execute(
             "SELECT * FROM users WHERE username = ?",
@@ -108,7 +118,7 @@ def challenge_register():
 
         if user:
             flash("Username already taken")
-            return redirect("/register")
+            return redirect(url_for("register").lstrip("/") or ".")
 
         db.execute(
             "INSERT INTO users (username, password) VALUES (?, ?)",
@@ -116,13 +126,13 @@ def challenge_register():
         )
 
         flash("Account created! Please log in.")
-        return redirect("/login")
+        return redirect(url_for("login").lstrip("/") or ".")
 
     return render_template("register.html")
 
 
 @app.route("/draft", methods=["POST"])
-def challenge_draft():
+def draft():
     username = session.get("username", None)
     if not username:
         abort(403, "Log in first!")
@@ -135,11 +145,11 @@ def challenge_draft():
         "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
         (content, username, bool(request.form.get("publish"))),
     )
-    return redirect("/")
+    return redirect(url_for("index").lstrip("/") or ".")
 
 
 @app.route("/publish", methods=["POST"])
-def challenge_publish():
+def publish():
     username = session.get("username", None)
     if not username:
         abort(403, "Log in first!")
@@ -156,11 +166,11 @@ def challenge_publish():
         )
     else:
         db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
-    return redirect("/")
+    return redirect(url_for("index").lstrip("/") or ".")
 
 
 @app.route("/upload", methods=["POST"])
-def challenge_upload():
+def upload():
     username = session.get("username")
     if not username or username == "admin":
         abort(403)
@@ -168,19 +178,19 @@ def challenge_upload():
     f = request.files.get("avatar")
     if not f or not f.filename:
         flash("No file selected")
-        return redirect("/")
+        return redirect(url_for("index").lstrip("/") or ".")
 
     content_type = f.content_type or ""
     if content_type not in ("image/png", "image/jpeg", "image/gif", "image/webp"):
         flash("Only image files are allowed")
-        return redirect("/")
+        return redirect(url_for("index").lstrip("/") or ".")
 
     ext = os.path.splitext(f.filename)[1].lower()
     save_path = os.path.join(UPLOAD_DIR, username + ext)
     f.save(save_path)
 
     flash("Avatar uploaded!")
-    return redirect("/")
+    return redirect(url_for("index").lstrip("/") or ".")
 
 
 @app.route("/avatar/<username>")
@@ -194,19 +204,19 @@ def serve_avatar(username):
 
 
 @app.route("/", methods=["GET"])
-def challenge_get():
+def index():
     username = session.get("username")
     if not username:
-        return redirect("/login")
+        return redirect(url_for("login").lstrip("/") or ".")
 
     posts = db.execute("SELECT rowid, * FROM posts").fetchall()
     return render_template("index.html", username=username, posts=posts)
 
 
 @app.route("/logout")
-def challenge_logout():
+def logout():
     session.clear()
-    return redirect("/")
+    return redirect(url_for("index").lstrip("/") or ".")
 
 
 app.secret_key = os.urandom(64)

@@ -3,9 +3,18 @@
 import os
 import secrets
 
-from flask import Flask, g, render_template, request
+from flask import Flask, g, render_template, request, url_for
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def relurl():
+    return {
+        "url_for": lambda endpoint, **values: (
+            url_for(endpoint, **values).lstrip("/") or "."
+        )
+    }
 
 
 @app.before_request
@@ -34,7 +43,7 @@ def inject_nonce():
 
 
 @app.route("/", methods=["GET"])
-def ephemeral():
+def index():
     return render_template("index.html", msg=request.args.get("msg"))
 
 
