@@ -5,18 +5,3 @@ privileged: true
 resources:
   - type: header
     content: In-band Classics
-  - id: inline-reflect-alert
-    name: A Reflective Start
-    type: challenge
-    interfaces:
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: Challenge
-        port: 80
-      - name: Secure Challenge
-        port: 443
-      - name: SSH

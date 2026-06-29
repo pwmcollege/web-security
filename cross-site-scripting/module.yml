@@ -19,61 +19,231 @@ resources:
   - id: inline-reflect-cookie
     name: A Crumb in the Reflection
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: inline-reflect-attribute
     name: Quote Me If You Can
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: inline-reflect-href-breakout
     name: Click Around and Find Out
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: reflect-script-src
     name: Source Material
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: reflect-script
     name: Scriptmaxxing
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: reflect-script-literal
     name: Literally Dangerous
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: reflect-log
     name: Paper Trail
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: reflect-side-channel
     name: Side Effects
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - type: header
     content: Stored XSS
   - id: stored-post
     name: Post Haste
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: stored-keylogger
     name: Keys to the Kingdom
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   # - id: inject-dangling
   #   name: Hanging by a Thread
   #   type: challenge
   - id: stored-svg
     name: Scalable Vector XSS
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: stored-blind
     name: Blind Spot
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - type: header
     content: DOM XSS
   - id: dom-hash
     name: Hashing It Out
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: dom-query
     name: Query Me This
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: dom-title
     name: Title Fight
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: dom-data-attr
     name: Data Exposure
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: dom-postmessage
     name: Message Received
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - type: header
     content: Mutation XSS
   - name: Other Resources
@@ -82,38 +252,158 @@ resources:
   - id: mxss-table
     name: Table Manners
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: mxss-namespace
     name: Namespace Invaders
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - type: header
     content: Filters
   - id: filter-encoding
     name: Lost in Translation
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-style
     name: No Dress Code
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-animation
     name: The Last Frame
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-stylesheet
     name: No Style Points
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-shadow
     name: Shadow Banned
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-dom
     name: DOM and Gloom
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-apis
     name: API Calypse
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-unicode
     name: Escape Artist
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-mismatch
     name: Double Take
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
   - id: filter-shadow-global
     name: The Great XSS Filter
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
