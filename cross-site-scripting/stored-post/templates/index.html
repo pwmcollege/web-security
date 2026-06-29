@@ -57,18 +57,22 @@
 {% for post in posts %}
 <article class="px-5 py-4 border-b border-zinc-100 hover:bg-zinc-50/60 transition-colors">
     <div class="flex gap-3">
+        {% if post.author == username %}
+        <div
+            class="h-10 w-10 shrink-0 rounded-full bg-zinc-900 text-white flex items-center justify-center text-sm font-semibold uppercase"
+        >
+            {{ post.author[0] }}
+        </div>
+        {% else %}
         <div
             class="h-10 w-10 shrink-0 rounded-full bg-zinc-100 text-zinc-600 flex items-center justify-center text-sm font-semibold uppercase ring-1 ring-zinc-200/70"
         >
             {{ post.author[0] }}
         </div>
+        {% endif %}
         <div class="flex-grow min-w-0">
             <div class="flex items-center gap-1.5 text-[15px] leading-5">
                 <span class="font-semibold text-zinc-900">{{ post.author }}</span>
-                {% if post.author == username %}
-                <span class="text-zinc-400">·</span>
-                <span class="text-[13px] text-zinc-400">You</span>
-                {% endif %}
                 {% if not post.published %}
                 <div class="ml-auto flex items-center gap-2">
                     <span
