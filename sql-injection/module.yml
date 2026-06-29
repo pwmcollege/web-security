@@ -17,4 +17,6 @@ resources:
         port: 6080
       - name: Challenge
         port: 80
+      - name: Secure Challenge
+        port: 443
       - name: SSH
