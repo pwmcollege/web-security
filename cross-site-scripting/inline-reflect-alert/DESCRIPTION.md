@@ -20,4 +20,4 @@ When you're prompted, paste your crafted URL there. If your payload pops an aler
 
 ---
 
-In this challenge, the server and the victim are isolated inside an ***air-gapped™*** network namespace. This means the victim cannot access any external URLs or services outside that namespace, and its only reachable destination is the server itself.
+In this challenge, the server and the victim are isolated inside an air-gapped network namespace. This means the victim cannot access any external URLs or services outside that namespace, and its only reachable destination is the server itself.

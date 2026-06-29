@@ -1,4 +1,4 @@
-***pwnpost™*** now supports http-only cookies!!!
+***pwnpost*** now supports http-only cookies!!!
 
 `HttpOnly` keeps JavaScript from reading the cookie via `document.cookie`, but it doesn't change which requests the browser attaches the cookie to. Per [RFC 6265 §8.5](https://datatracker.ietf.org/doc/html/rfc6265#section-8.5), cookies are scoped by domain, not by port. A cookie set on one port of a host gets sent to every other port on that same host, HttpOnly or not.
 
