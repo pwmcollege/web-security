@@ -147,7 +147,15 @@ def challenge_publish():
     if username == "admin":
         abort(400, "pwnpost doesn't support admin posting")
 
-    db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
+    # https://www.sqlite.org/lang_update.html
+    post_id = request.form.get("post_id")
+    if post_id:
+        db.execute(
+            "UPDATE posts SET published = TRUE WHERE author = ? AND rowid = ?",
+            [username, post_id],
+        )
+    else:
+        db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
     return redirect("/")
 
 
@@ -160,19 +168,19 @@ def challenge_upload():
     f = request.files.get("avatar")
     if not f or not f.filename:
         flash("No file selected")
-        return redirect("/profile")
+        return redirect("/")
 
     content_type = f.content_type or ""
-    if not content_type.startswith("image/"):
+    if content_type not in ("image/png", "image/jpeg", "image/gif", "image/webp"):
         flash("Only image files are allowed")
-        return redirect("/profile")
+        return redirect("/")
 
     ext = os.path.splitext(f.filename)[1].lower()
     save_path = os.path.join(UPLOAD_DIR, username + ext)
     f.save(save_path)
 
     flash("Avatar uploaded!")
-    return redirect("/profile")
+    return redirect("/")
 
 
 @app.route("/avatar/<username>")
@@ -185,26 +193,13 @@ def serve_avatar(username):
     abort(404)
 
 
-@app.route("/profile")
-def challenge_profile():
-    username = session.get("username")
-    if not username:
-        return redirect("/login")
-
-    has_avatar = any(
-        os.path.exists(os.path.join(UPLOAD_DIR, username + ext))
-        for ext in [".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp"]
-    )
-    return render_template("profile.html", username=username, has_avatar=has_avatar)
-
-
 @app.route("/", methods=["GET"])
 def challenge_get():
     username = session.get("username")
     if not username:
         return redirect("/login")
 
-    posts = db.execute("SELECT * FROM posts").fetchall()
+    posts = db.execute("SELECT rowid, * FROM posts").fetchall()
     return render_template("index.html", username=username, posts=posts)
 
 

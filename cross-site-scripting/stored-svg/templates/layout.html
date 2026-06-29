@@ -5,35 +5,115 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>pwnpost</title>
         <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
+        <script src="https://cdn.internal/lucide/lucide.min.js"></script>
         <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
         <link rel="stylesheet" href="/static/style.css" />
     </head>
 
     <body
-        class="min-h-screen bg-slate-50 text-slate-900 font-sans tracking-tight flex flex-col"
+        class="min-h-full bg-white text-zinc-900 font-sans antialiased flex flex-col"
     >
-        <div
-            class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-[#007AFF]/10 via-slate-50 to-slate-100"
-        ></div>
-        <div class="sticky top-6 z-50 px-4 shrink-0">
-            <nav
-                class="max-w-2xl mx-auto h-14 island-nav rounded-2xl flex items-center justify-between px-6 shadow-lg shadow-black/[0.03]"
+        {% if not hide_chrome %}
+        <header
+            class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100"
+        >
+            <div
+                class="mx-auto max-w-[600px] h-[60px] px-5 flex items-center justify-between"
             >
                 <a
                     href="/"
-                    class="text-lg font-bold tracking-tighter text-slate-900"
-                    >pwnpost</a
+                    class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none"
                 >
+                    pwnpost<span class="text-zinc-300">.</span>
+                </a>
                 <a
-                    href="/"
-                    class="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500 hover:text-[#007AFF] transition-colors"
-                    >Feed</a
+                    href="/logout"
+                    class="text-[13px] font-medium text-zinc-400 hover:text-zinc-900 transition-colors"
+                    >Log out</a
                 >
-            </nav>
-        </div>
+            </div>
+        </header>
+        {% endif %}
 
-        <main class="flex-grow flex flex-col items-center px-4 sm:px-6 lg:px-8">
+        <main class="flex-grow w-full mx-auto max-w-[600px] sm:border-x border-zinc-100">
             {% block content %}{% endblock %}
         </main>
+
+        <script>
+            lucide.createIcons();
+
+            const closeMenus = () =>
+                document
+                    .querySelectorAll("[data-menu]")
+                    .forEach((m) => m.classList.add("hidden"));
+
+            const avatarPop = document.querySelector("[data-avatar-pop]");
+            let avatarOpenTrigger = null;
+            const isAvatarOpen = () =>
+                avatarPop &&
+                !avatarPop.classList.contains("pointer-events-none");
+            const openAvatar = (trigger) => {
+                if (!avatarPop) return;
+                const r = trigger.getBoundingClientRect();
+                const maxLeft = window.innerWidth - avatarPop.offsetWidth - 8;
+                const left = Math.max(8, Math.min(r.left, maxLeft));
+                // snap to hidden state at the new anchor with no transition,
+                // then replay the pop-in so it re-appears (never slides/teleports)
+                avatarPop.style.transition = "none";
+                avatarPop.classList.add("opacity-0", "scale-95");
+                avatarPop.classList.remove("pointer-events-none");
+                avatarPop.style.top = r.bottom + 6 + "px";
+                avatarPop.style.left = left + "px";
+                void avatarPop.offsetWidth;
+                avatarPop.style.transition = "";
+                avatarPop.classList.remove("opacity-0", "scale-95");
+                avatarOpenTrigger = trigger;
+            };
+            const closeAvatar = () => {
+                if (!avatarPop) return;
+                avatarPop.style.transition = "";
+                avatarPop.classList.add(
+                    "opacity-0",
+                    "scale-95",
+                    "pointer-events-none",
+                );
+                avatarOpenTrigger = null;
+            };
+
+            document.addEventListener("click", (e) => {
+                const avatarTrigger = e.target.closest("[data-avatar-trigger]");
+                if (avatarTrigger) {
+                    e.stopPropagation();
+                    closeMenus();
+                    if (isAvatarOpen() && avatarOpenTrigger === avatarTrigger) {
+                        closeAvatar();
+                    } else {
+                        openAvatar(avatarTrigger);
+                    }
+                    return;
+                }
+
+                const trigger = e.target.closest("[data-menu-trigger]");
+                if (trigger) {
+                    e.stopPropagation();
+                    const menu = trigger.parentElement.querySelector("[data-menu]");
+                    const isOpen = !menu.classList.contains("hidden");
+                    closeMenus();
+                    closeAvatar();
+                    if (!isOpen) menu.classList.remove("hidden");
+                    return;
+                }
+
+                if (!e.target.closest("[data-menu]")) closeMenus();
+                if (!e.target.closest("[data-avatar-pop]")) closeAvatar();
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    closeMenus();
+                    closeAvatar();
+                }
+            });
+        </script>
     </body>
 </html>
