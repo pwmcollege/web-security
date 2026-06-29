@@ -3,18 +3,9 @@
 import os
 import string
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request
 
 app = Flask(__name__)
-
-
-@app.context_processor
-def relurl():
-    return {
-        "url_for": lambda endpoint, **values: (
-            url_for(endpoint, **values).lstrip("/") or "."
-        )
-    }
 
 
 @app.route("/", methods=["GET"])
@@ -33,7 +24,7 @@ def index():
 def preview():
     msg = request.args.get("msg")
     if not msg:
-        return redirect(url_for("index").lstrip("/") or ".")
+        return redirect("/")
     return render_template("preview.html", msg=msg)
 
 

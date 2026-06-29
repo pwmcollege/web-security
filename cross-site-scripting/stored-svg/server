@@ -15,7 +15,6 @@ from flask import (
     request,
     send_file,
     session,
-    url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -23,15 +22,6 @@ UPLOAD_DIR = "/tmp/avatars"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app = Flask(__name__)
-
-
-@app.context_processor
-def relurl():
-    return {
-        "url_for": lambda endpoint, **values: (
-            url_for(endpoint, **values).lstrip("/") or "."
-        )
-    }
 
 
 class TemporaryDB:
@@ -73,7 +63,7 @@ db.execute(
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if session.get("username"):
-        return redirect(url_for("index").lstrip("/") or ".")
+        return redirect("/")
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -81,7 +71,7 @@ def login():
 
         if not username or not password:
             flash("Identity credentials required")
-            return redirect(url_for("login").lstrip("/") or ".")
+            return redirect("/login")
 
         user = db.execute(
             "SELECT * FROM users WHERE username = ?",
@@ -90,10 +80,10 @@ def login():
 
         if not user or not check_password_hash(user["password"], password):
             flash("Access denied: Invalid credentials")
-            return redirect(url_for("login").lstrip("/") or ".")
+            return redirect("/login")
 
         session["username"] = username
-        return redirect(url_for("index").lstrip("/") or ".")
+        return redirect("/")
 
     return render_template("login.html")
 
@@ -101,7 +91,7 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if session.get("username"):
-        return redirect(url_for("index").lstrip("/") or ".")
+        return redirect("/")
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -109,7 +99,7 @@ def register():
 
         if not username or not password:
             flash("Identity credentials required")
-            return redirect(url_for("register").lstrip("/") or ".")
+            return redirect("/register")
 
         user = db.execute(
             "SELECT * FROM users WHERE username = ?",
@@ -118,7 +108,7 @@ def register():
 
         if user:
             flash("Username already taken")
-            return redirect(url_for("register").lstrip("/") or ".")
+            return redirect("/register")
 
         db.execute(
             "INSERT INTO users (username, password) VALUES (?, ?)",
@@ -126,7 +116,7 @@ def register():
         )
 
         flash("Account created! Please log in.")
-        return redirect(url_for("login").lstrip("/") or ".")
+        return redirect("/login")
 
     return render_template("register.html")
 
@@ -145,7 +135,7 @@ def draft():
         "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
         (content, username, bool(request.form.get("publish"))),
     )
-    return redirect(url_for("index").lstrip("/") or ".")
+    return redirect("/")
 
 
 @app.route("/publish", methods=["POST"])
@@ -166,7 +156,7 @@ def publish():
         )
     else:
         db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
-    return redirect(url_for("index").lstrip("/") or ".")
+    return redirect("/")
 
 
 @app.route("/upload", methods=["POST"])
@@ -178,19 +168,19 @@ def upload():
     f = request.files.get("avatar")
     if not f or not f.filename:
         flash("No file selected")
-        return redirect(url_for("index").lstrip("/") or ".")
+        return redirect("/")
 
     content_type = f.content_type or ""
     if content_type not in ("image/png", "image/jpeg", "image/gif", "image/webp"):
         flash("Only image files are allowed")
-        return redirect(url_for("index").lstrip("/") or ".")
+        return redirect("/")
 
     ext = os.path.splitext(f.filename)[1].lower()
     save_path = os.path.join(UPLOAD_DIR, username + ext)
     f.save(save_path)
 
     flash("Avatar uploaded!")
-    return redirect(url_for("index").lstrip("/") or ".")
+    return redirect("/")
 
 
 @app.route("/avatar/<username>")
@@ -207,7 +197,7 @@ def serve_avatar(username):
 def index():
     username = session.get("username")
     if not username:
-        return redirect(url_for("login").lstrip("/") or ".")
+        return redirect("/login")
 
     posts = db.execute("SELECT rowid, * FROM posts").fetchall()
     return render_template("index.html", username=username, posts=posts)
@@ -216,7 +206,7 @@ def index():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("index").lstrip("/") or ".")
+    return redirect("/")
 
 
 app.secret_key = os.urandom(64)
