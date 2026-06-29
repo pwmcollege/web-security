@@ -5,31 +5,16 @@ privileged: true
 resources:
   - type: header
     content: In-band Classics
-  - id: auth-bypass-login
-    name: Who Am I
+  - id: inline-reflect-alert
+    name: A Reflective Start
     type: challenge
-    required: false
-  - id: param-password-bypass
-    name: Know Your Enemy
-    type: challenge
-    required: false
-  - id: numeric-context
-    name: Numeric Intent
-    type: challenge
-    required: false
-  - id: union-select
-    name: Union Jack
-    type: challenge
-    required: false
-  - id: union-columns
-    name: Order in the Court
-    type: challenge
-    required: false
-  - id: schema-discovery
-    name: Schema Surveyor
-    type: challenge
-    required: false
-  - id: type-cast
-    name: Type Cast Away
-    type: challenge
-    required: false
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: Challenge
+        port: 80
+      - name: SSH
