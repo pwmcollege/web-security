@@ -12,7 +12,7 @@ To begin, start the web server: `/challenge/server`
 
 Once running, you can access the website at: `https://challenge.internal`
 
-You can visit it using a browser inside the [Desktop workspace](https://pwn.college/workspace/desktop).
+You can visit it using a browser inside the [Desktop workspace](https://pwn.college/workspace/desktop). Or open it through the [Challenge](https://pwn.college/workspace/80) interface from the bottom-left interface menu.
 
 Once you've created a URL that triggers an [alert()](https://developer.mozilla.org/en-US/docs/Web/API/Window/alert), go ahead and run: `/challenge/victim`.
 
