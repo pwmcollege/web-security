@@ -4,7 +4,7 @@ import ctypes
 import ctypes.util
 import os
 
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request
 
 NETNS = os.environ.get("NETNS", "challenge_ns")
 CLONE_NEWNET = 0x40000000
@@ -17,15 +17,6 @@ with open(f"/var/run/netns/{NETNS}") as ns:
         raise OSError(err, os.strerror(err))
 
 app = Flask(__name__)
-
-
-@app.context_processor
-def relurl():
-    return {
-        "url_for": lambda endpoint, **values: (
-            url_for(endpoint, **values).lstrip("/") or "."
-        )
-    }
 
 
 @app.route("/", methods=["GET"])
