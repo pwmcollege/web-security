@@ -12,9 +12,6 @@ resources:
   - id: inline-reflect-attribute
     name: Quote Me If You Can
     type: challenge
-  - id: inline-reflect-href-breakout
-    name: Click Around and Find Out
-    type: challenge
   - id: reflect-script-src
     name: Source Material
     type: challenge
@@ -51,12 +48,6 @@ resources:
     type: challenge
   - id: dom-query
     name: Query Me This
-    type: challenge
-  - id: dom-title
-    name: Title Fight
-    type: challenge
-  - id: dom-data-attr
-    name: Data Exposure
     type: challenge
   - id: dom-postmessage
     name: Message Received
