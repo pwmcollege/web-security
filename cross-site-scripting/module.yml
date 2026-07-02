@@ -4,47 +4,47 @@ resources:
   - type: header
     content: Reflected XSS
   - id: inline-reflect-alert
-    name: A Reflective Start
+    name: First Reflection
     type: challenge
   - id: inline-reflect-cookie
-    name: A Crumb in the Reflection
+    name: Cookie Thief
     type: challenge
   - id: inline-reflect-attribute
-    name: Quote Me If You Can
+    name: Escaping the Quotes
     type: challenge
   - id: reflect-script-src
-    name: Source Material
+    name: Trusted Sources
     type: challenge
   - id: reflect-script
-    name: Scriptmaxxing
+    name: Out of the String
     type: challenge
   - id: reflect-script-literal
-    name: Literally Dangerous
+    name: Backtick Breakout
     type: challenge
   - id: reflect-log
-    name: Paper Trail
+    name: Caught in the Log
     type: challenge
   - id: reflect-side-channel
-    name: Side Effects
+    name: Leaking on the Clock
     type: challenge
   - type: header
     content: Stored XSS
   - id: stored-post
-    name: Post Haste
+    name: The Poisoned Post
     type: challenge
   - id: stored-keylogger
-    name: Keys to the Kingdom
+    name: Every Keystroke
     type: challenge
   - id: stored-svg
-    name: Scalable Vector XSS
+    name: The Image That Runs
     type: challenge
   - type: header
     content: DOM XSS
   - id: dom-hash
-    name: Hashing It Out
+    name: Hash to HTML
     type: challenge
   - id: dom-query
-    name: Query Me This
+    name: Query to HTML
     type: challenge
   - type: header
     content: Mutation XSS
@@ -52,40 +52,40 @@ resources:
     type: markdown
     file: mxss-resources.md
   - id: mxss-table
-    name: Table Manners
+    name: Parser Disagreement
     type: challenge
   - id: mxss-namespace
-    name: Namespace Invaders
+    name: Namespace Confusion
     type: challenge
   - type: header
     content: Filters
   - id: filter-encoding
-    name: Lost in Translation
+    name: Past the Blocklist
     type: challenge
   - id: filter-style
-    name: No Dress Code
+    name: Style Stripped
     type: challenge
   - id: filter-animation
-    name: The Last Frame
+    name: Frozen Frames
     type: challenge
   - id: filter-stylesheet
-    name: No Style Points
+    name: No Stylesheets
     type: challenge
   - id: filter-shadow
-    name: Shadow Banned
+    name: Shadows Blocked
     type: challenge
   - id: filter-dom
-    name: DOM and Gloom
+    name: DOM Locked Down
     type: challenge
   - id: filter-apis
-    name: API Calypse
+    name: Nowhere to Call
     type: challenge
   - id: filter-unicode
-    name: Escape Artist
+    name: Unicode Escapes
     type: challenge
   - id: filter-mismatch
-    name: Double Take
+    name: No Tags at All
     type: challenge
   - id: filter-shadow-global
-    name: The Great XSS Filter
+    name: The Final Filter
     type: challenge
