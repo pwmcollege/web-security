@@ -1,6 +1,8 @@
-Through this series of challenges, you will become familiar with the concept of XSS filters bypass!
+Real apps often try to stop XSS by filtering the input before it ever reaches the page. A common naive way to do this is a blocklist: the server scans your input for dangerous-looking patterns and rejects it if it finds one. This series of challenges is about getting a payload past that kind of filter.
 
-In this challenge, the following elements are banned:
+The weakness of a blocklist is that it can only block what its authors thought to block. There are many ways to reach the same result, so if the filter misses even one, you are through.
+
+In this challenge the following elements are banned:
 
 - `script`, `img`, `svg`, `iframe`, `input`
 - `video`, `audio`, `source`, `track`
@@ -24,3 +26,5 @@ The following shadow DOM primitives are also banned:
 - `shadow`, `slot`
 
 A Content Security Policy is also applied: `style-src 'nonce-{random}'; style-src-attr 'none'`
+
+Find a way to run your payload without using any of them.

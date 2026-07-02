@@ -1,10 +1,8 @@
-Through this series of challenges, you will become familiar with the concept of XSS filters bypass!
+Real apps often try to stop XSS by filtering the input before it ever reaches the page. A common naive way to do this is a blocklist: the server scans your input for dangerous-looking patterns and rejects it if it finds one. This series of challenges is about getting a payload past that kind of filter.
 
-In this challenge, the following element is allowed:
+The weakness of a blocklist is that it can only block what its authors thought to block. There are many ways to reach the same result, so if the filter misses even one, you are through.
 
-- `script`
-
-The following APIs are banned:
+In this challenge you can use `<script>`, but the following APIs are banned:
 
 - `fetch`, `XMLHttpRequest`, `sendBeacon`
 - `location`, `open()`, `assign()`, `replace()`, `pushState`, `replaceState`
@@ -22,3 +20,5 @@ The following APIs are banned:
 - `media`, `Image`, `Audio`, `Video`, `Track`, `Source`, `Bitmap`, `Canvas`, `Blob`, `File`
 - `navigator`, `postMessage`, `document`, `window`, `globalThis`, `self`, `top`, `frames`, `form`, `element`
 - `eval`, `Function`, `setTimeout`, `setInterval`
+
+Find a way to run your payload without using any of them.

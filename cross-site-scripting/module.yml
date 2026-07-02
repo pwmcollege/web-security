@@ -36,7 +36,7 @@ resources:
     name: Every Keystroke
     type: challenge
   - id: stored-svg
-    name: The Image That Runs
+    name: Script in the Picture
     type: challenge
   - type: header
     content: DOM XSS
