@@ -35,9 +35,6 @@ resources:
   - id: stored-keylogger
     name: Keys to the Kingdom
     type: challenge
-  # - id: inject-dangling
-  #   name: Hanging by a Thread
-  #   type: challenge
   - id: stored-svg
     name: Scalable Vector XSS
     type: challenge
@@ -48,9 +45,6 @@ resources:
     type: challenge
   - id: dom-query
     name: Query Me This
-    type: challenge
-  - id: dom-postmessage
-    name: Message Received
     type: challenge
   - type: header
     content: Mutation XSS

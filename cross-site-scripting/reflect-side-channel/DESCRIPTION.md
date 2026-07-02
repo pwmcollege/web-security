@@ -1,13 +1,21 @@
-In real systems, the bug is not always kind enough to hand you the secret outright. Sometimes all that is left is a tiny clue: a response that is a little slower. Even one single bit of information at a time can be enough.
+Sometimes you can run code and even reach the secret, but you have no direct way to send it anywhere. There is no server of your own to reach, and no log to read back. Even then, data can still escape through a [side channel](https://en.wikipedia.org/wiki/Side-channel_attack). A side channel leaks information through a side effect instead of sending the data directly.
 
-That is the idea behind a [side channel](https://en.wikipedia.org/wiki/Side-channel_attack): leaking data through some secondary signal instead of the intended output. [Timing](https://en.wikipedia.org/wiki/Timing_attack) is one of the most common examples.
+Your input is reflected into the page's HTML with no escaping, so running code is not the hard part:
 
-Creatively leak the flag.
+```html
+<div class="message">
+    <payload>
+</div>
+```
+
+The hard part is getting the secret back out. [Timing](https://en.wikipedia.org/wiki/Timing_attack) is the most common way to do it. Suppose you can make the victim's browser do something slow, but only when a guess about the secret is correct. Now the delay itself tells you something. Slow means your guess was right, fast means it was wrong. Guess one character at a time, watch how long it takes, and you can rebuild the whole flag without ever sending it.
+
+Leak the flag one guess at a time.
 
 ---
 
 ### Challenge Environment
 
-In this challenge, the server and the victim are isolated inside an air-gapped network namespace. This means the victim cannot access any external URLs or services outside that namespace, and its only reachable destination is the server itself.
+The server and the victim are isolated inside an air-gapped network namespace. The victim cannot reach any external URL or service, so the only destination it can talk to is the server itself.
 
 To debug in practice mode, run the server with `sudo` and the logs come back.
