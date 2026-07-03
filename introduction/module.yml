@@ -27,11 +27,11 @@ resources:
   - type: header
     content: Authentication Bypass
   - id: session-in-url
-    name: Hello, Admin
+    name: Say You're Admin
     type: challenge
     privileged: true
   - id: session-in-cookie
-    name: Have a Cookie
+    name: Bring Your Own Cookie
     type: challenge
     privileged: true
   - type: header
