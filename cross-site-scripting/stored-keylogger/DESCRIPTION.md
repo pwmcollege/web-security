@@ -11,7 +11,9 @@ Post content is still shown without escaping, so a post you store runs in the ad
 This breaks the idea that data is safe as long as it is never submitted. The admin now types a draft that contains the flag into a `<textarea>` and never sends it, so the text only ever exists in their browser:
 
 ```html
-<textarea><!-- admin types the flag here, never submitted --></textarea>
+<textarea>
+    <!-- admin types the flag here, never submitted -->
+</textarea>
 ```
 
 But your payload is already running in that same page, with full access to what happens in it.

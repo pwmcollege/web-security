@@ -34,18 +34,6 @@ resources:
     name: Have a Cookie
     type: challenge
     privileged: true
-  - id: trusted-header
-    name: Internal Affairs
-    type: challenge
-    privileged: true
-  - id: http-basic-admin
-    name: Who Needs a Password
-    type: challenge
-    privileged: true
-  - id: login-logic-flaw
-    name: Off by One Check
-    type: challenge
-    privileged: true
   - type: header
     content: Command Injection
   - id: cmdi-basic

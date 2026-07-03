@@ -1,22 +1,34 @@
-Not every web bug is about popping a shell. Plenty of them are about the application simply believing the wrong thing. When that belief is "this request is coming from a logged-in user," getting it to believe you without real credentials is called an *Authentication Bypass*.
+Not every web bug ends in a shell. Many of them come down to the application trusting something it should not. When the thing it trusts is your identity, getting it to believe you are someone you are not is called an [authentication bypass](https://owasp.org/www-community/attacks/Session_hijacking_attack).
 
-This challenge runs pwnpost, a small feed app. Anyone can write drafts and publish them, but a draft stays private to its author and to the admin user. The admin parked the flag inside an unpublished draft, so your job is to get the app to treat you as admin and show it to you.
+This challenge runs pwnpost, a small feed app. You can log in with a normal account and read the feed, but the admin kept the flag in an unpublished draft. A draft is shown in full only to its author and to admin, so as a normal user you just see the first few characters:
 
-The weak spot here is trust. When you log in, the app stamps your identity into the URL and then reads it right back off the next request, never stopping to ask whether you were the one who put it there. Have a look at how the `/` route decides who you are, and see if you can answer that question for it.
+```
+pwn.college{…
+```
+
+To read the whole thing, the app has to believe you are admin.
+
+In this challenge, the app writes your identity into the URL when you log in, then reads it straight back on the next request:
+
+```python
+# after a successful login
+return redirect(f"/?session_user={user['username']}")
+
+# how each page decides who you are
+username = request.args.get("session_user")
+```
+
+Nothing checks that you are the one who set `session_user`.
 
 ---
 
 ### Challenge Environment
 
-The challenge files are located in `/challenge`.
+The challenge files are in `/challenge`.
 
-To begin, start the web server: `/challenge/server`
+Start the web server by running `/challenge/server`, then open `https://challenge.internal` in a browser inside the [Desktop workspace](https://pwn.college/workspace/desktop).
 
-Once running, you can access the website at: `https://challenge.internal`
-
-You can visit it using a browser inside the [Desktop workspace](https://pwn.college/workspace/desktop).
-
-You can log in to pwnpost using these accounts:
+You can log in to pwnpost with these accounts:
 
 - `guest:password`
 - `hacker:1337`

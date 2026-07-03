@@ -1,79 +1,134 @@
 {% extends "layout.html" %} {% block content %}
-<div class="w-full max-w-2xl flex-grow flex flex-col py-12 items-center">
-    <div class="text-center px-4 mb-8 shrink-0">
-        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
-            pwnpost
-        </h1>
-    </div>
 
-    <div class="w-full space-y-6">
-        <!-- User Hub -->
-        <div
-            class="glass mx-4 p-5 rounded-3xl border border-slate-200 shadow-xl shadow-black/[0.04] flex items-center justify-between bg-white/70"
-        >
-            <div class="flex items-center space-x-3">
-                <div
-                    class="h-10 w-10 rounded-full bg-[#007AFF] flex items-center justify-center text-white text-xs font-bold uppercase tracking-widest shadow-sm"
-                >
-                    {{ username[0] }}
-                </div>
-                <p class="text-sm font-bold text-slate-900 leading-none">
-                    {{ username }}
-                </p>
+<div class="px-5 py-4 border-b border-zinc-100">
+    <form action="/draft{{ q }}" method="post">
+        <div class="flex gap-3">
+            <div
+                class="h-10 w-10 shrink-0 rounded-full bg-zinc-900 text-white flex items-center justify-center text-sm font-semibold uppercase"
+            >
+                {{ username[0] }}
             </div>
-            <div class="flex items-center space-x-3">
-                <a
-                    href="/"
-                    class="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-[#007AFF] transition-colors px-3 py-1.5 rounded-xl border border-slate-100 bg-white shadow-sm"
-                    >Refresh</a
-                >
-                <a
-                    href="/logout"
-                    class="text-[10px] font-bold uppercase tracking-widest text-red-500/70 hover:text-red-700 transition-colors px-3 py-1.5 rounded-xl border border-red-100 bg-white shadow-sm"
-                    >Logout</a
-                >
+            <div class="flex-grow min-w-0">
+                <div class="text-[15px] font-semibold leading-5 text-zinc-900">
+                    {{ username }}
+                </div>
+                <textarea
+                    name="content"
+                    rows="2"
+                    placeholder="What's new?"
+                    class="mt-1 w-full resize-none bg-transparent text-[15px] leading-6 text-zinc-900 placeholder:text-zinc-400 outline-none"
+                ></textarea>
+
+                <div class="mt-2 flex items-center justify-between">
+                    <label
+                        class="inline-flex items-center gap-2 cursor-pointer select-none group"
+                    >
+                        <span class="relative inline-block h-[18px] w-[30px]">
+                            <input
+                                type="checkbox"
+                                name="publish"
+                                class="peer sr-only"
+                            />
+                            <span
+                                class="absolute inset-0 rounded-full bg-zinc-200 transition-colors peer-checked:bg-zinc-900"
+                            ></span>
+                            <span
+                                class="absolute left-[2px] top-[2px] h-[14px] w-[14px] rounded-full bg-white shadow-sm transition-transform peer-checked:translate-x-3"
+                            ></span>
+                        </span>
+                        <span
+                            class="text-[13px] font-medium text-zinc-400 group-hover:text-zinc-600 transition-colors"
+                            >Publish now</span
+                        >
+                    </label>
+
+                    <button
+                        type="submit"
+                        class="rounded-full bg-zinc-900 px-5 py-1.5 text-[14px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-95"
+                    >
+                        Post
+                    </button>
+                </div>
             </div>
         </div>
+    </form>
+</div>
 
-        <!-- Feed Section -->
-        <div class="mx-4 pt-4 space-y-4">
-            {% for post in posts %}
-            <div
-                class="glass p-6 rounded-3xl border border-slate-200 bg-white/80 space-y-4 shadow-sm transition-all hover:border-[#007AFF]/30"
-            >
-                <div class="flex items-center justify-between px-2">
-                    <h2
-                        class="text-[11px] font-bold text-slate-400 italic font-medium"
-                    >
-                        Author: {{ post.author }}
-                    </h2>
-                    {% if post.author == username %}
+{% for post in posts %}
+<article class="px-5 py-4 border-b border-zinc-100 hover:bg-zinc-50/60 transition-colors">
+    <div class="flex gap-3">
+        {% if post.author == username %}
+        <div
+            class="h-10 w-10 shrink-0 rounded-full bg-zinc-900 text-white flex items-center justify-center text-sm font-semibold uppercase"
+        >
+            {{ post.author[0] }}
+        </div>
+        {% else %}
+        <div
+            class="h-10 w-10 shrink-0 rounded-full bg-zinc-100 text-zinc-600 flex items-center justify-center text-sm font-semibold uppercase ring-1 ring-zinc-200/70"
+        >
+            {{ post.author[0] }}
+        </div>
+        {% endif %}
+        <div class="flex-grow min-w-0">
+            <div class="flex items-center gap-1.5 text-[15px] leading-5">
+                <span class="font-semibold text-zinc-900">{{ post.author }}</span>
+                {% if not post.published %}
+                <div class="ml-auto flex items-center gap-2">
                     <span
-                        class="text-[9px] font-bold bg-[#007AFF]/10 text-[#007AFF] px-3 py-1 rounded-lg uppercase tracking-widest ring-1 ring-[#007AFF]/20"
-                        >You</span
+                        class="inline-flex items-center gap-1 text-[12px] font-medium text-zinc-400"
                     >
-                    {% endif %}
-                </div>
-
-                <div
-                    class="text-sm text-slate-900 leading-relaxed font-medium px-2"
-                >
-                    {% if post.author == username or username == "admin" or
-                    post.published %} {{ post.content }} {% else %}
-                    <div class="text-[11px] font-bold text-slate-400 italic">
-                        (Draft post, showing first 12 characters):<br />
-                        <div
-                            class="mt-2 font-mono bg-slate-50 border border-slate-100 p-3 rounded-lg text-slate-400"
+                        <i data-lucide="lock" class="h-3.5 w-3.5"></i>
+                        Draft
+                    </span>
+                    {% if post.author == username %}
+                    <div class="relative">
+                        <button
+                            type="button"
+                            data-menu-trigger
+                            aria-label="Post options"
+                            class="flex h-7 w-7 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"
                         >
-                            {{ post.content[:12] }}
+                            <i data-lucide="ellipsis" class="h-4 w-4"></i>
+                        </button>
+                        <div
+                            data-menu
+                            class="hidden absolute right-0 top-full z-20 mt-1 w-52 overflow-hidden rounded-2xl border border-zinc-100 bg-white shadow-xl shadow-black/[0.06]"
+                        >
+                            <form action="/publish{{ q }}" method="post">
+                                <input type="hidden" name="post_id" value="{{ post.rowid }}" />
+                                <button
+                                    type="submit"
+                                    class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-[14px] font-medium text-zinc-900 hover:bg-zinc-50"
+                                >
+                                    <i data-lucide="eye" class="h-4 w-4 text-zinc-400"></i>
+                                    Publish this post
+                                </button>
+                            </form>
+                            <form action="/publish{{ q }}" method="post">
+                                <button
+                                    type="submit"
+                                    class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-[14px] font-medium text-zinc-900 hover:bg-zinc-50"
+                                >
+                                    <i data-lucide="megaphone" class="h-4 w-4 text-zinc-400"></i>
+                                    Publish all posts
+                                </button>
+                            </form>
                         </div>
                     </div>
                     {% endif %}
                 </div>
+                {% endif %}
             </div>
-            {% endfor %}
+
+            {% if post.author == username or username == "admin" or post.published %}
+            <div class="mt-1 text-[15px] leading-6 text-zinc-800 whitespace-pre-wrap break-words">{{ post.content }}</div>
+            {% else %}
+            <div class="mt-1 text-[15px] leading-6 font-mono text-zinc-400 break-words">{{ post.content[:12] }}…</div>
+            {% endif %}
         </div>
     </div>
+</article>
+{% endfor %}
 
-</div>
 {% endblock %}

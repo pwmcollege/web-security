@@ -40,6 +40,14 @@ db.execute("""INSERT INTO users SELECT "guest" AS username, "password" AS passwo
 db.execute("""INSERT INTO users SELECT "hacker" AS username, "1337" AS password""")
 
 
+def current_user():
+    return request.args.get("session_user")
+
+
+def home(username):
+    return redirect(f"/?session_user={username}")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def challenge_login():
     if request.method == "POST":
@@ -59,19 +67,77 @@ def challenge_login():
             flash("Access denied: Invalid credentials")
             return redirect("/login")
 
-        return redirect(f"/?session_user={user['username']}")
+        return home(user["username"])
 
-    return render_template("login.html")
+    return render_template("login.html", hide_chrome=True)
+
+
+@app.route("/register", methods=["GET", "POST"])
+def challenge_register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username or not password:
+            flash("Identity credentials required")
+            return redirect("/register")
+
+        count = db.execute("SELECT COUNT(*) AS n FROM users").fetchone()["n"]
+        if count >= 3:
+            flash("Account limit reached")
+            return redirect("/register")
+
+        db.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (username, password),
+        )
+        flash("Account created! Please log in.")
+        return redirect("/login")
+
+    return render_template("register.html", hide_chrome=True)
+
+
+@app.route("/draft", methods=["POST"])
+def challenge_draft():
+    username = current_user()
+    if not username:
+        return redirect("/login")
+
+    content = request.form.get("content", "")
+    db.execute(
+        "INSERT INTO posts (content, author, published) VALUES (?, ?, ?)",
+        (content, username, bool(request.form.get("publish"))),
+    )
+    return home(username)
+
+
+@app.route("/publish", methods=["POST"])
+def challenge_publish():
+    username = current_user()
+    if not username:
+        return redirect("/login")
+
+    post_id = request.form.get("post_id")
+    if post_id:
+        db.execute(
+            "UPDATE posts SET published = TRUE WHERE author = ? AND rowid = ?",
+            [username, post_id],
+        )
+    else:
+        db.execute("UPDATE posts SET published = TRUE WHERE author = ?", [username])
+    return home(username)
 
 
 @app.route("/", methods=["GET"])
 def challenge_get():
-    username = request.args.get("session_user")
+    username = current_user()
     if not username:
         return redirect("/login")
 
-    posts = db.execute("SELECT * FROM posts").fetchall()
-    return render_template("index.html", username=username, posts=posts)
+    posts = db.execute("SELECT rowid, * FROM posts").fetchall()
+    return render_template(
+        "index.html", username=username, posts=posts, q=f"?session_user={username}"
+    )
 
 
 @app.route("/logout")

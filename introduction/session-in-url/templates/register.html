@@ -20,7 +20,7 @@
         </div>
         {% endif %} {% endwith %}
 
-        <form action="/login" method="post" class="space-y-3">
+        <form action="/register" method="post" class="space-y-3">
             <input
                 type="text"
                 name="username"
@@ -34,21 +34,21 @@
                 name="password"
                 required
                 placeholder="Password"
-                autocomplete="current-password"
+                autocomplete="new-password"
                 class="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-[15px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:bg-white"
             />
             <button
                 type="submit"
                 class="w-full rounded-xl bg-zinc-900 py-3 text-[15px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
             >
-                Log in
+                Create account
             </button>
         </form>
 
         <p class="mt-6 text-center text-[13px] text-zinc-400">
-            New here?
-            <a href="/register" class="font-medium text-zinc-900 hover:underline"
-                >Create account</a
+            Already have an account?
+            <a href="/login" class="font-medium text-zinc-900 hover:underline"
+                >Log in</a
             >
         </p>
     </div>
