@@ -1,5 +1,12 @@
-Web apps love to lean on the tools already sitting on the server. Need a directory listing? Just shell out to `ls` and hand back whatever it prints. It's quick, it works, and it's a great way to get owned.
+Web apps often lean on the command-line tools already on the server. Need a directory listing? Shell out to `ls` and return whatever it prints. It is quick and it works, right up until user input becomes part of the command.
 
-The problem shows up the moment your input becomes part of the command line. To the shell, your input isn't a single value, it's more text to parse, and a few well-placed characters turn "an argument to `ls`" into "a second command of my choosing." This is Command Injection.
+This tool runs `ls` on a path you provide. Your input is pasted straight into a shell command:
 
-This tool runs `ls` on a path you provide and returns the result. Read the source, figure out how your input lands in that command, and get it to run something that prints the flag at `/flag` instead.
+```python
+command = f"ls -la {path}"
+subprocess.run(command, shell=True)
+```
+
+The problem is `shell=True`. It hands your whole input to a shell, which re-reads the string looking for its own syntax before running anything. A character like `;` ends the `ls` command and starts a new one, so your input stops being an argument to `ls` and turns into a command of your own. This is [command injection](https://owasp.org/www-community/attacks/Command_Injection).
+
+Get the shell to run a command that prints the flag at `/flag`.

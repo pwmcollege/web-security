@@ -11,12 +11,12 @@ app = Flask(__name__)
 def list_dir():
     path = request.args.get("path")
     if not path:
-        return render_template("console.html", output=None)
+        return render_template("index.html", output=None)
 
     command = f"ls -la '{path}'"
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return render_template(
-        "console.html", value=path, output=result.stdout + result.stderr
+        "index.html", value=path, output=result.stdout + result.stderr
     )
 
 

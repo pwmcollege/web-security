@@ -1,0 +1,56 @@
+{% extends "layout.html" %} {% block content %}
+<div class="px-5 py-6">
+    <form action="/" method="get">
+        <label class="block text-[13px] font-medium text-zinc-500 mb-2">
+            List a directory
+        </label>
+        <div
+            class="rounded-2xl border border-zinc-200 bg-zinc-50 transition-colors focus-within:border-zinc-900 focus-within:bg-white"
+        >
+            <div class="flex items-start gap-2 px-4 py-3">
+                <span
+                    class="select-none whitespace-nowrap pt-px font-mono text-[14px] leading-6 text-zinc-400"
+                    >$ ls -la</span
+                >
+                <textarea
+                    name="path"
+                    rows="1"
+                    placeholder="/var/www"
+                    class="flex-grow resize-none bg-transparent font-mono text-[14px] leading-6 text-zinc-900 placeholder:text-zinc-400 outline-none"
+                >{{ value or '' }}</textarea>
+            </div>
+        </div>
+
+        <div class="mt-3 flex justify-end">
+            <button
+                type="submit"
+                class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-zinc-900 px-5 py-2.5 text-[14px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+            >
+                <i data-lucide="play" class="h-4 w-4"></i>
+                Run
+            </button>
+        </div>
+    </form>
+
+    {% if error %}
+    <div
+        class="mt-6 flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-3 text-[13px] font-medium text-rose-600"
+    >
+        <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
+        {{ error }}
+    </div>
+    {% elif output is not none %}
+    <div class="mt-6">
+        <div
+            class="mb-2 flex items-center gap-1.5 text-[12px] font-medium text-zinc-400"
+        >
+            <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+            Output
+        </div>
+        <pre
+            class="overflow-x-auto rounded-2xl bg-zinc-900 px-4 py-3.5 font-mono text-[13px] leading-6 text-zinc-100 whitespace-pre-wrap break-words"
+        >{{ output }}</pre>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

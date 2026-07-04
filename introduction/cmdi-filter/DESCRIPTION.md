@@ -1,5 +1,13 @@
-Getting popped by a semicolon stung, so this version fights back. Before your input ever reaches the command, the app scans it for the obvious troublemakers and rejects the request if it spots one.
+Breaking out of the quotes was too easy, so this challenge takes a different approach. Before your input reaches the command, the app rejects it if it contains one of a few banned characters:
 
-The catch with blocklists is that they only stop what the author remembered to think of. A shell has more than one way to glue commands together and more than one way to spell a space, and not all of them made it onto the list. If the front door is bolted, look for a window.
+```python
+BLOCKED = [";", "&", "|"]
 
-Same tool, same goal: get a command of yours to run and read `/flag`. Check the source to see exactly which characters are off-limits, then reach for one that isn't.
+if any(token in path for token in BLOCKED):
+    return "blocked"
+
+command = f"ls -la {path}"
+subprocess.run(command, shell=True)
+```
+
+The weakness of a blocklist is that it only stops what its author thought of. A shell has more than one way to end one command and start another, and not all of them are on this list.

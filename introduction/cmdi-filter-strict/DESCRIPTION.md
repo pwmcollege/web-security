@@ -1,3 +1,14 @@
-The last filter only swatted away a handful of separators, so this version shows up with a much longer blocklist. Every shell metacharacter the author could think of gets rejected on sight: the chaining operators, command substitution, redirection, quotes, the lot. Throw the usual payloads at it and you'll just be turned away.
+The last filter blocked only a few separators, so this challenge uses a much longer one. Nearly every shell metacharacter the author could think of is rejected on sight: the chaining operators, command substitution, redirection, quotes, and more.
 
-The trouble with a blocklist is that it can only reject what someone thought to put on it, and a shell recognizes more ways to end one command and start another than most people picture. Somewhere in that gap is a separator that never made the list. Read the source, work out what it forgot, and slip through.
+```python
+BLOCKED = set(";&|<>$`(){}[]*?!#~" + "'" + '"' + "\\")
+if any(char in BLOCKED for char in path):
+    return "blocked"
+
+command = f"ls -la {path}"
+subprocess.run(command, shell=True)
+```
+
+It is still a blocklist, so it can still only reject what is on it. A shell treats more than punctuation as the boundary between commands, and at least one of those boundaries never made it into this set.
+
+Work out what it forgot, and use it to read `/flag`.

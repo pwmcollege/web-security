@@ -40,12 +40,12 @@ resources:
     name: Just Listing
     type: challenge
     privileged: true
-  - id: cmdi-filter
-    name: Plan B
-    type: challenge
-    privileged: true
   - id: cmdi-quotes
     name: Out of Quotes
+    type: challenge
+    privileged: true
+  - id: cmdi-filter
+    name: Plan B
     type: challenge
     privileged: true
   - id: cmdi-filter-strict

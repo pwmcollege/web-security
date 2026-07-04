@@ -1,5 +1,10 @@
-Chasing individual bad characters clearly wasn't working, so the developer changed tactics. Now your input gets wrapped in quotes before it joins the command, on the theory that the shell will treat the whole thing as one harmless string no matter what you put in it.
+The last challenge dropped your input straight into the command, so this one tries to contain it. Your input is wrapped in single quotes before it joins the command, on the theory that the shell will then treat it as one harmless string:
 
-It's a reasonable instinct, and it almost holds. The weak point is that you also get to supply the very character that ends the quoting. Once the quote closes, you're back out in the open with the rest of the command line in front of you.
+```python
+command = f"ls -la '{path}'"
+subprocess.run(command, shell=True)
+```
 
-It's still the `ls` tool and still the same goal. Look at how the source builds the command, slip out of the quotes, and run something that prints `/flag`.
+That almost holds. The catch is that you also control the character that ends the quoting. If your input contains a single quote, it closes the quoted string early, and everything after it is back out in the open as part of the command line.
+
+Break out of the quotes and run a command that reads `/flag`.

@@ -1,5 +1,12 @@
-After all that, the developer finally read the advice everyone gives: don't invoke a shell at all. This version splits your input into arguments itself and hands the list straight to the program. There's no shell to parse your semicolons, your quotes, or your `$(...)`, so every trick from the earlier levels is genuinely dead.
+After all that, the developer took the advice everyone gives: do not invoke a shell at all. This challenge splits your input into arguments itself and passes the list straight to the program, with no shell in between:
 
-So you can't start a new command. But you can still decide what arguments the program receives, and plenty of perfectly normal tools have options that do far more than their name suggests. If one of those options happens to run a command for you, you don't need a shell of your own.
+```python
+args = ["tar", "cf", "/tmp/backup.tar"] + shlex.split(target)
+subprocess.run(args)
+```
 
-This tool backs up the paths you list by running them through `tar`. Read the source, look up what flags `tar` is willing to accept, and find the one that turns "archiving files" into running your command to read `/flag`.
+There is no shell to parse your `;`, your quotes, or your `$(...)`, so every trick from the earlier challenges is dead. You cannot start a new command.
+
+But you still decide what arguments `tar` receives, and that is its own weakness. This is argument injection: even without a shell, the right flag can be as dangerous as a command. Plenty of ordinary tools have options that do far more than their name suggests, and some [`tar`](https://www.gnu.org/software/tar/manual/html_section/Option-Summary.html) options can run a command for you.
+
+Find the flag that turns "archiving files" into running your own command, and read `/flag`.

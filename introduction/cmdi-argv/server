@@ -12,12 +12,12 @@ app = Flask(__name__)
 def backup():
     target = request.args.get("target")
     if not target:
-        return render_template("console.html", output=None)
+        return render_template("index.html", output=None)
 
     args = ["tar", "cf", "/tmp/backup.tar"] + shlex.split(target)
     result = subprocess.run(args, capture_output=True, text=True)
     return render_template(
-        "console.html", value=target, output=result.stdout + result.stderr
+        "index.html", value=target, output=result.stdout + result.stderr
     )
 
 
