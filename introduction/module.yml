@@ -30,10 +30,16 @@ resources:
     name: Say You're Admin
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
   - id: session-in-cookie
     name: Bring Your Own Cookie
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
   - type: header
     content: Command Injection
   - id: cmdi-basic
