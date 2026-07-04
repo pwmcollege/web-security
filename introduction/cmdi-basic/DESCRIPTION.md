@@ -8,5 +8,3 @@ subprocess.run(command, shell=True)
 ```
 
 The problem is `shell=True`. It hands your whole input to a shell, which re-reads the string looking for its own syntax before running anything. A character like `;` ends the `ls` command and starts a new one, so your input stops being an argument to `ls` and turns into a command of your own. This is [command injection](https://owasp.org/www-community/attacks/Command_Injection).
-
-Get the shell to run a command that prints the flag at `/flag`.

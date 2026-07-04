@@ -1,0 +1,95 @@
+{% extends "layout.html" %} {% block content %}
+<div class="px-5 py-6">
+    <form action="/" method="get">
+        <label class="block text-[13px] font-medium text-zinc-500 mb-2">
+            Open a document
+        </label>
+        <div
+            class="rounded-2xl border border-zinc-200 bg-zinc-50 transition-colors focus-within:border-zinc-900 focus-within:bg-white"
+        >
+            <div class="flex items-center gap-2 px-4 py-3">
+                <i
+                    data-lucide="file"
+                    class="h-4 w-4 shrink-0 text-zinc-400"
+                ></i>
+                <input
+                    type="text"
+                    name="file"
+                    value="{{ filename or '' }}"
+                    placeholder="fortune_01.txt"
+                    class="flex-grow bg-transparent font-mono text-[14px] leading-6 text-zinc-900 placeholder:text-zinc-400 outline-none"
+                />
+            </div>
+        </div>
+
+        <div class="mt-3 flex justify-end">
+            <button
+                type="submit"
+                class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-zinc-900 px-5 py-2.5 text-[14px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+            >
+                <i data-lucide="book-open" class="h-4 w-4"></i>
+                View
+            </button>
+        </div>
+    </form>
+
+    {% if error %}
+    <div
+        class="mt-6 flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-3 text-[13px] font-medium text-rose-600"
+    >
+        <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
+        {{ error }}
+    </div>
+    {% elif content is not none %}
+    <div class="mt-6">
+        <div
+            class="mb-2 flex items-center gap-1.5 font-mono text-[12px] font-medium text-zinc-400"
+        >
+            <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+            {{ filename }}
+        </div>
+        <pre
+            class="overflow-x-auto rounded-2xl bg-zinc-900 px-4 py-3.5 font-mono text-[13px] leading-6 text-zinc-100 whitespace-pre-wrap break-words"
+        >{{ content }}</pre>
+    </div>
+    {% else %}
+    <div class="mt-6">
+        <div
+            class="mb-2 flex items-center gap-1.5 text-[12px] font-medium text-zinc-400"
+        >
+            <i data-lucide="folder" class="h-3.5 w-3.5"></i>
+            Documents
+        </div>
+        {% if documents %}
+        <div class="divide-y divide-zinc-100 rounded-2xl border border-zinc-100">
+            {% for doc in documents %}
+            <a
+                href="/?file={{ doc }}"
+                class="group flex items-center justify-between px-4 py-3.5 transition-colors hover:bg-zinc-50 first:rounded-t-2xl last:rounded-b-2xl"
+            >
+                <span class="flex items-center gap-2.5">
+                    <i
+                        data-lucide="file-text"
+                        class="h-4 w-4 shrink-0 text-zinc-400"
+                    ></i>
+                    <span class="font-mono text-[14px] text-zinc-900">{{ doc }}</span>
+                </span>
+                <i
+                    data-lucide="arrow-up-right"
+                    class="h-4 w-4 shrink-0 text-zinc-400 opacity-0 transition-opacity group-hover:opacity-100"
+                ></i>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div
+            class="flex flex-col items-center gap-2 rounded-2xl border border-dashed border-zinc-200 px-4 py-10 text-center"
+        >
+            <i data-lucide="folder-open" class="h-6 w-6 text-zinc-300"></i>
+            <span class="text-[13px] font-medium text-zinc-400">No documents</span>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

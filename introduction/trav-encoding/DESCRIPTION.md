@@ -1,3 +1,0 @@
-Both doors are shut now: the app rejects anything with `..` in it and anything that starts with a slash. The relative trick and the absolute trick are both dead on arrival.
-
-But notice the order of operations. The check runs against the name as it arrives, and only afterward does the app decode percent-escapes in it. That gap is the whole game. If your traversal is still wrapped in encoding when the check looks at it, the check sees something harmless, and by the time the decoding turns it back into `../` the inspection is already over. Your request travels through one layer of decoding before it ever reaches the app, so you'll need to wrap it well enough to survive that and still arrive encoded.

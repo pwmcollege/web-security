@@ -16,11 +16,11 @@ def view():
     filename = request.args.get("file")
     if not filename:
         documents = sorted(n for n in os.listdir(BASE) if n.endswith(".txt"))
-        return render_template("viewer.html", content=None, documents=documents)
+        return render_template("index.html", content=None, documents=documents)
 
     if ".." in filename:
         return render_template(
-            "viewer.html", filename=filename, error="Path traversal is not allowed."
+            "index.html", filename=filename, error="Path traversal is not allowed."
         )
 
     path = os.path.join(BASE, filename)
@@ -28,9 +28,9 @@ def view():
         with open(path) as handle:
             content = handle.read()
     except OSError as error:
-        return render_template("viewer.html", filename=filename, error=str(error))
+        return render_template("index.html", filename=filename, error=str(error))
 
-    return render_template("viewer.html", filename=filename, content=content)
+    return render_template("index.html", filename=filename, content=content)
 
 
 app.config["SERVER_NAME"] = "challenge.internal"

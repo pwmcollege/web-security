@@ -51,14 +51,14 @@ resources:
       - name: Challenge
         port: 80
   - id: cmdi-filter
-    name: Plan B
+    name: The Short List
     type: challenge
     privileged: true
     interfaces:
       - name: Challenge
         port: 80
   - id: cmdi-filter-strict
-    name: Plan C
+    name: The Long List
     type: challenge
     privileged: true
     interfaces:
@@ -77,19 +77,27 @@ resources:
     name: One Level Up
     type: challenge
     privileged: true
-  - id: trav-strip
-    name: Strip Search
+    interfaces:
+      - name: Challenge
+        port: 80
+  - id: trav-replace
+    name: Second Pass
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
   - id: trav-absolute
     name: Dot Dot Denied
     type: challenge
     privileged: true
-  - id: trav-encoding
-    name: Layers
+    interfaces:
+      - name: Challenge
+        port: 80
+  - id: trav-strip
+    name: Strip Search
     type: challenge
     privileged: true
-  - id: trav-lstrip
-    name: Left Untouched
-    type: challenge
-    privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
