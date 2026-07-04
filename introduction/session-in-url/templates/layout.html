@@ -39,6 +39,63 @@
             {% block content %}{% endblock %}
         </main>
 
+        {% if not hide_chrome %}
+        <div id="compass" class="fixed bottom-6 right-6 z-50">
+            <div
+                id="compass-pop"
+                class="pointer-events-none absolute bottom-full right-0 mb-3 w-[360px] origin-bottom-right overflow-hidden rounded-2xl border border-zinc-100 bg-white opacity-0 translate-y-1 scale-95 shadow-xl shadow-black/[0.08] transition-all duration-200 ease-out"
+            >
+                <div class="px-4 pt-3.5 pb-1">
+                    <div
+                        class="flex items-center gap-2 text-[13px] font-semibold text-zinc-900"
+                    >
+                        <i data-lucide="compass" class="h-4 w-4 text-zinc-400"></i>
+                        Go to address
+                    </div>
+                    <p class="mt-0.5 text-[12px] leading-5 text-zinc-400">
+                        Opens in this tab.
+                    </p>
+                </div>
+                <form id="compass-form" class="p-3 pt-2">
+                    <div
+                        class="flex items-center rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-[13px] transition-all focus-within:border-zinc-900 focus-within:bg-white"
+                    >
+                        <span
+                            aria-hidden="true"
+                            class="shrink-0 select-none text-zinc-400"
+                            >https://challenge.internal/</span
+                        >
+                        <input
+                            id="compass-path"
+                            type="text"
+                            name="path"
+                            autocomplete="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                            class="min-w-0 flex-grow bg-transparent text-zinc-900 placeholder:text-zinc-400 outline-none"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        class="mt-2 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-zinc-900 py-2.5 text-[14px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+                    >
+                        Go
+                        <i data-lucide="arrow-right" class="h-[16px] w-[16px]"></i>
+                    </button>
+                </form>
+            </div>
+
+            <button
+                type="button"
+                id="compass-trigger"
+                aria-label="Open Compass"
+                class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-zinc-900 text-white shadow-lg shadow-black/25 transition-all hover:bg-zinc-700 active:scale-95"
+            >
+                <i data-lucide="compass" class="h-6 w-6"></i>
+            </button>
+        </div>
+        {% endif %}
+
         <script>
             lucide.createIcons();
 
@@ -63,6 +120,54 @@
             document.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") closeMenus();
             });
+
+            const compass = document.getElementById("compass");
+            if (compass) {
+                const compassTrigger = document.getElementById("compass-trigger");
+                const compassPop = document.getElementById("compass-pop");
+                const compassInput = document.getElementById("compass-path");
+                const compassForm = document.getElementById("compass-form");
+                const closedClasses = [
+                    "pointer-events-none",
+                    "opacity-0",
+                    "translate-y-1",
+                    "scale-95",
+                ];
+                const DISPLAY_ORIGIN = "https://challenge.internal";
+
+                const openCompass = () => {
+                    compassPop.classList.remove(...closedClasses);
+                    compassInput.value =
+                        location.pathname.replace(/^\//, "") + location.search;
+                    compassInput.focus();
+                    compassInput.select();
+                };
+                const closeCompass = () =>
+                    compassPop.classList.add(...closedClasses);
+                const isOpen = () =>
+                    !compassPop.classList.contains("opacity-0");
+
+                compassTrigger.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    isOpen() ? closeCompass() : openCompass();
+                });
+
+                compassForm.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const typed = compassInput.value.trim();
+                    if (!typed) return;
+                    const target = new URL(typed, DISPLAY_ORIGIN + "/");
+                    location.href =
+                        target.pathname + target.search + target.hash;
+                });
+
+                document.addEventListener("click", (e) => {
+                    if (!compass.contains(e.target)) closeCompass();
+                });
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") closeCompass();
+                });
+            }
         </script>
     </body>
 </html>
