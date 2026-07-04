@@ -40,22 +40,37 @@ resources:
     name: Just Listing
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
   - id: cmdi-quotes
     name: Out of Quotes
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
   - id: cmdi-filter
     name: Plan B
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
   - id: cmdi-filter-strict
     name: Plan C
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
   - id: cmdi-argv
     name: Argument Settled
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
   - type: header
     content: Path Traversal
   - id: trav-basic

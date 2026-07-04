@@ -17,4 +17,7 @@ iptables-legacy -A INPUT -p tcp -d 10.0.13.36 --dport 1024: -j REJECT
 iptables-legacy -A INPUT -p tcp -d 10.0.13.37 --dport 1024: -j REJECT
 
 /opt/cdn/server &
+nginx -c /challenge/nginx.conf
+
 chmod 4555 /challenge/server
+/challenge/server &

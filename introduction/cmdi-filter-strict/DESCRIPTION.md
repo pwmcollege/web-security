@@ -10,5 +10,3 @@ subprocess.run(command, shell=True)
 ```
 
 It is still a blocklist, so it can still only reject what is on it. A shell treats more than punctuation as the boundary between commands, and at least one of those boundaries never made it into this set.
-
-Work out what it forgot, and use it to read `/flag`.

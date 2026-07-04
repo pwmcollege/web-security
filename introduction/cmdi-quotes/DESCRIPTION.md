@@ -6,5 +6,3 @@ subprocess.run(command, shell=True)
 ```
 
 That almost holds. The catch is that you also control the character that ends the quoting. If your input contains a single quote, it closes the quoted string early, and everything after it is back out in the open as part of the command line.
-
-Break out of the quotes and run a command that reads `/flag`.
