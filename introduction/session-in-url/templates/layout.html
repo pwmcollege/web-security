@@ -135,10 +135,18 @@
                 ];
                 const DISPLAY_ORIGIN = "https://challenge.internal";
 
+                const APP_PATH = {{ request.path | tojson }};
+                const PROXY_BASE = location.pathname.endsWith(APP_PATH)
+                    ? location.pathname.slice(
+                          0,
+                          location.pathname.length - APP_PATH.length,
+                      )
+                    : "";
+
                 const openCompass = () => {
                     compassPop.classList.remove(...closedClasses);
                     compassInput.value =
-                        location.pathname.replace(/^\//, "") + location.search;
+                        APP_PATH.replace(/^\//, "") + location.search;
                     compassInput.focus();
                     compassInput.select();
                 };
@@ -158,7 +166,10 @@
                     if (!typed) return;
                     const target = new URL(typed, DISPLAY_ORIGIN + "/");
                     location.href =
-                        target.pathname + target.search + target.hash;
+                        PROXY_BASE +
+                        target.pathname +
+                        target.search +
+                        target.hash;
                 });
 
                 document.addEventListener("click", (e) => {
