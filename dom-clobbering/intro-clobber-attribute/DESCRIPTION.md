@@ -1,0 +1,1 @@
+If designed carefully, DOM clobbering payloads can masquerade as more complex objects. In this challenge, there are some configuration settings that cannot be clobbered with a simple payload. Can you design an HTML sequence that can mimic the configuration that you need?
