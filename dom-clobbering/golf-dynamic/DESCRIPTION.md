@@ -1,3 +1,1 @@
-This server has a very strong Content-Security-Policy, so it should be impossible for attackers to manipulate the webpage...
-
-What if a window attribute was misconfigured?
+You have seen that with a strong content security policy in place, only specific DOM clobbering payloads are able to impact the server. This challenge has its CSP relaxed slightly to accomodate for a new design. Can you figure out a way to take advantage of the new holes opened in the page's defense?
