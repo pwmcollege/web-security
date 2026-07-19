@@ -1,1 +1,3 @@
-What else can be clobbered?
+So, I've fixed up my code a bit and refactored some things so that the page loads a bit faster. Hope I didn't add any other vulnerabilities...
+
+Tip: As with all DOM clobbering vulnerabilities, look for places where global variables are passed as attributes of the window or document objects.

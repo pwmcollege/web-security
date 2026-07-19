@@ -1,3 +1,3 @@
-This server has a very strong Content-Security-Policy, so it should be impossible for attackers to manipulate the webpage...
+Now that you've gotten an understanding of DOM clobbering, let's check your understanding with more realistic scenarios.
 
-What if the elements that the JavaScript is looking for are not quite what it expects?
+Check out my new golf website! I'm not very good with canvases so I'm using some extra APIs to make my work easier.
