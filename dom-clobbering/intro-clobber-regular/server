@@ -24,7 +24,7 @@ def main():
     return render_template("mainpage.html", message=message)
 
 
-@app.route("/cookie-dump")
+@app.route("/cookie-dump", methods=["POST"])
 def dump_cookies():
     if "secret" in request.cookies:
         print(f"Secret: {request.cookies.get('secret')}")

@@ -39,7 +39,7 @@ def main():
     return render_template("mainpage.html", role=role, message=message)
 
 
-@app.route("/showflag")
+@app.route("/showflag", methods=["POST"])
 def dump_flag():
     if "secret" in request.cookies:
         if request.cookies.get("secret") == open("/challenge/secret").read():
