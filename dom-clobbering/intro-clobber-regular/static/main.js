@@ -3,6 +3,8 @@ setInterval(()=>{
     if (document.time < 10) {
         document.time += 1;
     } else {
-        fetch("/cookie-dump");
+        fetch("/cookie-dump", {
+            "method": "POST",
+        });
     }
 }, 1000)

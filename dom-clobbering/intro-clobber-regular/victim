@@ -31,7 +31,7 @@ print(f"Visiting {challenge_url}")
 browser.get(challenge_url)
 
 print("Setting cookie...")
-browser.add_cookie({"name": "secret", "value": flag})
+browser.add_cookie({"name": "secret", "value": flag, "sameSite": "Lax"})
 
 message_url = f"{challenge_url}?message={quote_plus(message)}"
 print(f"Visiting {message_url}")
@@ -39,3 +39,4 @@ browser.get(message_url)
 
 time.sleep(2)
 print("Visited!")
+# Bot exits and stops running the JavaScript

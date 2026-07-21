@@ -34,7 +34,7 @@ print(f"Visiting {challenge_url}")
 browser.get(challenge_url)
 
 print("Setting cookie...")
-browser.add_cookie({"name": "secret", "value": flag})
+browser.add_cookie({"name": "secret", "value": flag, "sameSite": "Lax"})
 
 message_url = f"{challenge_url}?username=admin&message={quote_plus(message)}"
 print(f"Visiting {message_url}")
