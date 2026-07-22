@@ -127,12 +127,6 @@ function updateCanvas() {
     // Decorate the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "green";
-    if (Object.hasOwn(window.theme, "green")) { // The golf green not the color green
-        const greenTheme = window.theme["green"];
-        if (Object.hasOwn(greenTheme, "color")) {
-            ctx.fillStyle = greenTheme["color"];
-        }
-    }
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw in the ball and hole
@@ -142,15 +136,6 @@ function updateCanvas() {
     // Draw in the walls
     ctx.strokeStyle = "blue";
     ctx.lineWidth = 1;
-    if (Object.hasOwn(window.theme, "wall")) {
-        const wallTheme = window.theme["wall"];
-        if (Object.hasOwn(wallTheme, "color")) {
-            ctx.strokeStyle = wallTheme["color"];
-        }
-        if (Object.hasOwn(wallTheme, "width")) {
-            ctx.lineWidth = wallTheme["width"];
-        }
-    }
     for (const wall of window.walls.vert) {
         ctx.beginPath();
         ctx.moveTo(wall[0] * scaleX, wall[1][0] * scaleY);
