@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 find -L /challenge -type f -exec chmod 0444 {} +
 echo "192.168.13.37 challenge.internal" >> /etc/hosts
