@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid --environ=none --real -- /usr/local/bin/python -I
+#!/usr/bin/exec-suid --real -- /usr/local/bin/python -I
 
 import subprocess
 

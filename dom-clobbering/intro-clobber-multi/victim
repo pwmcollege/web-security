@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid --real --environ=none -- /usr/local/bin/python -I
+#!/usr/bin/exec-suid --real -- /usr/local/bin/python -I
 
 import atexit
 import os
