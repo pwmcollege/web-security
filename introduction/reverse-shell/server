@@ -1,35 +1,126 @@
 #!/usr/bin/env python
 
+import json
 import os
+import pty
+import select
+import signal
 import socket
-import subprocess
+import struct
+import threading
+import fcntl
+import termios
 
-from flask import Flask
+from flask import Flask, render_template
+from flask_sock import Sock
 
 app = Flask(__name__)
+sock = Sock(app)
+
+signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 
-@app.route("/", methods=["GET"])
-def health():
-    return "OK\n", 200
+@app.route("/")
+def index():
+    return render_template("index.html", brand="Tether",
+                           endpoint="reverse",
+                           trigger_label="Trigger callback")
 
 
-@app.route("/reverse")
-def connect():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(("127.0.0.1", 1337))
+@app.route("/reverse", methods=["GET", "POST"])
+def spawn_challenge_shell():
+    if os.fork() != 0:
+        return "", 204
 
-    [os.dup2(s.fileno(), fd) for fd in (0, 1, 2)]
+    os.setsid()
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(("127.0.0.1", 1337))
+        for fd in (0, 1, 2):
+            os.dup2(s.fileno(), fd)
+        os.execvp("/bin/bash", ["/bin/bash", "-i"])
+    except Exception:
+        pass
+    os._exit(1)
 
-    subprocess.call(["/bin/bash", "-i"])
 
-    return "Shell spawned!"
+def set_winsize(fd, rows, cols):
+    fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", rows, cols, 0, 0))
+
+
+@sock.route("/pty")
+def pty_socket(ws):
+    pid, fd = pty.fork()
+    if pid == 0:
+        os.environ["TERM"] = "xterm-256color"
+        os.environ["HOME"] = "/home/hacker"
+        os.environ["PS1"] = r"\[\e[38;5;35m\]hacker\[\e[0m\]:\w\$ "
+        os.closerange(3, 64)
+        try:
+            os.setgroups([1000])
+        except OSError:
+            pass
+        os.setresgid(1000, 1000, 1000)
+        os.setresuid(1000, 1000, 1000)
+        try:
+            os.chdir(os.environ["HOME"])
+        except OSError:
+            os.chdir("/tmp")
+        os.execvp("/bin/bash", ["/bin/bash", "--noprofile", "--norc", "-i"])
+        return
+
+    alive = threading.Event()
+    alive.set()
+
+    def pty_to_ws():
+        while alive.is_set():
+            r, _, _ = select.select([fd], [], [], 0.2)
+            if fd not in r:
+                continue
+            try:
+                data = os.read(fd, 4096)
+            except OSError:
+                break
+            if not data:
+                break
+            try:
+                ws.send(data.decode("utf-8", "replace"))
+            except Exception:
+                break
+        alive.clear()
+
+    threading.Thread(target=pty_to_ws, daemon=True).start()
+
+    try:
+        while alive.is_set():
+            msg = ws.receive()
+            if msg is None:
+                break
+            try:
+                m = json.loads(msg)
+            except (ValueError, TypeError):
+                continue
+            if m.get("t") == "in":
+                os.write(fd, m["d"].encode())
+            elif m.get("t") == "resize":
+                set_winsize(fd, int(m["rows"]), int(m["cols"]))
+    finally:
+        alive.clear()
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except OSError:
+            pass
+        try:
+            os.close(fd)
+        except OSError:
+            pass
 
 
 app.config["SERVER_NAME"] = "challenge.internal"
 app.run(
     "challenge.internal",
     443,
+    threaded=True,
     ssl_context=(
         "/etc/ssl/certs/internal.cert.pem",
         "/etc/ssl/private/internal.key.pem",
