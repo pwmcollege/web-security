@@ -46,163 +46,163 @@ resources:
   - id: elf-delivery
     name: ELFpress Delivery
     type: challenge
-  - type: header
-    content: Authentication Bypass
-  - id: session-in-url
-    name: Say You're Admin
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - id: session-in-cookie
-    name: Bring Your Own Cookie
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - type: header
-    content: Command Injection
-  - id: cmdi-basic
-    name: Just Listing
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - id: cmdi-quotes
-    name: Out of Quotes
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - id: cmdi-filter
-    name: The Short List
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - id: cmdi-filter-strict
-    name: The Long List
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - id: cmdi-argv
-    name: Argument Settled
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - type: header
-    content: Path Traversal
-  - id: trav-basic
-    name: One Level Up
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - id: trav-replace
-    name: Second Pass
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - id: trav-absolute
-    name: Dot Dot Denied
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
-  - id: trav-strip
-    name: Strip Search
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
+  # - type: header
+  #   content: Authentication Bypass
+  # - id: session-in-url
+  #   name: Say You're Admin
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - id: session-in-cookie
+  #   name: Bring Your Own Cookie
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - type: header
+  #   content: Command Injection
+  # - id: cmdi-basic
+  #   name: Just Listing
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - id: cmdi-quotes
+  #   name: Out of Quotes
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - id: cmdi-filter
+  #   name: The Short List
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - id: cmdi-filter-strict
+  #   name: The Long List
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - id: cmdi-argv
+  #   name: Argument Settled
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - type: header
+  #   content: Path Traversal
+  # - id: trav-basic
+  #   name: One Level Up
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - id: trav-replace
+  #   name: Second Pass
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - id: trav-absolute
+  #   name: Dot Dot Denied
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
+  # - id: trav-strip
+  #   name: Strip Search
+  #   type: challenge
+  #   privileged: true
+  #   interfaces:
+  #     - name: Challenge
+  #       port: 80
+  #     - name: Terminal
+  #       port: 7681
+  #     - name: Code
+  #       port: 8080
+  #     - name: Desktop
+  #       port: 6080
+  #     - name: SSH
