@@ -6,6 +6,7 @@ award:
 image: pwmcollege/challenge-web:latest
 modules:
   - id: introduction
+  - id: authentication-access-control
   - id: sql-injection
   - id: cross-site-scripting
   - id: request-forgery

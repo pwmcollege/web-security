@@ -1,0 +1,38 @@
+name: Authentication and Access Control
+resources:
+  - type: header
+    content: Authentication Bypass
+  - id: session-in-url
+    name: Say You're Admin
+    type: challenge
+    transfer:
+      module: introduction
+      challenge: session-in-url
+    privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
+  - id: session-in-cookie
+    name: Bring Your Own Cookie
+    type: challenge
+    transfer:
+      module: introduction
+      challenge: session-in-cookie
+    privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
