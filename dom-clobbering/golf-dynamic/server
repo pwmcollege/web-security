@@ -79,7 +79,7 @@ def display_recording():
         wall_info = db.execute(
             "SELECT walls FROM golfer WHERE username=?", (username,)
         ).fetchone()[0]
-        print("wall info:",repr(wall_info))
+        print("wall info:", repr(wall_info))
         resp = Response(
             render_template(
                 "share.html",
@@ -88,7 +88,9 @@ def display_recording():
                 logged_in="username" in session,
             )
         )
-        resp.headers["Set-Cookie"] = username+"="+wall_info # Hacky way to keep flask from escaping the quotes in wall_info
+        resp.headers["Set-Cookie"] = (
+            username + "=" + wall_info
+        )  # Hacky way to keep flask from escaping the quotes in wall_info
         resp.set_cookie("active", username)
         return resp
     else:

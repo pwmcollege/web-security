@@ -2,8 +2,8 @@
 set -e
 
 find -L /challenge -type f -exec chmod 0444 {} +
-echo "192.168.13.37 challenge.internal" >> /etc/hosts
-echo "192.168.13.38 hacker.internal" >> /etc/hosts
+echo "192.168.13.37 challenge.internal" >>/etc/hosts
+echo "192.168.13.38 hacker.internal" >>/etc/hosts
 
 # Network setup
 ip addr add 192.168.13.0/24 dev lo
@@ -16,5 +16,5 @@ iptables-legacy -A INPUT -p tcp -d 192.168.13.37 --dport 1024: -j REJECT
 chmod 4555 /challenge/server
 chmod 4555 /challenge/victim
 
-openssl rand -hex 20 | tr -d "\n" > /challenge/secret
+openssl rand -hex 20 | tr -d "\n" >/challenge/secret
 chmod 400 /challenge/secret

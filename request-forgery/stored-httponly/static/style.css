@@ -1,5 +1,5 @@
 body {
-    font-family: "Inter", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 button:not(:disabled),
@@ -7,35 +7,35 @@ button:not(:disabled),
 a[href],
 label[for],
 summary {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .glass {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .island-nav {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .bg-accent {
-    background-color: #007aff;
+  background-color: #007aff;
 }
 
 .text-accent {
-    color: #007aff;
+  color: #007aff;
 }
 
 .border-accent {
-    border-color: #007aff;
+  border-color: #007aff;
 }
 
 .focus-ring-accent:focus {
-    --tw-ring-color: rgba(0, 122, 255, 0.3);
+  --tw-ring-color: rgba(0, 122, 255, 0.3);
 }

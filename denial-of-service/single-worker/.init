@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p /var/log/gunicorn
-echo -e "127.0.0.1\tchallenge.internal" >> /etc/hosts
+echo -e "127.0.0.1\tchallenge.internal" >>/etc/hosts
 
 cd /challenge
 gunicorn --daemon

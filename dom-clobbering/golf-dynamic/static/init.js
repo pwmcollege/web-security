@@ -1,26 +1,38 @@
 const DEFAULT_WALLS = {
-    vert: [[0, [0, 400]], [100, [0, 300]], [200, [0, 300]], [300, [100, 200]], [400, [0, 400]]],
-    horiz: [[0, [0, 400]], [100, [300, 400]], [200, [300, 400]], [300, [100, 200]], [400, [0, 400]]],
+  vert: [
+    [0, [0, 400]],
+    [100, [0, 300]],
+    [200, [0, 300]],
+    [300, [100, 200]],
+    [400, [0, 400]],
+  ],
+  horiz: [
+    [0, [0, 400]],
+    [100, [300, 400]],
+    [200, [300, 400]],
+    [300, [100, 200]],
+    [400, [0, 400]],
+  ],
 };
-document.cookie = "default="+JSON.stringify(DEFAULT_WALLS);
+document.cookie = "default=" + JSON.stringify(DEFAULT_WALLS);
 
-const activeLayout = function () {
+const activeLayout = (function () {
+  const cookies = document.cookie.split(";");
+  for (const cookie of cookies) {
+    if (cookie.trim().startsWith("active=")) {
+      return cookie.split("=")[1];
+    }
+  }
+  return "default";
+})();
+window.walls = (function () {
+  if (activeLayout != "default") {
     const cookies = document.cookie.split(";");
     for (const cookie of cookies) {
-        if (cookie.trim().startsWith("active=")) {
-            return cookie.split("=")[1];
-        }
+      if (cookie.trim().startsWith(activeLayout + "=")) {
+        return JSON.parse(cookie.split("=")[1]);
+      }
     }
-    return "default";
-}();
-window.walls = function () {
-    if (activeLayout != "default") {
-        const cookies = document.cookie.split(";");
-        for (const cookie of cookies) {
-            if (cookie.trim().startsWith(activeLayout + "=")) {
-                return JSON.parse(cookie.split("=")[1]);
-            }
-        }
-    }
-    return DEFAULT_WALLS;
-}();
+  }
+  return DEFAULT_WALLS;
+})();

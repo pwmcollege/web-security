@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <head>
-    <meta charset="UTF-8">
-    <script src="/static/main.js" defer></script>
-    <title>DOM Clobbering</title>
+  <meta charset="UTF-8" />
+  <script src="/static/main.js" defer></script>
+  <title>DOM Clobbering</title>
 </head>
 <body>
-    {% if message %}
-    <div>Message: {{message | safe}}</div>
-    {% endif %}
-    <div>Webpage for <span id="username">{{username}}</span></div>
+  {% if message %}
+  <div>Message: {{message | safe}}</div>
+  {% endif %}
+  <div>Webpage for <span id="username">{{username}}</span></div>
 </body>

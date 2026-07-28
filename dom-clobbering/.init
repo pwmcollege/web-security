@@ -2,8 +2,8 @@
 set -e
 
 find -L /challenge -type f -exec chmod 0444 {} +
-echo "192.168.13.37 challenge.internal" >> /etc/hosts
-echo "192.168.13.38 hacker.internal" >> /etc/hosts
+echo "192.168.13.37 challenge.internal" >>/etc/hosts
+echo "192.168.13.38 hacker.internal" >>/etc/hosts
 
 # Network setup
 ip addr add 192.168.13.0/24 dev lo

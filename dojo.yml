@@ -2,12 +2,12 @@ id: web-security
 name: Web Security
 type: public
 award:
-    emoji: 🕸️
+  emoji: 🕸️
 image: pwmcollege/challenge-web:latest
 modules:
-    - id: introduction
-    - id: sql-injection
-    - id: cross-site-scripting
-    - id: request-forgery
-    - id: denial-of-service
-    - id: dom-clobbering
+  - id: introduction
+  - id: sql-injection
+  - id: cross-site-scripting
+  - id: request-forgery
+  - id: denial-of-service
+  - id: dom-clobbering

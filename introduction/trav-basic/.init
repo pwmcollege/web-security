@@ -1,8 +1,8 @@
 #!/bin/bash
 
 find -L /challenge -type f -exec chmod 0444 {} +
-echo -e "10.0.13.37\tchallenge.internal" >> /etc/hosts
-echo -e "10.0.13.36\tcdn.internal" >> /etc/hosts
+echo -e "10.0.13.37\tchallenge.internal" >>/etc/hosts
+echo -e "10.0.13.36\tcdn.internal" >>/etc/hosts
 
 # Network setup
 ip addr add 10.0.13.36/32 dev eth0
@@ -17,7 +17,7 @@ iptables-legacy -A INPUT -p tcp -d 10.0.13.36 --dport 1024: -j REJECT
 iptables-legacy -A INPUT -p tcp -d 10.0.13.37 --dport 1024: -j REJECT
 
 for i in $(seq 1 10); do
-    /usr/games/fortune > "$(printf '/challenge/fortune_%02d.txt' "$i")"
+    /usr/games/fortune >"$(printf '/challenge/fortune_%02d.txt' "$i")"
 done
 
 /opt/cdn/server &

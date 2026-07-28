@@ -8,7 +8,16 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 
-ALLOWED_TAGS = {"html", "head", "body", "math", "mtext", "annotation-xml", "style", "table"}
+ALLOWED_TAGS = {
+    "html",
+    "head",
+    "body",
+    "math",
+    "mtext",
+    "annotation-xml",
+    "style",
+    "table",
+}
 ALLOWED_ATTRS = {
     "annotation-xml": {"encoding"},
 }

@@ -22,9 +22,9 @@ signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 @app.route("/")
 def index():
-    return render_template("index.html", brand="Tether",
-                           endpoint="reverse",
-                           trigger_label="Trigger callback")
+    return render_template(
+        "index.html", endpoint="reverse", trigger_label="Trigger callback"
+    )
 
 
 @app.route("/reverse", methods=["GET", "POST"])
@@ -52,6 +52,8 @@ def set_winsize(fd, rows, cols):
 def pty_socket(ws):
     pid, fd = pty.fork()
     if pid == 0:
+        for sig in (signal.SIGCHLD, signal.SIGINT, signal.SIGQUIT, signal.SIGTSTP):
+            signal.signal(sig, signal.SIG_DFL)
         os.environ["TERM"] = "xterm-256color"
         os.environ["HOME"] = "/home/hacker"
         os.environ["PS1"] = r"\[\e[38;5;35m\]hacker\[\e[0m\]:\w\$ "

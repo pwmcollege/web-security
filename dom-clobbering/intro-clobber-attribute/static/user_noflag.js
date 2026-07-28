@@ -1,4 +1,4 @@
 window.role = {
-    name:"user",
-    showFlag:false,
-}
+  name: "user",
+  showFlag: false,
+};

@@ -1,21 +1,21 @@
 name: DOM Clobbering
 privileged: true
 challenges:
-    - id: intro-clobber-selector
-      name: Baby's First DOM Clobbering
-    - id: intro-clobber-regular
-      name: Real DOM Clobbering
-    - id: intro-clobber-attribute
-      name: Clobbering Attributes
-    - id: intro-clobber-multi
-      name: Clobbering Multiple Levels
-    - id: golf-svg
-      name: Welcome to PWN.GOLF
-    - id: golf-hardcoded-wall
-      name: Barrier Breaker
-    - id: golf-cookies-wall
-      name: Crash Course
-    - id: golf-dynamic
-      name: Clobbering Links
-    - id: golf-sanitizer
-      name: Impurifier
+  - id: intro-clobber-selector
+    name: Baby's First DOM Clobbering
+  - id: intro-clobber-regular
+    name: Real DOM Clobbering
+  - id: intro-clobber-attribute
+    name: Clobbering Attributes
+  - id: intro-clobber-multi
+    name: Clobbering Multiple Levels
+  - id: golf-svg
+    name: Welcome to PWN.GOLF
+  - id: golf-hardcoded-wall
+    name: Barrier Breaker
+  - id: golf-cookies-wall
+    name: Crash Course
+  - id: golf-dynamic
+    name: Clobbering Links
+  - id: golf-sanitizer
+    name: Impurifier

@@ -1,18 +1,18 @@
 name: Update Dojo
 
 on:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-    update:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: pwncollege/dojo-update@v1
-              with:
-                  dojo: "web-security~f98637a0"
-                  update_code: ${{ secrets.UPDATE_CODE }}
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: pwncollege/dojo-update@v1
+        with:
+          dojo: "web-security~f98637a0"
+          update_code: ${{ secrets.UPDATE_CODE }}

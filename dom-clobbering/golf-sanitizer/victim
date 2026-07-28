@@ -42,11 +42,11 @@ if urlparse(challenge_url).scheme not in ("http", "https"):
     print("Invalid url!!!")
     sys.exit(1)
 
-victim_username = "victim-"+secrets.token_hex(16)
+victim_username = "victim-" + secrets.token_hex(16)
 victim_password = secrets.token_hex(16)
 
 # Make account
-browser.get(SERVER_URL+"/register")
+browser.get(SERVER_URL + "/register")
 register_form = WebDriverWait(browser, 5).until(
     EC.presence_of_element_located((By.TAG_NAME, "form"))
 )

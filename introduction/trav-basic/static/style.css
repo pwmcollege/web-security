@@ -1,5 +1,5 @@
 body {
-    font-family: "Inter", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 button:not(:disabled),
@@ -7,5 +7,5 @@ button:not(:disabled),
 a[href],
 label[for],
 summary {
-    cursor: pointer;
+  cursor: pointer;
 }
