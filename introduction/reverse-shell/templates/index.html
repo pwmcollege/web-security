@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="/static/style.css" />
     </head>
 
-    <body class="min-h-screen bg-white text-zinc-900 font-sans antialiased flex flex-col">
+    <body class="h-dvh overflow-hidden bg-white text-zinc-900 font-sans antialiased flex flex-col">
         <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100">
             <div class="mx-auto max-w-[720px] h-[60px] px-5 flex items-center">
                 <span class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none">
@@ -20,7 +20,7 @@
             </div>
         </header>
 
-        <main class="flex-grow w-full mx-auto max-w-[720px] px-5 py-8">
+        <main class="flex-1 min-h-0 w-full mx-auto max-w-[720px] px-5 py-8 flex flex-col">
             <div class="mb-4 flex items-center justify-between gap-4">
                 <h1 class="text-[15px] font-semibold tracking-tight text-zinc-900">Shell</h1>
                 <button
@@ -32,8 +32,8 @@
                 </button>
             </div>
 
-            <div class="rounded-xl border border-zinc-200 bg-[#09090b] p-3 shadow-sm">
-                <div id="term" class="h-[70vh]"></div>
+            <div class="flex-1 min-h-0 rounded-xl border border-zinc-200 bg-[#09090b] p-3 shadow-sm">
+                <div id="term" class="h-full"></div>
             </div>
         </main>
 

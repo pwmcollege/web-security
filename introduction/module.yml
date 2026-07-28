@@ -55,6 +55,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: session-in-cookie
     name: Bring Your Own Cookie
     type: challenge
@@ -62,6 +69,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - type: header
     content: Command Injection
   - id: cmdi-basic
@@ -71,6 +85,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: cmdi-quotes
     name: Out of Quotes
     type: challenge
@@ -78,6 +99,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: cmdi-filter
     name: The Short List
     type: challenge
@@ -85,6 +113,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: cmdi-filter-strict
     name: The Long List
     type: challenge
@@ -92,6 +127,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: cmdi-argv
     name: Argument Settled
     type: challenge
@@ -99,6 +141,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - type: header
     content: Path Traversal
   - id: trav-basic
@@ -108,6 +157,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: trav-replace
     name: Second Pass
     type: challenge
@@ -115,6 +171,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: trav-absolute
     name: Dot Dot Denied
     type: challenge
@@ -122,6 +185,13 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: trav-strip
     name: Strip Search
     type: challenge
@@ -129,3 +199,10 @@ resources:
     interfaces:
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
