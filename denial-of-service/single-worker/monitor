@@ -67,8 +67,15 @@ def broadcast_flag(flag):
 
 
 def probe_loop():
-    down_ticks = 0
+    broadcast_ticks = 0
     while True:
+        if state["flag"] is not None:
+            if broadcast_ticks % 10 == 0:
+                broadcast_flag(state["flag"])
+            broadcast_ticks += 1
+            time.sleep(1)
+            continue
+
         t0 = time.monotonic()
         try:
             r = session.get(
@@ -87,15 +94,9 @@ def probe_loop():
         state["fails"] = 0 if up else state["fails"] + 1
 
         if state["fails"] >= 5:
-            if state["flag"] is None:
-                state["flag"] = read_flag()
-            if down_ticks % 10 == 0:
-                broadcast_flag(state["flag"])
-            down_ticks += 1
-        else:
-            down_ticks = 0
-            if up:
-                state["flag"] = None
+            state["flag"] = read_flag()
+            broadcast_flag(state["flag"])
+            broadcast_ticks = 1
 
         time.sleep(1)
 
@@ -114,7 +115,7 @@ def events():
                 "latency": state["latency"],
                 "fails": state["fails"],
                 "history": list(state["history"]),
-                "flag": state["flag"] if state["fails"] >= 5 else None,
+                "flag": state["flag"],
             }
             yield f"data: {json.dumps(payload)}\n\n"
             time.sleep(1)
