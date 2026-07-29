@@ -1,7 +1,6 @@
 wsgi_app = "wsgi:application"
-bind = "victim.internal:443"
-certfile = "/etc/ssl/certs/internal.cert.pem"
-keyfile = "/etc/ssl/private/internal.key.pem"
+bind = "unix:/run/victim.sock"
+umask = 0o177
 loglevel = "info"
 accesslog = "/var/log/gunicorn/access.log"
 errorlog = "/var/log/gunicorn/error.log"
