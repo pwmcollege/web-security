@@ -69,13 +69,6 @@ def broadcast_flag(flag):
 def probe_loop():
     broadcast_ticks = 0
     while True:
-        if state["flag"] is not None:
-            if broadcast_ticks % 10 == 0:
-                broadcast_flag(state["flag"])
-            broadcast_ticks += 1
-            time.sleep(1)
-            continue
-
         t0 = time.monotonic()
         try:
             r = session.get(
@@ -93,7 +86,11 @@ def probe_loop():
         state["history"].append(up)
         state["fails"] = 0 if up else state["fails"] + 1
 
-        if state["fails"] >= 5:
+        if state["flag"] is not None:
+            if broadcast_ticks % 10 == 0:
+                broadcast_flag(state["flag"])
+            broadcast_ticks += 1
+        elif state["fails"] >= 5:
             state["flag"] = read_flag()
             broadcast_flag(state["flag"])
             broadcast_ticks = 1
