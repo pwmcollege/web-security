@@ -1,34 +1,25 @@
 Not every web bug ends in a shell. Many of them come down to the application trusting something it should not. When the thing it trusts is your identity, getting it to believe you are someone you are not is called an [authentication bypass](https://owasp.org/www-community/attacks/Session_hijacking_attack).
 
-This challenge runs pwnpost, a small feed app. You can log in with a normal account and read the feed, but the admin kept the flag in an unpublished draft. A draft is shown in full only to its author and to admin, so as a normal user you just see the first few characters:
+This challenge runs Mail, a small webmail app. You can log in with a normal account and read your own mailbox, but the flag is an email from System sitting in the admin mailbox. You only get to read a mailbox the app believes is yours.
 
-```
-pwn.college{…
-```
-
-To read the whole thing, the app has to believe you are admin.
-
-In this challenge, the app writes your identity into the URL when you log in, then reads it straight back on the next request:
+Mail keeps your identity in the URL. After you log in it sends you to your mailbox at a path built from your username, and every page decides whose mail to load straight from that path:
 
 ```python
 # after a successful login
-return redirect(f"/?session_user={user['username']}")
+return redirect(f"/u/{user['username']}/")
 
-# how each page decides who you are
-username = request.args.get("session_user")
+# which mailbox a page loads
+@app.route("/u/<username>/")
+def inbox_page(username):
+    ...
 ```
 
-Nothing checks that you are the one who set `session_user`.
+Nothing checks that you are the user named in the path.
 
 ---
 
 ### Challenge Environment
 
-The challenge files are in `/challenge`.
+You can log in to Mail with this account:
 
-Start the web server by running `/challenge/server`, then open `https://challenge.internal` in a browser inside the [Desktop workspace](https://pwn.college/workspace/desktop).
-
-You can log in to pwnpost with these accounts:
-
-- `guest:password`
 - `hacker:1337`

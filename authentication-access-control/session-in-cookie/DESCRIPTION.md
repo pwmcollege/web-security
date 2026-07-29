@@ -1,4 +1,4 @@
-Putting your identity in the URL was clearly too easy to change, so this challenge moves it somewhere that feels safer: a cookie. You log in for real, and the app hands you a cookie that later tells it who you are.
+Putting your identity in the URL was clearly too easy to change, so this challenge moves it somewhere that feels safer: a cookie. You log in for real, and Mail hands you a cookie that later tells it who you are.
 
 But safer is not the same as safe. A cookie is just a value your browser stores and sends back on every request, and this app never signs it or checks it. It sets the cookie at login and trusts whatever comes back:
 
@@ -6,6 +6,16 @@ But safer is not the same as safe. A cookie is just a value your browser stores 
 # at login
 response.set_cookie("session_user", user["username"])
 
-# on every page
+# on every request
 username = request.cookies.get("session_user")
 ```
+
+The flag is an email from System in the admin mailbox. Read it by convincing Mail you are admin.
+
+---
+
+### Challenge Environment
+
+You can log in to Mail with this account:
+
+- `hacker:1337`
