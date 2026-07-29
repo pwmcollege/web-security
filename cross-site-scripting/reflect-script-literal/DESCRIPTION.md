@@ -2,7 +2,7 @@ This works like the last challenge, but the context changes. Your input now sits
 
 ```html
 <script nonce="...">
-    const message = `<payload>`;
+  const message = `<payload>`;
 </script>
 ```
 

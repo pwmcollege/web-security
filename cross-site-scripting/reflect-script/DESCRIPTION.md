@@ -2,7 +2,7 @@ In this challenge your input does not go into HTML. It goes into JavaScript. The
 
 ```html
 <script nonce="...">
-    const message = "<payload>";
+  const message = "<payload>";
 </script>
 ```
 

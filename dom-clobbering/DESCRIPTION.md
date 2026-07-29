@@ -3,5 +3,6 @@ So you've met Content-Security-Policy, the thing that ruins your day by refusing
 This module walks through [DOM Clobbering](https://en.wikipedia.org/wiki/DOM_clobbering): using plain HTML to overwrite JavaScript variables and bend existing code to your goals.
 
 # Additional Resources
+
 - [https://domclob.xyz/](https://domclob.xyz/): Covers common DOM Clobbering-vulnerable patterns
 - [https://domclob.xyz/domc_markups/list](https://domclob.xyz/domc_markups/list): Lists DOM clobbering payloads

@@ -22,8 +22,10 @@ sock = Sock(app)
 signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 session = requests.Session()
-session.mount("https://", requests.adapters.HTTPAdapter(
-    pool_connections=2, pool_maxsize=4, max_retries=0))
+session.mount(
+    "https://",
+    requests.adapters.HTTPAdapter(pool_connections=2, pool_maxsize=4, max_retries=0),
+)
 
 state = {
     "up": True,
@@ -116,6 +118,7 @@ def events():
             }
             yield f"data: {json.dumps(payload)}\n\n"
             time.sleep(1)
+
     return Response(stream(), mimetype="text/event-stream")
 
 

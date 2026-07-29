@@ -1,57 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="h-full">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tether</title>
-    <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
-    <script src="https://cdn.internal/lucide/lucide.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
-    <link rel="stylesheet" href="https://cdn.internal/xterm/xterm.css" />
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-
-  <body
-    class="h-dvh overflow-hidden bg-white text-zinc-900 font-sans antialiased flex flex-col"
-  >
-    <header
-      class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100"
-    >
-      <div class="mx-auto max-w-[720px] h-[60px] px-5 flex items-center">
-        <span
-          class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none"
-        >
-          Tether<span class="text-zinc-300">.</span>
-        </span>
-      </div>
-    </header>
-
-    <main
-      class="flex-1 min-h-0 w-full mx-auto max-w-[720px] px-5 py-8 flex flex-col"
-    >
-      <div class="mb-4 flex items-center justify-between gap-4">
-        <h1 class="text-[15px] font-semibold tracking-tight text-zinc-900">
-          Shell
-        </h1>
-        <button
-          id="trigger"
-          class="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3.5 py-2 text-[13px] font-semibold text-white transition-colors cursor-pointer hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <i data-lucide="zap" class="w-4 h-4"></i>
-          <span id="trigger-label">{{ trigger_label }}</span>
-        </button>
-      </div>
-
-      <div
-        class="flex-1 min-h-0 overflow-hidden rounded-xl border border-zinc-200 bg-[#303446] p-3 shadow-sm"
-      >
-        <div id="term" class="h-full"></div>
-      </div>
-    </main>
-
-    <script src="https://cdn.internal/xterm/xterm.js"></script>
-    <script src="https://cdn.internal/xterm/xterm-addon-fit.js"></script>
-    <script>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tether</title>
+        <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
+        <script src="https://cdn.internal/lucide/lucide.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
+        <link rel="stylesheet" href="https://cdn.internal/xterm/xterm.css" />
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body class="h-dvh overflow-hidden bg-white text-zinc-900 font-sans antialiased flex flex-col">
+        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100">
+            <div class="mx-auto max-w-[720px] h-[60px] px-5 flex items-center">
+                <span class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none">
+                    Tether<span class="text-zinc-300">.</span>
+                </span>
+            </div>
+        </header>
+        <main class="flex-1 min-h-0 w-full mx-auto max-w-[720px] px-5 py-8 flex flex-col">
+            <div class="mb-4 flex items-center justify-between gap-4">
+                <h1 class="text-[15px] font-semibold tracking-tight text-zinc-900">Shell</h1>
+                <button id="trigger"
+                        class="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3.5 py-2 text-[13px] font-semibold text-white transition-colors cursor-pointer hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                    <span id="trigger-label">{{ trigger_label }}</span>
+                </button>
+            </div>
+            <div class="flex-1 min-h-0 overflow-hidden rounded-xl border border-zinc-200 bg-[#303446] p-3 shadow-sm">
+                <div id="term" class="h-full"></div>
+            </div>
+        </main>
+        <script src="https://cdn.internal/xterm/xterm.js"></script>
+        <script src="https://cdn.internal/xterm/xterm-addon-fit.js"></script>
+        <script>
       lucide.createIcons();
 
       const term = new Terminal({
@@ -149,6 +131,6 @@
           btnLabel.textContent = original;
         }, 1500);
       });
-    </script>
-  </body>
+        </script>
+    </body>
 </html>

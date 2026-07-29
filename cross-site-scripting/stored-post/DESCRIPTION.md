@@ -16,7 +16,7 @@ Log in, save a payload in a post, and get it to run when the admin reviews the f
 
 ### Challenge Environment
 
-You can log into ***pwnpost*** with these accounts:
+You can log into _**pwnpost**_ with these accounts:
 
 - `guest:password`
 - `hacker:1337`
