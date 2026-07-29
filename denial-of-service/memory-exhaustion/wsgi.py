@@ -8,6 +8,7 @@ from flask import Flask, request
 app = Flask(__name__)
 
 
+@app.get("/")
 @app.get("/health")
 def health():
     return "OK\n", 200

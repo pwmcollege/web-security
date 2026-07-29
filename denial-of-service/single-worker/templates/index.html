@@ -21,7 +21,7 @@
         <main class="flex-1 min-h-0 w-full mx-auto max-w-[720px] px-5 py-8 flex flex-col gap-4">
             <div class="shrink-0 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                 <div class="flex items-center gap-2.5">
-                    <span id="core" class="inline-flex h-2 w-2 rounded-full bg-[#737994]"></span>
+                    <span id="core" class="inline-flex h-2 w-2 rounded-full bg-[#9ca0b0]"></span>
                     <h1 class="font-mono text-[14px] font-medium tracking-tight text-zinc-900">victim.internal</h1>
                 </div>
                 <div id="bars" class="mt-5 flex items-center gap-[3px]"></div>
@@ -69,21 +69,21 @@
                     const b = document.createElement("span");
                     b.className = "h-7 flex-1 rounded-sm";
                     b.style.backgroundColor = ok
-                        ? "#a6d189"
+                        ? "#40a02b"
                         : streak >= 5
-                          ? "#e78284"
-                          : "#e5c890";
+                          ? "#d20f39"
+                          : "#df8e1d";
                     barsEl.appendChild(b);
                 }
             }
 
             function setStatus(up, fails) {
                 if (fails >= 5) {
-                    core.style.backgroundColor = "#e78284";
+                    core.style.backgroundColor = "#d20f39";
                 } else if (up) {
-                    core.style.backgroundColor = "#a6d189";
+                    core.style.backgroundColor = "#40a02b";
                 } else {
-                    core.style.backgroundColor = "#e5c890";
+                    core.style.backgroundColor = "#df8e1d";
                 }
             }
 
@@ -102,7 +102,7 @@
                 }
             };
             es.onerror = () => {
-                core.style.backgroundColor = "#737994";
+                core.style.backgroundColor = "#9ca0b0";
             };
 
             const copyBtn = document.getElementById("copyFlag");
