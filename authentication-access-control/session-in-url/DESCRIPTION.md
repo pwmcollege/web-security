@@ -1,20 +1,18 @@
-Not every web bug ends in a shell. Many of them come down to the application trusting something it should not. When the thing it trusts is your identity, getting it to believe you are someone you are not is called an [authentication bypass](https://owasp.org/www-community/attacks/Session_hijacking_attack).
+After a user logs in, a web application needs some way to recognize that user on later requests. This is usually handled with a session: the browser receives a random session identifier, and the server keeps track of which account it belongs to.
 
-This challenge runs Mail, a small webmail app. You can log in with a normal account and read your own mailbox, but the flag is an email from System sitting in the admin mailbox. You only get to read a mailbox the app believes is yours.
-
-Mail keeps your identity in the URL. After you log in it sends you to your mailbox at a path built from your username, and every page decides whose mail to load straight from that path:
+In this challenge, Mail does something much simpler. After checking the password, it puts the username in the URL:
 
 ```python
-# after a successful login
 return redirect(f"/u/{user['username']}/")
 
-# which mailbox a page loads
 @app.route("/u/<username>/")
 def inbox_page(username):
     ...
 ```
 
-Nothing checks that you are the user named in the path.
+And the mailbox route trusts the `username` from the path.
+
+The flag is in the admin mailbox.
 
 ---
 

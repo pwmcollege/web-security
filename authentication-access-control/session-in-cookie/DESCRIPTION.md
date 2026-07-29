@@ -1,16 +1,16 @@
-Putting your identity in the URL was clearly too easy to change, so this challenge moves it somewhere that feels safer: a cookie. You log in for real, and Mail hands you a cookie that later tells it who you are.
-
-But safer is not the same as safe. A cookie is just a value your browser stores and sends back on every request, and this app never signs it or checks it. It sets the cookie at login and trusts whatever comes back:
+The previous challenge put the username in the URL. Mail now stores it in a cookie instead, which keeps the identity out of the address bar and lets the browser send it automatically with each request:
 
 ```python
-# at login
-response.set_cookie("session_user", user["username"])
+response.set_cookie("session", user["username"])
 
-# on every request
-username = request.cookies.get("session_user")
+username = request.cookies.get("session")
 ```
 
-The flag is an email from System in the admin mailbox. Read it by convincing Mail you are admin.
+A cookie is still client-controlled data. The browser can change it before sending the next request, just as it can change a URL. Calling the cookie `session` does not make it a secure session.
+
+Real session cookies usually contain a random identifier that the server maps to an account. Another option is to store identity data in the cookie with a signature that the server verifies. This application does neither. It uses the cookie value directly as the mailbox username.
+
+The flag is in the admin mailbox.
 
 ---
 
