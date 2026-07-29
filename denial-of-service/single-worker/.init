@@ -1,13 +1,35 @@
 #!/bin/bash
 
-mkdir -p /var/log/gunicorn
-echo -e "127.0.0.1\tchallenge.internal" >>/etc/hosts
+find -L /challenge -type f -exec chmod 0444 {} +
+echo -e "10.0.13.37\tchallenge.internal" >>/etc/hosts
+echo -e "10.0.13.36\tcdn.internal" >>/etc/hosts
+echo -e "10.0.13.38\tvictim.internal" >>/etc/hosts
 
+# Network setup
+ip addr add 10.0.13.36/32 dev eth0
+ip addr add 10.0.13.37/32 dev eth0
+ip addr add 10.0.13.38/32 dev eth0
+ip route del local 10.0.13.36/32
+ip route del local 10.0.13.37/32
+ip route del local 10.0.13.38/32
+ip route add local 10.0.13.36/32 dev lo src 127.0.0.1
+ip route add local 10.0.13.37/32 dev lo src 127.0.0.1
+ip route add local 10.0.13.38/32 dev lo src 127.0.0.1
+
+# Reject packets sent to the internal hosts at non-privileged ports
+iptables-legacy -A INPUT -p tcp -d 10.0.13.36 --dport 1024: -j REJECT
+iptables-legacy -A INPUT -p tcp -d 10.0.13.37 --dport 1024: -j REJECT
+iptables-legacy -A INPUT -p tcp -d 10.0.13.38 --dport 1024: -j REJECT
+
+/opt/cdn/server &
+
+mkdir -p /var/log/gunicorn
 cd /challenge
 gunicorn --daemon
 
-until curl -fs https://challenge.internal/health >/dev/null; do sleep 0.1; done
+until curl -fs --cacert /etc/ssl/certs/internal.cert.pem https://victim.internal/health >/dev/null; do sleep 0.1; done
 
-/challenge/watchdog &
+nginx -c /challenge/nginx.conf
 
-find -L /challenge -type f -exec chmod 0444 {} +
+chmod 544 /challenge/monitor
+/challenge/monitor &

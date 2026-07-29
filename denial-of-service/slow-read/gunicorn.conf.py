@@ -1,5 +1,5 @@
 wsgi_app = "wsgi:application"
-bind = "challenge.internal:443"
+bind = "victim.internal:443"
 certfile = "/etc/ssl/certs/internal.cert.pem"
 keyfile = "/etc/ssl/private/internal.key.pem"
 loglevel = "info"

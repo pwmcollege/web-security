@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" class="h-full">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>DoS</title>
+        <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
+        <script src="https://cdn.internal/lucide/lucide.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
+        <link rel="stylesheet" href="https://cdn.internal/xterm/xterm.css" />
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+
+    <body class="h-dvh overflow-hidden bg-white text-zinc-900 font-sans antialiased flex flex-col">
+        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100">
+            <div class="mx-auto max-w-[720px] h-[60px] px-5 flex items-center">
+                <span class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none">
+                    DoS<span class="text-zinc-300">.</span>
+                </span>
+            </div>
+        </header>
+
+        <main class="flex-1 min-h-0 w-full mx-auto max-w-[720px] px-5 py-8 flex flex-col gap-4">
+            <div class="shrink-0 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center gap-2.5">
+                    <span id="core" class="inline-flex h-2 w-2 rounded-full bg-zinc-300"></span>
+                    <h1 class="font-mono text-[14px] font-medium tracking-tight text-zinc-900">victim.internal</h1>
+                </div>
+
+                <div id="bars" class="mt-5 flex items-center gap-[3px]"></div>
+
+                <div class="mt-4 flex items-center gap-5 font-mono text-[12px] text-zinc-400">
+                    <span>Latency <span id="latency" class="text-zinc-600 tabular-nums">--</span></span>
+                    <span>Failed <span id="fails" class="text-zinc-600 tabular-nums">0/5</span></span>
+                </div>
+            </div>
+
+            <div id="flagCard" class="hidden shrink-0 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-medium uppercase tracking-wider text-zinc-400">flag</div>
+                        <code id="flag" class="mt-1.5 block font-mono text-[14px] text-zinc-900 break-all"></code>
+                    </div>
+                    <button
+                        id="copyFlag"
+                        class="shrink-0 inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3.5 py-2 text-[13px] font-semibold text-white transition-colors cursor-pointer hover:bg-zinc-800"
+                    >
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span id="copyLabel">Copy</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 min-h-0 rounded-xl border border-zinc-200 bg-[#09090b] p-3 shadow-sm">
+                <div id="term" class="h-full"></div>
+            </div>
+        </main>
+
+        <script src="https://cdn.internal/xterm/xterm.js"></script>
+        <script src="https://cdn.internal/xterm/xterm-addon-fit.js"></script>
+        <script>
+            lucide.createIcons();
+
+            const barsEl = document.getElementById("bars");
+            const core = document.getElementById("core");
+            const latencyEl = document.getElementById("latency");
+            const failsEl = document.getElementById("fails");
+            const flagCard = document.getElementById("flagCard");
+            const flagEl = document.getElementById("flag");
+
+            function renderBars(history) {
+                barsEl.innerHTML = "";
+                let streak = 0;
+                for (const ok of history) {
+                    streak = ok ? 0 : streak + 1;
+                    const color = ok
+                        ? "bg-emerald-400"
+                        : streak >= 5
+                          ? "bg-red-400"
+                          : "bg-amber-400";
+                    const b = document.createElement("span");
+                    b.className = `h-7 flex-1 rounded-sm ${color}`;
+                    barsEl.appendChild(b);
+                }
+            }
+
+            function setStatus(up, fails) {
+                if (fails >= 5) {
+                    core.className = "inline-flex h-2 w-2 rounded-full bg-red-500";
+                } else if (up) {
+                    core.className = "inline-flex h-2 w-2 rounded-full bg-emerald-500";
+                } else {
+                    core.className = "inline-flex h-2 w-2 rounded-full bg-amber-500";
+                }
+            }
+
+            const es = new EventSource("events");
+            es.onmessage = (e) => {
+                const s = JSON.parse(e.data);
+                renderBars(s.history);
+                setStatus(s.up, s.fails);
+                latencyEl.textContent = s.latency == null ? "--" : s.latency + " ms";
+                failsEl.textContent = s.fails + " / 5";
+                if (s.flag) {
+                    flagEl.textContent = s.flag;
+                    flagCard.classList.remove("hidden");
+                } else {
+                    flagCard.classList.add("hidden");
+                }
+            };
+            es.onerror = () => {
+                core.className = "inline-flex h-2 w-2 rounded-full bg-zinc-300";
+            };
+
+            const copyBtn = document.getElementById("copyFlag");
+            let copyReset;
+            copyBtn.addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(flagEl.textContent);
+                } catch (e) {}
+                copyBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i><span>Copied</span>';
+                lucide.createIcons();
+                clearTimeout(copyReset);
+                copyReset = setTimeout(() => {
+                    copyBtn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i><span>Copy</span>';
+                    lucide.createIcons();
+                }, 1500);
+            });
+
+            const term = new Terminal({
+                fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+                fontSize: 13,
+                lineHeight: 1.35,
+                cursorBlink: true,
+                theme: {
+                    background: "#09090b", foreground: "#e4e4e7", cursor: "#e4e4e7",
+                    selectionBackground: "#3f3f46",
+                    black: "#18181b", brightBlack: "#52525b",
+                    green: "#4ade80", brightGreen: "#86efac",
+                    red: "#f87171", cyan: "#22d3ee", blue: "#60a5fa",
+                },
+            });
+            const fit = new FitAddon.FitAddon();
+            term.loadAddon(fit);
+            term.open(document.getElementById("term"));
+            fit.fit();
+
+            const wsUrl = new URL("pty", window.location.href);
+            wsUrl.protocol = location.protocol === "https:" ? "wss:" : "ws:";
+            const ws = new WebSocket(wsUrl);
+            ws.binaryType = "arraybuffer";
+            const sendResize = () => ws.readyState === 1 &&
+                ws.send(JSON.stringify({ t: "resize", cols: term.cols, rows: term.rows }));
+            ws.onopen = () => { sendResize(); term.focus(); };
+            ws.onmessage = (e) => term.write(typeof e.data === "string" ? e.data : new Uint8Array(e.data));
+            term.onData((d) => ws.readyState === 1 && ws.send(JSON.stringify({ t: "in", d })));
+            term.attachCustomKeyEventHandler((event) => {
+                if (
+                    event.type !== "keydown" ||
+                    !event.ctrlKey ||
+                    event.altKey ||
+                    event.metaKey ||
+                    event.shiftKey ||
+                    event.key.length !== 1
+                )
+                    return true;
+                const code = event.key.toUpperCase().charCodeAt(0) - 64;
+                if (code < 0 || code > 31) return true;
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ t: "in", d: String.fromCharCode(code) }));
+                }
+                return false;
+            });
+            window.addEventListener("resize", () => { fit.fit(); sendResize(); });
+        </script>
+    </body>
+</html>

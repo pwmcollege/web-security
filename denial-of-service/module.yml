@@ -6,19 +6,84 @@ resources:
   - id: single-worker
     name: Single-threaded
     type: challenge
+    privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: multi-workers
     name: Multi-process
     type: challenge
+    privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: memory-exhaustion
     name: Out of Memory
     type: challenge
+    privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: io-bottleneck
     name: I/O Saturation
     type: challenge
+    privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: slow-read
     name: Slow Read
     type: challenge
+    privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
   - id: shared-resources
     name: Shared Resources
     type: challenge
     privileged: true
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
