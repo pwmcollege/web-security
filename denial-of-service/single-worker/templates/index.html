@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="flex-1 min-h-0 rounded-xl border border-zinc-200 bg-[#09090b] p-3 shadow-sm">
+            <div class="flex-1 min-h-0 overflow-hidden rounded-xl border border-zinc-200 bg-[#09090b] p-3 shadow-sm">
                 <div id="term" class="h-full"></div>
             </div>
         </main>
@@ -152,6 +152,10 @@
             const sendResize = () => ws.readyState === 1 &&
                 ws.send(JSON.stringify({ t: "resize", cols: term.cols, rows: term.rows }));
             ws.onopen = () => { sendResize(); term.focus(); };
+            new ResizeObserver(() => {
+                fit.fit();
+                sendResize();
+            }).observe(document.getElementById("term"));
             ws.onmessage = (e) => term.write(typeof e.data === "string" ? e.data : new Uint8Array(e.data));
             term.onData((d) => ws.readyState === 1 && ws.send(JSON.stringify({ t: "in", d })));
             term.attachCustomKeyEventHandler((event) => {
