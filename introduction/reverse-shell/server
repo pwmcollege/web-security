@@ -56,7 +56,7 @@ def pty_socket(ws):
             signal.signal(sig, signal.SIG_DFL)
         os.environ["TERM"] = "xterm-256color"
         os.environ["HOME"] = "/home/hacker"
-        os.environ["PS1"] = r"\[\e[38;5;35m\]hacker\[\e[0m\]:\w\$ "
+        os.environ["PS1"] = r"\[\e[32m\]hacker\[\e[0m\]:\w\$ "
         os.closerange(3, 64)
         try:
             os.setgroups([1000])
