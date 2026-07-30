@@ -3,7 +3,7 @@ Plenty of apps need to hand you a file: a document, an avatar, a report. The qui
 Files does exactly that. It serves the text files sitting in one folder, and the path from your request is pasted onto that folder and opened:
 
 ```python
-path = f"{BASE}/{name}"
+path = f"/challenge/files/{name}"
 with open(path) as handle:
     content = handle.read()
 ```

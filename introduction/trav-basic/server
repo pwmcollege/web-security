@@ -8,17 +8,17 @@ os.chdir("/challenge")
 
 app = Flask(__name__)
 
-BASE = "."
-
 
 @app.route("/")
 def index():
-    return render_template("index.html", root=os.getcwd())
+    return render_template("index.html", root="/challenge/files")
 
 
 @app.route("/api/files")
 def files():
-    return {"files": sorted(n for n in os.listdir(BASE) if n.endswith(".txt"))}
+    return {
+        "files": sorted(n for n in os.listdir("/challenge/files") if n.endswith(".txt"))
+    }
 
 
 @app.route("/api/file")
@@ -27,7 +27,7 @@ def file():
     if not name:
         return {"error": "No file named."}
 
-    path = f"{BASE}/{name}"
+    path = f"/challenge/files/{name}"
     try:
         with open(path) as handle:
             return {"content": handle.read()}

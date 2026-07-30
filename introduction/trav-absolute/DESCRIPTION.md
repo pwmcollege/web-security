@@ -4,7 +4,7 @@ Rewrites of `..` kept slipping through the scrubber last challenge, so this one 
 if ".." in name:
     return error
 
-path = os.path.join(BASE, name)
+path = os.path.join("/challenge/files", name)
 ```
 
 Climbing up with `..` is not the only way to point somewhere else.

@@ -1,1 +1,40 @@
-../trav-basic/.init
+#!/bin/bash
+
+find -L /challenge -type f -exec chmod 0444 {} +
+echo -e "10.0.13.37\tchallenge.internal" >>/etc/hosts
+echo -e "10.0.13.36\tcdn.internal" >>/etc/hosts
+
+# Network setup
+ip addr add 10.0.13.36/32 dev eth0
+ip addr add 10.0.13.37/32 dev eth0
+ip route del local 10.0.13.36/32
+ip route del local 10.0.13.37/32
+ip route add local 10.0.13.36/32 dev lo src 127.0.0.1
+ip route add local 10.0.13.37/32 dev lo src 127.0.0.1
+
+# Reject packets sent to 10.0.13.37 at non-privileged ports
+iptables-legacy -A INPUT -p tcp -d 10.0.13.36 --dport 1024: -j REJECT
+iptables-legacy -A INPUT -p tcp -d 10.0.13.37 --dport 1024: -j REJECT
+
+mkdir -p /challenge/files/archive
+
+for directory in /challenge/files /challenge/files/archive; do
+    for i in $(seq 1 10); do
+        text="$(/usr/games/fortune)"
+        slug="$(printf '%s' "$text" | tr '[:upper:]' '[:lower:]' | grep -oE '[a-z0-9]+' | awk 'length > 1' | head -3 | paste -sd_ -)"
+        [ -n "$slug" ] || slug="fortune_$i"
+        dest="${directory}/${slug}.txt"
+        n=2
+        while [ -e "$dest" ]; do
+            dest="${directory}/${slug}_${n}.txt"
+            n=$((n + 1))
+        done
+        printf '%s\n' "$text" >"$dest"
+    done
+done
+
+/opt/cdn/server &
+nginx -c /challenge/nginx.conf
+
+chmod 4555 /challenge/server
+/challenge/server &
