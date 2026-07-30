@@ -1,24 +1,45 @@
 #!/usr/bin/exec-suid --real -- /usr/local/bin/python -I
 
+import os
 import shlex
 import subprocess
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 
 app = Flask(__name__)
 
+os.umask(0o077)
 
-@app.route("/", methods=["GET"])
-def backup():
-    target = request.args.get("target")
-    if not target:
-        return render_template("index.html", output=None)
 
-    args = ["tar", "cf", "/tmp/backup.tar"] + shlex.split(target)
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/api/snapshot", methods=["POST"])
+def snapshot():
+    path = (request.get_json(silent=True) or {}).get("path")
+    if not path:
+        return {"error": "Enter a path to snapshot."}
+
+    try:
+        tokens = shlex.split(path)
+    except ValueError:
+        return {"error": "Could not parse that path."}
+
+    if any(os.path.realpath(token) in ("/", "/flag") for token in tokens):
+        return {"error": "That path is not allowed."}
+
+    args = ["tar", "cvf", "/tmp/backup.tar"] + tokens
     result = subprocess.run(args, capture_output=True, text=True)
-    return render_template(
-        "index.html", value=target, output=result.stdout + result.stderr
-    )
+    return {"output": result.stdout + result.stderr}
+
+
+@app.route("/api/backup")
+def backup():
+    if not os.path.exists("/tmp/backup.tar"):
+        return {"error": "No snapshot yet."}, 404
+    return send_file("/tmp/backup.tar", mimetype="application/x-tar", as_attachment=True, download_name="backup.tar")
 
 
 app.config["SERVER_NAME"] = "challenge.internal"

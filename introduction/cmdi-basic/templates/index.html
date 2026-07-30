@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="px-5 py-7">
-        <form action="/" method="get" class="flex items-stretch gap-2">
-            <input name="text" value="{{ value or '' }}" autofocus autocomplete="off"
-                   placeholder="Type something to turn into a banner"
+        <form id="banner-form" class="flex items-stretch gap-2">
+            <input id="text" autofocus autocomplete="off"
+                   placeholder="Marquee"
                    class="flex-grow rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 font-mono text-[14px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-colors focus:border-zinc-900 focus:bg-white" />
             <button type="submit"
                     class="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl bg-zinc-900 px-5 text-[14px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]">
@@ -12,15 +12,49 @@
             </button>
         </form>
 
-        {% if error %}
-            <div class="mt-5 flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-3 text-[13px] font-medium text-rose-600">
-                <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
-                {{ error }}
-            </div>
-        {% else %}
-            <div class="mt-5 overflow-x-auto rounded-2xl bg-[#303446] px-6 py-6">
-                <pre class="font-mono text-[11px] leading-[1.05] text-[#c6d0f5] whitespace-pre">{{- banner -}}</pre>
-            </div>
-        {% endif %}
+        <div id="error" class="mt-5 hidden items-center gap-2 rounded-xl bg-rose-50 px-4 py-3 text-[13px] font-medium text-rose-600">
+            <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
+            <span id="error-text"></span>
+        </div>
+
+        <div id="canvas" class="mt-5 hidden overflow-x-auto rounded-2xl bg-[#303446] px-6 py-6">
+            <pre id="banner" class="font-mono text-[11px] leading-[1.05] text-[#c6d0f5] whitespace-pre"></pre>
+        </div>
     </div>
+
+    <script>
+        const form = document.getElementById("banner-form");
+        const input = document.getElementById("text");
+        const errorBox = document.getElementById("error");
+        const errorText = document.getElementById("error-text");
+        const canvas = document.getElementById("canvas");
+        const banner = document.getElementById("banner");
+
+        async function render() {
+            const response = await fetch("/api/banner", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: input.value }),
+            });
+            const data = await response.json();
+            if (data.error) {
+                errorText.textContent = data.error;
+                errorBox.classList.remove("hidden");
+                errorBox.classList.add("flex");
+                canvas.classList.add("hidden");
+            } else {
+                banner.textContent = data.banner;
+                canvas.classList.remove("hidden");
+                errorBox.classList.add("hidden");
+                errorBox.classList.remove("flex");
+            }
+        }
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            render();
+        });
+
+        render();
+    </script>
 {% endblock %}

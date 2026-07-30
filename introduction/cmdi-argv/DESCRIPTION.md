@@ -1,7 +1,7 @@
-After all that, the developer took the advice everyone gives: do not invoke a shell at all. This challenge splits your input into arguments itself and passes the list straight to the program, with no shell in between:
+Snapshot bundles a directory into a `.tar` archive you can download. It took the advice everyone gives: do not invoke a shell at all. Your input is split into arguments and passed straight to the program, with no shell in between:
 
 ```python
-args = ["tar", "cf", "/tmp/backup.tar"] + shlex.split(target)
+args = ["tar", "cvf", "/tmp/backup.tar"] + shlex.split(target)
 subprocess.run(args)
 ```
 

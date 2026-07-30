@@ -7,17 +7,18 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET"])
-def render_banner():
-    text = request.args.get("text")
-    if not text:
-        text = "Marquee"
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/api/banner", methods=["POST"])
+def banner():
+    text = (request.get_json(silent=True) or {}).get("text") or "Marquee"
 
     command = f"figlet '{text}'"
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    return render_template(
-        "index.html", value=request.args.get("text"), banner=result.stdout + result.stderr
-    )
+    return {"banner": result.stdout + result.stderr}
 
 
 app.config["SERVER_NAME"] = "challenge.internal"
