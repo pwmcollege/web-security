@@ -2,9 +2,10 @@
 {% block content %}
     <div class="px-5 py-7">
         <form id="banner-form" class="flex items-stretch gap-2">
-            <input id="text" autofocus autocomplete="off"
-                   placeholder="Marquee"
-                   class="flex-grow rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 font-mono text-[14px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-colors focus:border-zinc-900 focus:bg-white" />
+            <textarea id="text" autofocus autocomplete="off"
+                      rows="1"
+                      placeholder="Marquee"
+                      class="flex-grow resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 font-mono text-[14px] text-zinc-900 placeholder:text-zinc-400 outline-none transition-colors focus:border-zinc-900 focus:bg-white"></textarea>
             <button type="submit"
                     class="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl bg-zinc-900 px-5 text-[14px] font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]">
                 <i data-lucide="sparkles" class="h-4 w-4"></i>
