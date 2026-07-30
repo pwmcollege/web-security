@@ -23,14 +23,14 @@ signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 @app.route("/")
 def index():
     return render_template(
-        "index.html", endpoint="reverse", trigger_label="Trigger callback"
+        "index.html", endpoint="/api/reverse", trigger_label="Trigger callback"
     )
 
 
-@app.route("/reverse", methods=["GET", "POST"])
+@app.route("/api/reverse", methods=["POST"])
 def spawn_challenge_shell():
     if os.fork() != 0:
-        return "", 204
+        return {}
 
     os.setsid()
     try:
@@ -48,7 +48,7 @@ def set_winsize(fd, rows, cols):
     fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", rows, cols, 0, 0))
 
 
-@sock.route("/pty")
+@sock.route("/api/pty")
 def pty_socket(ws):
     pid, fd = pty.fork()
     if pid == 0:
