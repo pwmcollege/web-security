@@ -12,21 +12,28 @@ app = Flask(__name__)
 BASE = "."
 
 
-@app.route("/", methods=["GET"])
-def view():
-    filename = request.args.get("file")
-    if not filename:
-        documents = sorted(n for n in os.listdir(BASE) if n.endswith(".txt"))
-        return render_template("index.html", content=None, documents=documents)
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-    path = f"{BASE}/{urllib.parse.unquote(filename).strip('./')}"
+
+@app.route("/api/fortunes")
+def fortunes():
+    return {"fortunes": sorted(n for n in os.listdir(BASE) if n.endswith(".txt"))}
+
+
+@app.route("/api/fortune")
+def fortune():
+    name = request.args.get("name")
+    if not name:
+        return {"error": "No fortune named."}
+
+    path = f"{BASE}/{urllib.parse.unquote(name).strip('./')}"
     try:
         with open(path) as handle:
-            content = handle.read()
+            return {"content": handle.read()}
     except OSError as error:
-        return render_template("index.html", filename=filename, error=str(error))
-
-    return render_template("index.html", filename=filename, content=content)
+        return {"error": str(error)}
 
 
 app.config["SERVER_NAME"] = "challenge.internal"

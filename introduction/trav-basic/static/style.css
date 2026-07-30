@@ -1,11 +1,208 @@
-body {
-  font-family: "Inter", sans-serif;
+:root {
+    --bg: #fafafb;
+    --ink: #18181b;
+    --muted: #71717a;
+    --line: #e8e8ee;
+    --accent: #4f46e5;
+    --accent-hi: #6366f1;
+    --accent-soft: #eef2ff;
+    --sans: "Inter", system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
-button:not(:disabled),
-[role="button"]:not(:disabled),
-a[href],
-label[for],
-summary {
-  cursor: pointer;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+.stage {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 64px 20px 90px;
+    text-align: center;
+}
+
+.wordmark {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+}
+
+.wordmark .dot {
+    color: var(--accent);
+}
+
+.tagline {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* focal card */
+.reading {
+    margin: 40px auto 0;
+    perspective: 1600px;
+    width: min(64vw, 224px);
+}
+
+.card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.face.front {
+    transform: rotateY(180deg);
+}
+
+.back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    box-shadow: 0 18px 40px -16px rgba(79, 70, 229, 0.6);
+}
+
+.back::before {
+    content: "";
+    position: absolute;
+    width: 62%;
+    aspect-ratio: 1;
+    border: 1.5px solid rgba(255, 255, 255, 0.28);
+    border-radius: 50%;
+}
+
+.back-mark {
+    font-size: 34px;
+    color: #fff;
+    opacity: 0.95;
+}
+
+.front {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 18px 44px -20px rgba(24, 24, 40, 0.3);
+}
+
+.front::before {
+    content: "";
+    height: 4px;
+    background: var(--accent);
+}
+
+.front-text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    padding: 24px 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+    text-align: center;
+}
+
+.front.error::before {
+    background: #ef4444;
+}
+
+.front.error .front-text {
+    color: #dc2626;
+}
+
+/* deck */
+.divider {
+    height: 1px;
+    max-width: 320px;
+    margin: 52px auto;
+    background: var(--line);
+}
+
+.deck {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.mini {
+    cursor: pointer;
+    position: relative;
+    width: 92px;
+    height: 132px;
+    border-radius: 14px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 14px 10px;
+    box-shadow: 0 10px 22px -14px rgba(79, 70, 229, 0.7);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.mini::before {
+    content: "✦";
+    position: absolute;
+    top: 12px;
+    left: 0;
+    right: 0;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.mini:hover {
+    transform: translateY(-6px);
+    background: var(--accent-hi);
+    box-shadow: 0 18px 30px -14px rgba(79, 70, 229, 0.75);
+}
+
+.mini:active {
+    transform: translateY(-2px);
+}
+
+.mini-name {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: center;
+    color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
