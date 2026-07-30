@@ -1,100 +1,102 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="stage">
-        <h1 class="wordmark">Oracle<span class="dot">.</span></h1>
-        <p class="tagline">Turn a card to read your fortune</p>
-
-        <div class="reading">
-            <div id="card" class="card">
-                <div class="face back"><span class="back-mark">✦</span></div>
-                <div id="front" class="face front">
-                    <div id="front-text" class="front-text"></div>
+    <div class="flex flex-1 min-h-0 sm:border-x border-zinc-100">
+        <aside class="flex min-h-0 w-full flex-col border-r border-zinc-100 sm:max-w-[300px]">
+            <div class="flex shrink-0 items-center gap-2 px-4 h-[52px] border-b border-zinc-100">
+                <i data-lucide="folder" class="h-4 w-4 shrink-0 text-zinc-400"></i>
+                <code class="min-w-0 flex-1 truncate font-mono text-[13px] text-zinc-600">{{ root }}</code>
+                <span id="file-count" class="shrink-0 text-[13px] font-medium text-zinc-400"></span>
+            </div>
+            <div id="file-list" class="min-h-0 flex-1 overflow-y-auto flex flex-col gap-1 p-2"></div>
+        </aside>
+        <section class="hidden min-h-0 min-w-0 flex-1 flex-col sm:flex">
+            <div id="viewer" class="min-h-0 flex-1 overflow-y-auto">
+                <div id="empty"
+                     class="flex h-full flex-col items-center justify-center gap-3 text-center">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-50 text-zinc-300">
+                        <i data-lucide="file-text" class="h-6 w-6"></i>
+                    </div>
+                    <p class="text-[14px] text-zinc-400">Select a file to open</p>
+                </div>
+                <pre id="content"
+                     class="hidden whitespace-pre-wrap break-words px-6 py-6 font-mono text-[14px] leading-7 text-zinc-800"></pre>
+                <div id="error" class="hidden px-6 py-6">
+                    <div class="flex items-start gap-2.5 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-[13px] text-rose-600">
+                        <i data-lucide="triangle-alert" class="mt-0.5 h-4 w-4 shrink-0"></i>
+                        <span id="error-text" class="min-w-0 font-mono break-words"></span>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="divider"></div>
-        <div id="deck" class="deck"></div>
+        </section>
     </div>
-
     <script>
-        const card = document.getElementById("card");
-        const front = document.getElementById("front");
-        const frontText = document.getElementById("front-text");
-        const deck = document.getElementById("deck");
-        let shown = null;
+  const list = document.getElementById("file-list");
+  const count = document.getElementById("file-count");
+  const empty = document.getElementById("empty");
+  const content = document.getElementById("content");
+  const error = document.getElementById("error");
+  const errorText = document.getElementById("error-text");
 
-        async function fetchFortune(name) {
-            const response = await fetch("/api/fortune?name=" + encodeURIComponent(name));
-            return response.json();
-        }
+  function show(which) {
+      empty.classList.toggle("hidden", which !== "empty");
+      content.classList.toggle("hidden", which !== "content");
+      error.classList.toggle("hidden", which !== "error");
+  }
 
-        function paint(data) {
-            if (data.error) {
-                front.classList.add("error");
-                frontText.textContent = data.error;
-            } else {
-                front.classList.remove("error");
-                frontText.textContent = data.content;
-            }
-        }
+  function highlight(name) {
+      list.querySelectorAll("[data-name]").forEach((row) => {
+          const on = row.dataset.name === name;
+          row.classList.toggle("bg-zinc-100", on);
+          row.classList.toggle("hover:bg-zinc-50", !on);
+          const tile = row.querySelector("[data-tile]");
+          tile.classList.toggle("bg-zinc-900", on);
+          tile.classList.toggle("text-white", on);
+          tile.classList.toggle("bg-zinc-100", !on);
+          tile.classList.toggle("text-zinc-500", !on);
+          row.querySelector("[data-title]").classList.toggle("text-zinc-900", on);
+      });
+  }
 
-        async function reveal(name) {
-            const data = await fetchFortune(name);
-            const wasFlipped = card.classList.contains("flipped");
-            card.classList.remove("flipped");
-            history.replaceState(null, "", "?card=" + encodeURIComponent(name));
-            setTimeout(() => {
-                paint(data);
-                shown = name;
-                card.classList.add("flipped");
-            }, wasFlipped ? 450 : 40);
-        }
+  async function open(name) {
+      highlight(name);
+      history.replaceState(null, "", "?path=" + encodeURIComponent(name));
+      const data = await (
+          await fetch("/api/file?path=" + encodeURIComponent(name))
+      ).json();
+      if (data.error) {
+          errorText.textContent = data.error;
+          show("error");
+      } else {
+          content.textContent = data.content;
+          show("content");
+      }
+  }
 
-        function unreveal() {
-            card.classList.remove("flipped");
-            history.replaceState(null, "", location.pathname);
-        }
+  async function load() {
+      const names = (await (await fetch("/api/files")).json()).files;
+      count.textContent = names.length;
+      names.forEach((name) => {
+          const row = document.createElement("button");
+          row.type = "button";
+          row.dataset.name = name;
+          row.className =
+              "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-zinc-50 cursor-pointer";
+          row.innerHTML =
+              '<span data-tile class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500">' +
+              '<i data-lucide="file-text" class="h-4 w-4"></i></span>' +
+              '<span class="min-w-0 flex-1">' +
+              '<span data-title class="block truncate text-[13px] font-medium text-zinc-800"></span>' +
+              '<span class="block truncate text-[12px] text-zinc-400">Text file</span></span>';
+          row.querySelector("[data-title]").textContent = name;
+          row.addEventListener("click", () => open(name));
+          list.appendChild(row);
+      });
+      lucide.createIcons();
 
-        card.addEventListener("click", () => {
-            if (card.classList.contains("flipped")) {
-                unreveal();
-            } else if (shown) {
-                reveal(shown);
-            }
-        });
+      const requested = new URLSearchParams(location.search).get("path");
+      if (requested) open(requested);
+  }
 
-        async function load() {
-            const names = (await (await fetch("/api/fortunes")).json()).fortunes;
-            const readings = await Promise.all(names.map(fetchFortune));
-
-            names.forEach((name, i) => {
-                const mini = document.createElement("button");
-                mini.type = "button";
-                mini.className = "mini";
-                const label = document.createElement("span");
-                label.className = "mini-name";
-                label.textContent = (readings[i].content || "").split(/\s+/).filter(Boolean).slice(0, 3).join(" ");
-                mini.append(label);
-                mini.addEventListener("click", () => {
-                    if (card.classList.contains("flipped") && shown === name) {
-                        unreveal();
-                    } else {
-                        reveal(name);
-                    }
-                });
-                deck.appendChild(mini);
-            });
-
-            const requested = new URLSearchParams(location.search).get("card");
-            if (requested) {
-                reveal(requested);
-            } else if (names.length) {
-                paint(readings[0]);
-                shown = names[0];
-            }
-        }
-
-        load();
+  load();
     </script>
 {% endblock %}

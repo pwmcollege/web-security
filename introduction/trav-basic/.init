@@ -17,7 +17,16 @@ iptables-legacy -A INPUT -p tcp -d 10.0.13.36 --dport 1024: -j REJECT
 iptables-legacy -A INPUT -p tcp -d 10.0.13.37 --dport 1024: -j REJECT
 
 for i in $(seq 1 10); do
-    /usr/games/fortune >"$(printf '/challenge/fortune_%02d.txt' "$i")"
+    text="$(/usr/games/fortune)"
+    slug="$(printf '%s' "$text" | tr '[:upper:]' '[:lower:]' | grep -oE '[a-z0-9]+' | awk 'length > 1' | head -3 | paste -sd_ -)"
+    [ -n "$slug" ] || slug="fortune_$i"
+    dest="/challenge/${slug}.txt"
+    n=2
+    while [ -e "$dest" ]; do
+        dest="/challenge/${slug}_${n}.txt"
+        n=$((n + 1))
+    done
+    printf '%s\n' "$text" >"$dest"
 done
 
 /opt/cdn/server &
