@@ -17,8 +17,11 @@
                        class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none">
                         pwnpost<span class="text-zinc-300">.</span>
                     </a>
-                    <a href="/logout"
-                       class="text-[13px] font-medium text-zinc-400 hover:text-zinc-900 transition-colors">Log out</a>
+                    <button type="button"
+                            id="logout"
+                            class="cursor-pointer text-[13px] font-medium text-zinc-400 hover:text-zinc-900 transition-colors">
+                        Log out
+                    </button>
                 </div>
             </header>
         {% endif %}
@@ -27,6 +30,14 @@
         </main>
         <script>
       lucide.createIcons();
+
+      const logout = document.getElementById("logout");
+      if (logout) {
+          logout.addEventListener("click", async () => {
+              await fetch("/api/auth/logout", { method: "POST" });
+              location.href = "/login";
+          });
+      }
 
       const closeMenus = () =>
         document
