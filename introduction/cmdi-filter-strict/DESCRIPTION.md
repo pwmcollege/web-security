@@ -2,10 +2,10 @@ The last filter blocked only a few separators, so this challenge uses a much lon
 
 ```python
 BLOCKED = set(";&|<>$`(){}[]*?!#~" + "'" + '"' + "\\")
-if any(char in BLOCKED for char in path):
+if any(char in BLOCKED for char in text):
     return "blocked"
 
-command = f"ls -la {path}"
+command = f"figlet {text}"
 subprocess.run(command, shell=True)
 ```
 

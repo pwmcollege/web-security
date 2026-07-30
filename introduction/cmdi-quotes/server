@@ -8,15 +8,15 @@ app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"])
-def list_dir():
-    path = request.args.get("path")
-    if not path:
-        return render_template("index.html", output=None)
+def render_banner():
+    text = request.args.get("text")
+    if not text:
+        text = "Marquee"
 
-    command = f"ls -la '{path}'"
+    command = f"figlet '{text}'"
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return render_template(
-        "index.html", value=path, output=result.stdout + result.stderr
+        "index.html", value=request.args.get("text"), banner=result.stdout + result.stderr
     )
 
 

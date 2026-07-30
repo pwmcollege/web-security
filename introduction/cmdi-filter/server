@@ -10,18 +10,16 @@ BLOCKED = [";", "&", "|"]
 
 
 @app.route("/", methods=["GET"])
-def list_dir():
-    path = request.args.get("path")
-    if not path:
-        return render_template("index.html", output=None)
+def render_banner():
+    text = request.args.get("text")
 
-    if any(token in path for token in BLOCKED):
-        return render_template("index.html", value=path, error="Nice try.")
+    if text and any(token in text for token in BLOCKED):
+        return render_template("index.html", value=text, error="Text contains invalid characters.")
 
-    command = f"ls -la {path}"
+    command = f"figlet {text or 'Marquee'}"
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return render_template(
-        "index.html", value=path, output=result.stdout + result.stderr
+        "index.html", value=text, banner=result.stdout + result.stderr
     )
 
 
