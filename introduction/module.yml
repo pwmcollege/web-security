@@ -104,20 +104,6 @@ resources:
       - name: Desktop
         port: 6080
       - name: SSH
-  - id: cmdi-argv
-    name: Argument Settled
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
   - type: header
     content: Path Traversal
   - id: trav-basic
