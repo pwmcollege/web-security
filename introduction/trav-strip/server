@@ -14,19 +14,19 @@ BASE = "."
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", root=os.getcwd())
 
 
-@app.route("/api/fortunes")
-def fortunes():
-    return {"fortunes": sorted(n for n in os.listdir(BASE) if n.endswith(".txt"))}
+@app.route("/api/files")
+def files():
+    return {"files": sorted(n for n in os.listdir(BASE) if n.endswith(".txt"))}
 
 
-@app.route("/api/fortune")
-def fortune():
-    name = request.args.get("name")
+@app.route("/api/file")
+def file():
+    name = request.args.get("path")
     if not name:
-        return {"error": "No fortune named."}
+        return {"error": "No file named."}
 
     path = f"{BASE}/{urllib.parse.unquote(name).strip('./')}"
     try:
