@@ -60,68 +60,76 @@ db.execute(
 )
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
+@app.route("/login")
+def login_page():
     if session.get("username"):
         return redirect("/")
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if not username or not password:
-            flash("Identity credentials required")
-            return redirect("/login")
-
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ?",
-            (username,),
-        ).fetchone()
-
-        if not user or not check_password_hash(user["password"], password):
-            flash("Access denied: Invalid credentials")
-            return redirect("/login")
-
-        session["username"] = username
-        return redirect("/")
-
     return render_template("login.html")
 
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
+@app.route("/api/auth/login", methods=["POST"])
+def api_login():
     if session.get("username"):
         return redirect("/")
 
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+    username = request.form.get("username")
+    password = request.form.get("password")
 
-        if not username or not password:
-            flash("Identity credentials required")
-            return redirect("/register")
-
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ?",
-            (username,),
-        ).fetchone()
-
-        if user:
-            flash("Username already taken")
-            return redirect("/register")
-
-        db.execute(
-            "INSERT INTO users (username, password) VALUES (?, ?)",
-            (username, generate_password_hash(password)),
-        )
-
-        flash("Account created! Please log in.")
+    if not username or not password:
+        flash("Identity credentials required")
         return redirect("/login")
 
+    user = db.execute(
+        "SELECT * FROM users WHERE username = ?",
+        (username,),
+    ).fetchone()
+
+    if not user or not check_password_hash(user["password"], password):
+        flash("Access denied: Invalid credentials")
+        return redirect("/login")
+
+    session["username"] = username
+    return redirect("/")
+
+
+@app.route("/register")
+def register_page():
+    if session.get("username"):
+        return redirect("/")
     return render_template("register.html")
 
 
-@app.route("/draft", methods=["POST"])
+@app.route("/api/auth/register", methods=["POST"])
+def api_register():
+    if session.get("username"):
+        return redirect("/")
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    if not username or not password:
+        flash("Identity credentials required")
+        return redirect("/register")
+
+    user = db.execute(
+        "SELECT * FROM users WHERE username = ?",
+        (username,),
+    ).fetchone()
+
+    if user:
+        flash("Username already taken")
+        return redirect("/register")
+
+    db.execute(
+        "INSERT INTO users (username, password) VALUES (?, ?)",
+        (username, generate_password_hash(password)),
+    )
+
+    flash("Account created! Please log in.")
+    return redirect("/login")
+
+
+@app.route("/api/posts", methods=["POST"])
 def draft():
     username = session.get("username", None)
     if not username:
@@ -138,7 +146,7 @@ def draft():
     return redirect("/")
 
 
-@app.route("/publish", methods=["POST"])
+@app.route("/api/posts/publish", methods=["POST"])
 def publish():
     username = session.get("username", None)
     if not username:
@@ -159,7 +167,7 @@ def publish():
     return redirect("/")
 
 
-@app.route("/upload", methods=["POST"])
+@app.route("/api/avatar", methods=["POST"])
 def upload():
     username = session.get("username")
     if not username or username == "admin":
@@ -183,7 +191,7 @@ def upload():
     return redirect("/")
 
 
-@app.route("/avatar/<username>")
+@app.route("/api/avatar/<username>")
 def serve_avatar(username):
     for ext in [".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp"]:
         path = os.path.join(UPLOAD_DIR, username + ext)
@@ -203,8 +211,8 @@ def index():
     return render_template("index.html", username=username, posts=posts)
 
 
-@app.route("/logout")
-def logout():
+@app.route("/api/auth/logout", methods=["POST"])
+def api_logout():
     session.clear()
     return redirect("/")
 

@@ -31,7 +31,7 @@ if __name__ == "__main__":
         driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 
         print("Viewing hacker avatar...")
-        driver.get("https://challenge.internal/avatar/hacker")
+        driver.get("https://challenge.internal/api/avatar/hacker")
 
         time.sleep(2)
         print("Admin viewed the avatar. Check if your payload worked.")
