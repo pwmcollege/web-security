@@ -8,6 +8,21 @@
                 <span id="file-count" class="shrink-0 text-[13px] font-medium text-zinc-400"></span>
             </div>
             <div id="file-list" class="min-h-0 flex-1 overflow-y-auto flex flex-col gap-1 p-2"></div>
+            <form id="open-form" class="shrink-0 border-t border-zinc-100 p-2">
+                <div class="flex items-center gap-2 rounded-xl px-3 py-2 transition-colors focus-within:bg-zinc-50">
+                    <i data-lucide="corner-down-right" class="h-4 w-4 shrink-0 text-zinc-400"></i>
+                    <input name="path"
+                           autocomplete="off"
+                           spellcheck="false"
+                           placeholder="Open a path…"
+                           class="min-w-0 flex-1 bg-transparent font-mono text-[13px] text-zinc-800 placeholder:text-zinc-400 outline-none" />
+                    <button type="submit"
+                            aria-label="Open"
+                            class="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white">
+                        <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                    </button>
+                </div>
+            </form>
         </aside>
         <section class="hidden min-h-0 min-w-0 flex-1 flex-col sm:flex">
             <div id="viewer" class="min-h-0 flex-1 overflow-y-auto">
@@ -96,6 +111,13 @@
       const requested = new URLSearchParams(location.search).get("path");
       if (requested) open(requested);
   }
+
+  const openForm = document.getElementById("open-form");
+  openForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const value = openForm.elements.path.value.trim();
+      if (value) open(value);
+  });
 
   load();
     </script>
