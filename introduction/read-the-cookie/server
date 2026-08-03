@@ -1,0 +1,36 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+
+import uuid
+
+from flask import Flask, make_response, render_template, request
+
+app = Flask(__name__)
+
+SESSION = str(uuid.uuid4())
+
+
+@app.route("/")
+def index():
+    response = make_response(render_template("index.html"))
+    response.set_cookie("session", SESSION)
+    return response
+
+
+@app.route("/api/flag")
+def flag():
+    if request.args.get("key") != SESSION:
+        return {"error": "Wrong key."}
+
+    with open("/flag") as handle:
+        return {"flag": handle.read().strip()}
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
