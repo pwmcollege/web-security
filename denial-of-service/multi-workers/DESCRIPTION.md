@@ -1,5 +1,5 @@
-The obvious fix for a busy server is more workers, so this one runs **32 of them**, each its own process, handling requests in parallel.
+One worker was easy to jam, so this service runs thirty-two of them, each its own process, all answering requests in parallel.
 
-But each worker is still **synchronous**: one request at a time, start to finish. More lanes don't help if every lane is single-file.
+It buys less than it looks. Every worker is still synchronous: one request, start to finish, before it takes another. Thirty-two lanes are still thirty-two, and each one ties up the same way the single worker did last time.
 
-Same goal as before: knock the server offline.
+Same goal. Just more of them to keep busy at once.
