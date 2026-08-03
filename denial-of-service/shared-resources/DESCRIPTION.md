@@ -1,7 +1,5 @@
-Every challenge before this one gave you a way to talk to the server. This one doesn't.
+Every challenge before this one let you talk to the service. This one cuts you off: anything your user sends toward `victim.internal` is dropped before it leaves the box. No slow request, no oversized body, no header to drip. The network path to it is closed.
 
-The server is up. The watchdog can reach it. You can't. Your traffic on port 443 is dropped before it ever leaves your shell. There is no payload to send, no body to oversize, no header to drip. The HTTP attack surface is closed to you.
+But you're still on the same machine it is. Same CPU, same memory, same disk, same kernel, and you can run whatever you like as your own user. The service doesn't need you to reach it over the network to feel you.
 
-But you and the server are still **roommates**. You share the same CPU, the same memory, the same disk, the same kernel. You can run whatever you want as your own user.
-
-You don't need to attack the service. You need to be a bad neighbor.
+Starve the box and you starve the service with it. Make `/health` miss enough checks in a row and you win.

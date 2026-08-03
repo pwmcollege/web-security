@@ -1,5 +1,5 @@
-A [Denial of Service](https://en.wikipedia.org/wiki/Denial-of-service_attack) attack doesn't always need a flood of traffic. Sometimes one well-placed request is enough to keep a server from doing anything else.
+`victim.internal` runs on a single worker with a single thread. It holds exactly one request at a time and won't look at the next until the current one is finished.
 
-In this challenge, the server runs **one worker with one thread**. While that worker is busy with a request, no one else gets in.
+The status page checks on it every second by asking for `/health`, and that check waits in the same line as everything else. So you don't have to flood this server. You just have to be the request it's still stuck on when the check comes around, and keep being it.
 
-Your goal is to keep the server from responding to its own watchdog.
+Tie it up for a few checks in a row and the page marks it down.
