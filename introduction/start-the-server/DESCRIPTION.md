@@ -1,19 +1,17 @@
-Welcome to the dojo. Before you break anything, get a feel for where you're standing.
+Welcome to web security. Before you attack anything, get to know the ground you're standing on, because you have an advantage here that you won't get in the real world.
 
-Every challenge here runs inside a container that you have a shell in too. That's not how the real world works, and that's exactly the point: for once you get to see the target from both sides. From in here, the web app is just a program on disk. Its source sits at `/challenge/server`, it shows up in `ps`, and it reads files your own account can't touch.
+Every challenge runs inside a container, and you have a shell inside that same container. The web app isn't a distant black box, it's a local program: you can read its source at `/challenge/server`, find it in `ps`, and watch it open files your own user can't.
 
-Nothing's running yet, though. Start it:
+It isn't running yet. Start it like any other challenge:
 
 ```bash
 /challenge/server
 ```
 
-It'll hold that terminal for as long as it's up, so leave it alone and open a second one:
+It stays in the foreground while it runs, so open a second terminal to talk to it:
 
 ```bash
 curl -k https://challenge.internal
 ```
 
-The `-k` tells curl to stop fretting about the challenge's self-signed certificate. The flag's on the page that comes back.
-
-There's no proxy in front of the server this time, so the [Challenge](https://pwn.college/workspace/80) interface won't reach it. If you'd rather use a real browser, there's one waiting in the [Desktop workspace](https://pwn.college/workspace/desktop).
+The `-k` lets curl accept the challenge's self-signed certificate. The flag is on the page it returns. There's no proxy in front of this one, so the [Challenge](https://pwn.college/workspace/80) interface can't reach it. If you'd rather use a browser, there's one in the [Desktop workspace](https://pwn.college/workspace/desktop).

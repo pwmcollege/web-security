@@ -1,13 +1,5 @@
-Some characters are data. Some characters are delimiters.
+A URL parser sorts every byte into one of two piles: content, or punctuation. `&` marks the end of one parameter, `=` divides a name from its value, and the moment the parser spots one it splits the string right there, whether or not that's what you meant.
 
-When parsers see characters like `&` and `=`, they often split parameters instead of keeping them inside your payload. Reliable exploitation means controlling when special characters are interpreted and when they are preserved.
+That's fine until the value you actually need to deliver is built out of those very bytes. Send them raw and your input gets sliced apart before the server ever sees it whole.
 
----
-
-### Challenge Environment
-
-In this challenge, the server is automatically started; you can access the website at: `https://challenge.internal`
-
-The server is listening for a request at `https://challenge.internal` endpoint accepting `payload` argument.
-
-Read the server's source code at `/challenge/server`, preserve delimiter bytes inside `payload`, and retrieve the flag.
+The server is already up, and it reads a `payload` argument. Check `/challenge/server` to see what it expects. Your job is to smuggle your delimiter bytes all the way into `payload` without the parser prying them loose along the way.

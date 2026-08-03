@@ -1,11 +1,9 @@
-Load the page and the server quietly hands your browser a `session` cookie, then waits for you to give that value back before it'll part with the flag. The page won't show it to you.
+When you load the page, the server sets a `session` cookie in your browser, and it won't hand over the flag until you send that value back. It never shows the value on the page.
 
-Your browser will, though. It's been holding the thing the whole time.
-
-Open the app at the [Challenge](https://pwn.college/workspace/80) interface and hit F12. Cookies live under Application in Chrome, Storage in Firefox. It is not `HttpOnly`, so the console works too:
+Your browser has it, though. Open devtools with F12 and look: cookies are under Application in Chrome, Storage in Firefox. The cookie isn't `HttpOnly`, so the console can read it too:
 
 ```js
 document.cookie
 ```
 
-Paste it into the box and collect your flag.
+Send that value back through the page to get the flag.

@@ -1,13 +1,5 @@
-Now that we learned about reverse shell, understanding bind shells is equally important for your foundational knowledge.
+A bind shell works the opposite way. The target opens a port and waits, and you connect to it.
 
-For `bind shell`, instead of having the target reach out to you, you connect to a listening port on the target machine.
+That needs an open path from you to the target, which is the thing you usually don't have. So it's situational: useful when you're already inside the network, or when it's the outbound connections being watched and the inbound ones slip by.
 
-This technique has its place in specific scenarios, perhaps you're already inside a trusted network where firewalls aren't blocking internal connections, or you're working in an environment where outbound connections are heavily monitored but internal traffic flows freely.
-
----
-
-### Challenge Environment
-
-In this challenge, the server is automatically started; you can access the website at: `https://challenge.internal`
-
-The server is listening for a request at `https://challenge.internal/bind` endpoint in order to bind and start a shell at `localhost` on port `1337`.
+The server is already up. Hit its `/bind` endpoint and it opens a shell on `localhost` port `1337`. Connect to it and grab the flag.

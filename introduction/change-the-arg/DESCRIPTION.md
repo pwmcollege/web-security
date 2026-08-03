@@ -1,7 +1,9 @@
-The page hands you a key and stays locked. There's no form and no button, so there's nothing on it you can submit that key with.
+The page gives you a key and stays locked. There's no form and no button, so there's nothing on the page you can submit it with.
 
-Put it in the URL instead. Everything after the `?` in an address is a parameter for the server, and you type it yourself:
+So don't use the page. Put the key in the URL, where everything after the `?` is a parameter you set yourself:
 
 ```
 ?key=<the key shown on the page>
 ```
+
+The dojo serves this app under a path prefix, so add the parameter onto what's already in the address bar instead of replacing it. Load it, and the page unlocks.
