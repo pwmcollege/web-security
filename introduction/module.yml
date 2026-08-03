@@ -30,10 +30,10 @@ resources:
     type: challenge
     privileged: true
     interfaces:
-      - name: Terminal
-        port: 7681
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
       - name: Desktop
         port: 6080
       - name: Code
@@ -44,10 +44,10 @@ resources:
     type: challenge
     privileged: true
     interfaces:
-      - name: Terminal
-        port: 7681
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
       - name: Desktop
         port: 6080
       - name: Code
@@ -58,10 +58,10 @@ resources:
     type: challenge
     privileged: true
     interfaces:
-      - name: Terminal
-        port: 7681
       - name: Challenge
         port: 80
+      - name: Terminal
+        port: 7681
       - name: Desktop
         port: 6080
       - name: Code
