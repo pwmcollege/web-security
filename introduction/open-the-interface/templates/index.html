@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vantage</title>
+        <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body class="min-h-full bg-white text-zinc-900 font-sans antialiased flex flex-col">
+        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100">
+            <div class="mx-auto max-w-[720px] h-[60px] px-5 flex items-center">
+                <div class="text-[19px] font-extrabold tracking-tight text-zinc-900">
+                    Vantage<span class="text-zinc-300">.</span>
+                </div>
+            </div>
+        </header>
+        <main class="w-full mx-auto max-w-[720px] px-5 py-8 flex flex-col gap-7">
+            <section class="flex flex-col gap-2.5">
+                <h2 class="text-[13px] font-semibold tracking-tight text-zinc-900">From your browser</h2>
+                <dl class="rounded-xl border border-zinc-200 shadow-sm divide-y divide-zinc-100">
+                    <div class="flex items-baseline gap-4 px-4 py-3">
+                        <dt class="w-40 shrink-0 text-[13px] text-zinc-500">Request host</dt>
+                        <dd class="min-w-0 flex-1 font-mono text-[13px] break-words">{{ host }}</dd>
+                    </div>
+                    <div class="flex items-baseline gap-4 px-4 py-3">
+                        <dt class="w-40 shrink-0 text-[13px] text-zinc-500">Request path</dt>
+                        <dd class="min-w-0 flex-1 font-mono text-[13px] break-words">{{ path }}</dd>
+                    </div>
+                    <div class="flex items-baseline gap-4 px-4 py-3">
+                        <dt class="w-40 shrink-0 text-[13px] text-zinc-500">Client address</dt>
+                        <dd class="min-w-0 flex-1 font-mono text-[13px] break-words">{{ client }}</dd>
+                    </div>
+                    <div class="flex items-baseline gap-4 px-4 py-3">
+                        <dt class="w-40 shrink-0 text-[13px] text-zinc-500">Forwarded for</dt>
+                        <dd class="min-w-0 flex-1 font-mono text-[13px] break-words">{{ forwarded }}</dd>
+                    </div>
+                    <div class="flex items-baseline gap-4 px-4 py-3">
+                        <dt class="w-40 shrink-0 text-[13px] text-zinc-500">User agent</dt>
+                        <dd class="min-w-0 flex-1 font-mono text-[13px] break-words">{{ agent }}</dd>
+                    </div>
+                </dl>
+            </section>
+            <section class="flex flex-col gap-2.5">
+                <h2 class="text-[13px] font-semibold tracking-tight text-zinc-900">Flag</h2>
+                <div class="rounded-xl border border-zinc-200 shadow-sm px-4 py-3 font-mono text-[13px] break-words">
+                    {{ flag }}
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+
+@app.route("/")
+def index():
+    with open("/flag") as handle:
+        flag = handle.read().strip()
+
+    return render_template(
+        "index.html",
+        host=request.host,
+        path=request.full_path,
+        client=request.remote_addr,
+        forwarded=request.headers.get("X-Forwarded-For", "none"),
+        agent=request.headers.get("User-Agent", "none"),
+        flag=flag,
+    )
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
