@@ -1,0 +1,34 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+
+import os
+import pwd
+import socket
+
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+
+@app.route("/")
+def index():
+    with open("/flag") as handle:
+        flag = handle.read().strip()
+
+    return render_template(
+        "index.html",
+        process=f"{pwd.getpwuid(os.geteuid()).pw_name} (pid {os.getpid()})",
+        cwd=os.getcwd(),
+        hostname=socket.gethostname(),
+        flag=flag,
+    )
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
