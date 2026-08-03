@@ -12,7 +12,7 @@ def index():
 
 @app.route("/api/flag")
 def flag():
-    if request.args.get("key") != "4f2a9c7e15b83d60":
+    if request.args.get("key") != "REPLACE_ME":
         return {"error": "Wrong key."}
 
     with open("/flag") as handle:
