@@ -6,6 +6,68 @@ resources:
     playlist: PL-ymxv0nOtqrvXLSALV5SQ5v3oyKY4DWg
     slides: 1ATO_U0aUlk2LRhlnIwdqTkDfu-lWRb5xoLDv0NQLPs8
   - type: header
+    content: Environment
+  - id: start-the-server
+    name: Cold Start
+    type: challenge
+    privileged: true
+  - id: open-the-interface
+    name: Out of the Box
+    type: challenge
+    privileged: true
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
+  - id: read-the-source
+    name: Hardcoded
+    type: challenge
+    privileged: true
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
+  - id: read-the-cookie
+    name: Crumb Trail
+    type: challenge
+    privileged: true
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
+  - id: change-the-arg
+    name: Mind the Query
+    type: challenge
+    privileged: true
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
+  - type: header
     content: Shell
   - name: Other Resources
     type: markdown
