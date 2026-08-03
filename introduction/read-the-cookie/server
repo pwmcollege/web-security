@@ -6,19 +6,19 @@ from flask import Flask, make_response, render_template, request
 
 app = Flask(__name__)
 
-SESSION = str(uuid.uuid4())
+KEY = str(uuid.uuid4())
 
 
 @app.route("/")
 def index():
     response = make_response(render_template("index.html"))
-    response.set_cookie("session", SESSION)
+    response.set_cookie("key", KEY)
     return response
 
 
 @app.route("/api/flag")
 def flag():
-    if request.args.get("key") != SESSION:
+    if request.args.get("key") != KEY:
         return {"error": "Wrong key."}
 
     with open("/flag") as handle:
