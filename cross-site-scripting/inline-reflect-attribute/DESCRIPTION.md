@@ -1,9 +1,3 @@
-The spot where your input shows up decides how you attack it. In the last challenge it went straight into the page body, so any tags you wrote worked right away. In this challenge it goes inside an HTML [attribute value](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes) instead, as the `value` of an input box:
+Where your input lands in the page decides how you break out. Last level it dropped into the page body, wide open, and any tag you wrote just worked. This time it lands inside an attribute, sitting as the `value` of an input box, wrapped in quotes. Stuck between those quotes, your text is only ever data; write a tag and the browser shrugs and shows it as text.
 
-```html
-<input value="<payload>" />
-```
-
-As long as your text stays between those quotes, the browser reads it as plain data, not as a tag. To run anything, you first need to get out of the attribute. Add a `"` to end the value, close the tag, and everything after that is read as fresh HTML. This is a good example of why escaping has to match the context. One quote that should have been escaped is all it takes.
-
-Break out of the attribute and run JavaScript that steals the victim's [cookie](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie).
+So before anything of yours can run, you have to get out of the attribute. The escaping that would have saved the developer in the page body doesn't fit here, and the one character that should have kept you boxed in is going through unescaped. There's your way out.

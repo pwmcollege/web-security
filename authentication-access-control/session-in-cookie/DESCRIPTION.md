@@ -1,7 +1,1 @@
-Same idea as the last challenge, moved out of the address bar. This time Mail sets your username as a cookie when you log in and reads it back on every request:
-
-```
-session=hacker
-```
-
-Naming a cookie `session` doesn't make it one. A real session cookie holds a random token, or signed data the server can verify. This one holds your username in plain text, and the browser sends whatever you put in it.
+Same idea as the last challenge, moved out of the address bar. This time Mail sets your username as a cookie when you log in, a `session` cookie holding the name itself, and reads it back on every request. Naming a cookie `session` doesn't make it one. A real session cookie holds a random token, or signed data the server can verify. This one holds your username in plain text, and the browser sends whatever you put in it.

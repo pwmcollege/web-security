@@ -1,13 +1,3 @@
-Getting an [alert()](https://developer.mozilla.org/en-US/docs/Web/API/Window/alert) to pop is a nice proof that your input runs as code, but on its own it does not do much. What makes XSS dangerous is that your script runs with the same access as the victim who loaded the page. It sits on the same [origin](https://developer.mozilla.org/en-US/docs/Glossary/Origin), it can read the same page, and it shares the victim's logged-in session.
+An alert is a fun party trick, but on its own it doesn't hurt anyone. What makes XSS dangerous is what your code gets to be once it runs: it lives on the page's origin, with the victim's access, seeing everything they see, their logged-in session included.
 
-A common target for that access is the [session cookie](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie). As long as a cookie is not marked [`HttpOnly`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies#restrict_access_to_cookies), JavaScript on the page can read it through `document.cookie`. If an attacker gets that cookie, they can often log in as the victim.
-
-In this challenge your input is written back into the page's HTML without being escaped, so the browser treats it as markup:
-
-```html
-<div class="message">
-    <payload>
-</div>
-```
-
-Use that to run JavaScript that reads the victim's cookie and sends it back to you.
+So this time you've got a real target. When the victim opens your link, their browser is carrying a `flag` cookie for this origin, and whoever set it forgot to mark it `HttpOnly`, so JavaScript on the page can read it straight off `document.cookie`. Your message still drops into the page unescaped, same as the last level.

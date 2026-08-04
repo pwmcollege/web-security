@@ -1,11 +1,3 @@
-In this challenge your input does not go into HTML. It goes into JavaScript. The page puts your message inside an existing [`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script) block, as a value assigned to a variable in double quotes:
+This time your input doesn't touch the HTML at all. It's dropped into JavaScript, tucked inside a double-quoted string that the page assigns to a variable in a script block that's already there, nonce and all.
 
-```html
-<script nonce="...">
-  const message = "<payload>";
-</script>
-```
-
-Since you are already inside a string, the browser never reads your text as a tag, and a [nonce](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src#nonce-base64-value) in the CSP stops you from adding your own `<script>`. But the code around your input is run by the JavaScript engine. If you end the string early with a `"`, whatever you write after it is read as code instead of text.
-
-Break out of the string and run your own JavaScript inside the script block.
+Being inside the quotes, the browser never mistakes your text for a tag, and the CSP nonce means you can't just add a script of your own. But here's the thing: the engine is already running the code all around you, and a string only stays a string until it ends. It ends the moment a matching quote says so.

@@ -1,21 +1,7 @@
-Sometimes you can run code and even reach the secret, but you have no direct way to send it anywhere. There is no server of your own to reach, and no log to read back. Even then, data can still escape through a [side channel](https://en.wikipedia.org/wiki/Side-channel_attack). A side channel leaks information through a side effect instead of sending the data directly.
+Sometimes you can run your code, you can even reach the secret, and there's still nowhere to send it. No server of your own, and this time no friendly log to read back either. Even then the secret can leak, through a [side channel](https://en.wikipedia.org/wiki/Side-channel_attack): some side effect that shifts depending on the secret, watched from outside.
 
-Your input is reflected into the page's HTML with no escaping, so running code is not the hard part:
-
-```html
-<div class="message">
-    <payload>
-</div>
-```
-
-The hard part is getting the secret back out. [Timing](https://en.wikipedia.org/wiki/Timing_attack) is the most common way to do it. Suppose you can make the victim's browser do something slow, but only when a guess about the secret is correct. Now the delay itself tells you something. Slow means your guess was right, fast means it was wrong. Guess one character at a time, watch how long it takes, and you can rebuild the whole flag without ever sending it.
-
-Leak the flag one guess at a time.
+The reflection is unescaped, so running code is the easy part, same as always. The trouble is reading something you can't transmit. Timing is the old reliable here. Make the victim's browser do something slow, but only when a guess about the flag is right, and the delay itself starts talking: slow means yes, fast means no.
 
 ---
 
-### Challenge Environment
-
-The server and the victim are isolated inside an air-gapped network namespace. The victim cannot reach any external URL or service, so the only destination it can talk to is the server itself.
-
-To debug in practice mode, run the server with `sudo` and the logs come back.
+To debug this one in practice mode, start the server with `sudo` and the log comes back.
