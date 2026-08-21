@@ -17,34 +17,30 @@ from flask_sock import Sock
 app = Flask(__name__)
 sock = Sock(app)
 
-signal.signal(signal.SIGCHLD, signal.SIG_IGN)
-
 
 @app.route("/")
 def index():
-    return render_template(
-        "index.html", endpoint="/api/bind", trigger_label="Open bind port"
-    )
+    return render_template("index.html")
 
 
-@app.route("/api/bind", methods=["POST"])
-def spawn_challenge_shell():
-    if os.fork() != 0:
-        return {}
-
-    os.setsid()
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind(("127.0.0.1", 1337))
-        s.listen(1)
+def serve():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind(("127.0.0.1", 1337))
+    s.listen(1)
+    while True:
         conn, _ = s.accept()
-        for fd in (0, 1, 2):
-            os.dup2(conn.fileno(), fd)
-        os.execvp("/bin/bash", ["/bin/bash", "--noediting", "-i"])
-    except Exception:
-        pass
-    os._exit(1)
+        pid = os.fork()
+        if pid == 0:
+            os.setsid()
+            s.close()
+            for fd in (0, 1, 2):
+                os.dup2(conn.fileno(), fd)
+            os.closerange(3, 64)
+            os.execvp("/bin/bash", ["/bin/bash", "--noediting", "-i"])
+            os._exit(1)
+        conn.close()
+        os.waitpid(pid, 0)
 
 
 def set_winsize(fd, rows, cols):
@@ -116,10 +112,16 @@ def pty_socket(ws):
         except OSError:
             pass
         try:
+            os.waitpid(pid, 0)
+        except OSError:
+            pass
+        try:
             os.close(fd)
         except OSError:
             pass
 
+
+threading.Thread(target=serve, daemon=True).start()
 
 app.config["SERVER_NAME"] = "challenge.internal"
 app.run(

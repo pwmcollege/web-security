@@ -3,67 +3,56 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Tether</title>
+        <title>Shell</title>
         <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
-        <script src="https://cdn.internal/lucide/lucide.min.js"></script>
         <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
         <link rel="stylesheet" href="https://cdn.internal/xterm/xterm.css" />
         <link rel="stylesheet" href="/static/style.css" />
     </head>
     <body class="h-dvh overflow-hidden bg-white text-zinc-900 font-sans antialiased flex flex-col">
-        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100">
-            <div class="mx-auto max-w-[720px] h-[60px] px-5 flex items-center">
-                <span class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none">
-                    Tether<span class="text-zinc-300">.</span>
+        <header class="shrink-0 border-b border-zinc-100 bg-white">
+            <div class="mx-auto max-w-[900px] h-[56px] px-5 flex items-center">
+                <span class="text-[18px] font-extrabold tracking-tight text-zinc-900 select-none">
+                    Shell<span class="text-zinc-300">.</span>
                 </span>
             </div>
         </header>
-        <main class="flex-1 min-h-0 w-full mx-auto max-w-[720px] px-5 py-8 flex flex-col">
-            <div class="mb-4 flex items-center justify-between gap-4">
-                <h1 class="text-[15px] font-semibold tracking-tight text-zinc-900">Shell</h1>
-                <button id="trigger"
-                        class="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3.5 py-2 text-[13px] font-semibold text-white transition-colors cursor-pointer hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50">
-                    <i data-lucide="zap" class="w-4 h-4"></i>
-                    <span id="trigger-label">{{ trigger_label }}</span>
-                </button>
-            </div>
-            <div class="flex-1 min-h-0 overflow-hidden rounded-xl border border-zinc-200 bg-[#303446] p-3 shadow-sm">
+        <main class="flex-1 min-h-0 w-full mx-auto max-w-[900px] flex flex-col sm:border-x border-zinc-100">
+            <div class="flex-1 min-h-0 bg-[#09090b] px-4 py-3">
                 <div id="term" class="h-full"></div>
             </div>
         </main>
         <script src="https://cdn.internal/xterm/xterm.js"></script>
         <script src="https://cdn.internal/xterm/xterm-addon-fit.js"></script>
         <script>
-      lucide.createIcons();
-
       const term = new Terminal({
         fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
         fontSize: 13,
         lineHeight: 1.35,
         cursorBlink: true,
         theme: {
-          background: "#303446",
-          foreground: "#c6d0f5",
-          cursor: "#f2d5cf",
-          cursorAccent: "#303446",
-          selectionBackground: "#626880",
-          selectionForeground: "#c6d0f5",
-          black: "#51576d",
-          brightBlack: "#626880",
-          red: "#e78284",
-          brightRed: "#e67172",
-          green: "#a6d189",
-          brightGreen: "#8ec772",
-          yellow: "#e5c890",
-          brightYellow: "#d9ba73",
-          blue: "#8caaee",
-          brightBlue: "#7b9ef0",
-          magenta: "#f4b8e4",
-          brightMagenta: "#f2a4db",
-          cyan: "#81c8be",
-          brightCyan: "#5abfb5",
-          white: "#a5adce",
-          brightWhite: "#b5bfe2",
+          background: "#09090b",
+          foreground: "#e4e4e7",
+          cursor: "#e4e4e7",
+          cursorAccent: "#09090b",
+          selectionBackground: "#3f3f46",
+          selectionForeground: "#fafafa",
+          black: "#18181b",
+          brightBlack: "#3f3f46",
+          red: "#f87171",
+          brightRed: "#fca5a5",
+          green: "#4ade80",
+          brightGreen: "#86efac",
+          yellow: "#fbbf24",
+          brightYellow: "#fde68a",
+          blue: "#60a5fa",
+          brightBlue: "#93c5fd",
+          magenta: "#c084fc",
+          brightMagenta: "#d8b4fe",
+          cyan: "#22d3ee",
+          brightCyan: "#67e8f9",
+          white: "#e4e4e7",
+          brightWhite: "#fafafa",
         },
       });
       const fit = new FitAddon.FitAddon();
@@ -115,21 +104,6 @@
       window.addEventListener("resize", () => {
         fit.fit();
         sendResize();
-      });
-
-      const btn = document.getElementById("trigger");
-      const btnLabel = document.getElementById("trigger-label");
-      const original = btnLabel.textContent;
-      btn.addEventListener("click", async () => {
-        btn.disabled = true;
-        btnLabel.textContent = "Triggered";
-        try {
-          await fetch("{{ endpoint }}", { method: "POST" });
-        } catch (e) {}
-        setTimeout(() => {
-          btn.disabled = false;
-          btnLabel.textContent = original;
-        }, 1500);
       });
         </script>
     </body>
