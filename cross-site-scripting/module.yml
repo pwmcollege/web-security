@@ -6,46 +6,176 @@ resources:
   - id: inline-reflect-alert
     name: First Reflection
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: inline-reflect-cookie
     name: Cookie Thief
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: inline-reflect-attribute
     name: Escaping the Quotes
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: reflect-script-src
     name: Trusted Sources
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: reflect-script
     name: Out of the String
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: reflect-script-literal
     name: Backtick Breakout
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: reflect-log
     name: Caught in the Log
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: reflect-side-channel
     name: Leaking on the Clock
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - type: header
     content: Stored XSS
   - id: stored-post
     name: The Poisoned Post
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: stored-keylogger
     name: Every Keystroke
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: stored-svg
     name: Script in the Picture
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - type: header
     content: DOM XSS
   - id: dom-hash
     name: Hash to HTML
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: dom-query
     name: Query to HTML
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - type: header
     content: Mutation XSS
   - name: Other Resources
@@ -54,38 +184,158 @@ resources:
   - id: mxss-table
     name: Parser Disagreement
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: mxss-namespace
     name: Namespace Confusion
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - type: header
     content: Filters
   - id: filter-encoding
     name: Past the Blocklist
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-style
     name: Style Stripped
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-animation
     name: Frozen Frames
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-stylesheet
     name: No Stylesheets
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-shadow
     name: Shadows Blocked
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-dom
     name: DOM Locked Down
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-apis
     name: Nowhere to Call
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-unicode
     name: Unicode Escapes
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-mismatch
     name: No Tags at All
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
   - id: filter-shadow-global
     name: The Final Filter
     type: challenge
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH

@@ -1,23 +1,5 @@
-After a user logs in, a web application needs some way to recognize that user on later requests. This is usually handled with a session: the browser receives a random session identifier, and the server keeps track of which account it belongs to.
+Once you log in, a web app has to recognize you on every request that follows. The usual way is a session: the server hands your browser a random identifier and keeps its own record of which account that identifier belongs to. The value means nothing by itself, and only the server knows what it stands for.
 
-In this challenge, Mail does something much simpler. After checking the password, it puts the username in the URL:
+Mail skips all of that. When you log in, it puts your username directly in the URL and serves your mailbox from a path like `/u/hacker/`. From then on, every request names the account it wants right in the path, and the app believes it. But the address bar is yours to edit, and nothing checks that the name in the path is the one you logged in as.
 
-```python
-return redirect(f"/u/{user['username']}/")
-
-@app.route("/u/<username>/")
-def inbox_page(username):
-    ...
-```
-
-And the mailbox route trusts the `username` from the path.
-
-The flag is in the admin mailbox.
-
----
-
-### Challenge Environment
-
-You can log in to Mail with this account:
-
-- `hacker:1337`
+Your account is `hacker:1337`. The flag is in the admin mailbox. Read `/challenge/server` if you want to see exactly how the mailbox route decides whose mail to show.

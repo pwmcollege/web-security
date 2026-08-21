@@ -1,11 +1,3 @@
-Web payloads are not limited to strings. Encode an entire ELF executable into a query parameter and have the server execute it.
+Not every payload is a line of shell. When a server runs whatever you feed it, nothing says you have to feed it a script instead of a whole compiled program.
 
----
-
-### Challenge Environment
-
-In this challenge, the server is automatically started; you can access the website at: `https://challenge.internal`
-
-The server accepts a request at `https://challenge.internal/?elf=...` where `elf` is a URL-safe base64 encoding of the ELF bytes.
-
-Read the server's source code at `/challenge/server`, build an ELF payload, encode it, send it over HTTP, and use the resulting execution primitive to retrieve the flag.
+The server is already up. It pulls a URL-safe base64 blob out of an `elf` parameter, decodes it, and runs the ELF you sent. Read `/challenge/server` for the details. Write an ELF that goes after the flag, encode it, ship it over, and let the server run it for you.

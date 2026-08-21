@@ -1,17 +1,5 @@
-In the real world, it is extremely rare to find yourself with direct shell access to your target environment, even an unprivileged one.
+You rarely break into a system and find a shell waiting for you. A bug gets your foot in the door, one command you can run or one file you can write, and from there you have to build your way up to real control of the box.
 
-After gaining an initial foothold through various vulnerabilities, you typically need a reliable means of achieving remote code execution.
+What you're building toward is a shell that talks back to you, and there are two ways to wire one up. A bind shell has the target open a port and wait for you to connect, which falls apart the moment a firewall blocks the way in, NAT hides the target, or someone notices the open port. A reverse shell flips the direction: the target connects to you. Outbound traffic is usually trusted, so the machine slips out past the firewall and hands you a shell from the inside.
 
-Usually, you have two main options: `bind shells` and [reverse shell](https://wiki.ubuntu.com/ReverseShell). A `bind shell` opens a port on the target machine and waits for you to connect, but this approach has severe limitations. Firewalls typically block incoming connections, NAT makes direct connections impossible, and monitoring tools easily detect open ports.
-
-A [reverse shell](https://wiki.ubuntu.com/ReverseShell), however, instead of you trying to _connect TO the target_, _the target connects to YOU_. The compromised system reaches out through the firewall (outbound connections are usually allowed), bypasses NAT restrictions, and establishes the connection from the inside out.
-
-It's like having the fortress call you with the keys, rather than trying to break down the front gate.
-
----
-
-### Challenge Environment
-
-In this challenge, the server is automatically started; you can access the website at: `https://challenge.internal`
-
-The server is listening for a request at `https://challenge.internal/reverse` endpoint in order to trigger a reverse shell connecting to `localhost` on port `1337`.
+The server is already up. Poke its `/reverse` endpoint and it fires off a reverse shell to `localhost` on port `1337`. Be listening when it does.

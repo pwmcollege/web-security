@@ -1,13 +1,7 @@
-Most image formats are just pixels, but [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG) is different. An SVG is really an XML document, and it can carry a `<script>` or an event handler that the browser runs when it opens the file as a page. That makes SVG a way to get script execution through something that looks like a harmless image:
+Most image formats are nothing but pixels. SVG is the odd one out: an SVG is really an XML document, and it can carry a `<script>` or an event handler that the browser happily runs when it opens the file as a page. So a thing that looks for all the world like an image can hand you script execution.
 
-```xml
-<svg xmlns="http://www.w3.org/2000/svg">
-    <script>
-        <payload>
-    </script>
-</svg>
-```
+Which means that when a site lets you upload an image and then serves it back from its own origin, an SVG upload can quietly turn into stored XSS. The only guard is the upload filter, there to wave real images through and turn everything else away. This one is easy to fool, because the check it runs on the way in and the content type it stamps on the way back out don't agree with each other.
 
-So if a site lets you upload an image and then serves it back from its own origin, an SVG upload becomes stored XSS. The catch is the upload filter, which is only meant to allow real images. In this challenge the filter is easy to slip past, because the check on upload and the type used when serving the file back do not agree with each other.
+---
 
-Upload an avatar that gets past the filter but is served as an SVG, and get your script to run in a viewer's browser.
+Start `/challenge/server` and log in as `guest:password` or `hacker:1337`. Upload your avatar, then run `/challenge/victim` to have it viewed. The challenge server is the only place it can reach.
