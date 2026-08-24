@@ -11,41 +11,33 @@
         <link rel="stylesheet" href="/static/style.css" />
     </head>
     <body class="h-dvh overflow-hidden bg-white text-zinc-900 font-sans antialiased flex flex-col">
-        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100">
-            <div class="mx-auto max-w-[720px] h-[60px] px-5 flex items-center">
-                <span class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none">
+        <header class="shrink-0 border-b border-zinc-100 bg-white">
+            <div class="h-[56px] px-5 flex items-center">
+                <span class="text-[18px] font-extrabold tracking-tight text-zinc-900 select-none">
                     DoS<span class="text-zinc-300">.</span>
                 </span>
             </div>
         </header>
-        <main class="flex-1 min-h-0 w-full mx-auto max-w-[720px] px-5 py-8 flex flex-col gap-4">
-            <div class="shrink-0 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                <div class="flex items-center gap-2.5">
-                    <span id="core" class="inline-flex h-2 w-2 rounded-full bg-[#9ca0b0]"></span>
-                    <h1 class="font-mono text-[14px] font-medium tracking-tight text-zinc-900">victim.internal</h1>
-                </div>
-                <div id="bars" class="mt-5 flex items-center gap-[3px]"></div>
-                <div class="mt-4 flex items-center gap-5 font-mono text-[12px] text-zinc-400">
-                    <span>Latency <span id="latency" class="text-zinc-600 tabular-nums">--</span></span>
-                    <span>Failed <span id="fails" class="text-zinc-600 tabular-nums">0/5</span></span>
-                </div>
+        <div class="shrink-0 border-b border-zinc-100 px-5 h-[64px] flex items-center gap-4">
+            <div class="flex items-center gap-2.5 shrink-0">
+                <span id="core" class="h-2 w-2 rounded-full bg-zinc-300"></span>
+                <span class="text-[13px] font-medium text-zinc-900">victim.internal</span>
             </div>
-            <div id="flagCard"
-                 class="hidden shrink-0 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="min-w-0">
-                        <div class="text-[11px] font-medium uppercase tracking-wider text-zinc-400">flag</div>
-                        <code id="flag"
-                              class="mt-1.5 block font-mono text-[14px] text-zinc-900 break-all"></code>
-                    </div>
-                    <button id="copyFlag"
-                            class="shrink-0 inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3.5 py-2 text-[13px] font-semibold text-white transition-colors cursor-pointer hover:bg-zinc-800">
-                        <i data-lucide="copy" class="w-4 h-4"></i>
-                        <span id="copyLabel">Copy</span>
-                    </button>
-                </div>
-            </div>
-            <div class="flex-1 min-h-0 overflow-hidden rounded-xl border border-zinc-200 bg-[#303446] p-3 shadow-sm">
+            <div class="h-7 w-px bg-zinc-200"></div>
+            <div id="bars" class="flex-1 flex items-center gap-[3px]"></div>
+            <div class="h-7 w-px bg-zinc-200"></div>
+            <div class="shrink-0 flex items-center gap-2.5 text-[12px] text-zinc-400"><span>Failed</span><span id="fails" class="tabular-nums font-medium text-zinc-900">0 / 5</span></div>
+        </div>
+        <div id="flagCard" class="hidden shrink-0 border-b border-zinc-100 bg-zinc-50 px-5 py-3.5 flex items-center gap-3">
+            <span id="flag" class="text-[14px] font-medium text-zinc-900 break-all"></span>
+            <button id="copyFlag" aria-label="Copy flag"
+                    class="ml-auto shrink-0 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-zinc-500 transition-colors cursor-pointer hover:bg-zinc-200 hover:text-zinc-900">
+                <i data-lucide="copy" class="h-4 w-4"></i>
+                <span>Copy</span>
+            </button>
+        </div>
+        <main class="flex-1 min-h-0 w-full flex flex-col">
+            <div class="flex-1 min-h-0 bg-[#09090b] px-4 py-3">
                 <div id="term" class="h-full"></div>
             </div>
         </main>
@@ -54,9 +46,12 @@
         <script>
             lucide.createIcons();
 
+            const UP = "#22c55e";
+            const DEGRADED = "#f59e0b";
+            const DOWN = "#ef4444";
+
             const barsEl = document.getElementById("bars");
             const core = document.getElementById("core");
-            const latencyEl = document.getElementById("latency");
             const failsEl = document.getElementById("fails");
             const flagCard = document.getElementById("flagCard");
             const flagEl = document.getElementById("flag");
@@ -67,24 +62,14 @@
                 for (const ok of history) {
                     streak = ok ? 0 : streak + 1;
                     const b = document.createElement("span");
-                    b.className = "h-7 flex-1 rounded-sm";
-                    b.style.backgroundColor = ok
-                        ? "#40a02b"
-                        : streak >= 5
-                          ? "#d20f39"
-                          : "#df8e1d";
+                    b.className = "flex-1 h-[26px] rounded-full";
+                    b.style.backgroundColor = ok ? UP : streak >= 5 ? DOWN : DEGRADED;
                     barsEl.appendChild(b);
                 }
             }
 
             function setStatus(up, fails) {
-                if (fails >= 5) {
-                    core.style.backgroundColor = "#d20f39";
-                } else if (up) {
-                    core.style.backgroundColor = "#40a02b";
-                } else {
-                    core.style.backgroundColor = "#df8e1d";
-                }
+                core.style.backgroundColor = fails >= 5 ? DOWN : up ? UP : DEGRADED;
             }
 
             const es = new EventSource("events");
@@ -92,8 +77,8 @@
                 const s = JSON.parse(e.data);
                 renderBars(s.history);
                 setStatus(s.up, s.fails);
-                latencyEl.textContent = s.latency == null ? "--" : s.latency + " ms";
                 failsEl.textContent = s.fails + " / 5";
+                failsEl.style.color = s.fails >= 5 ? DOWN : "";
                 if (s.flag) {
                     flagEl.textContent = s.flag;
                     flagCard.classList.remove("hidden");
@@ -102,7 +87,7 @@
                 }
             };
             es.onerror = () => {
-                core.style.backgroundColor = "#9ca0b0";
+                core.style.backgroundColor = "#a1a1aa";
             };
 
             const copyBtn = document.getElementById("copyFlag");
@@ -111,11 +96,11 @@
                 try {
                     await navigator.clipboard.writeText(flagEl.textContent);
                 } catch (e) {}
-                copyBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i><span>Copied</span>';
+                copyBtn.innerHTML = '<i data-lucide="check" class="h-4 w-4"></i><span>Copied</span>';
                 lucide.createIcons();
                 clearTimeout(copyReset);
                 copyReset = setTimeout(() => {
-                    copyBtn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i><span>Copy</span>';
+                    copyBtn.innerHTML = '<i data-lucide="copy" class="h-4 w-4"></i><span>Copy</span>';
                     lucide.createIcons();
                 }, 1500);
             });
@@ -126,28 +111,28 @@
                 lineHeight: 1.35,
                 cursorBlink: true,
                 theme: {
-                    background: "#303446",
-                    foreground: "#c6d0f5",
-                    cursor: "#f2d5cf",
-                    cursorAccent: "#303446",
-                    selectionBackground: "#626880",
-                    selectionForeground: "#c6d0f5",
-                    black: "#51576d",
-                    brightBlack: "#626880",
-                    red: "#e78284",
-                    brightRed: "#e67172",
-                    green: "#a6d189",
-                    brightGreen: "#8ec772",
-                    yellow: "#e5c890",
-                    brightYellow: "#d9ba73",
-                    blue: "#8caaee",
-                    brightBlue: "#7b9ef0",
-                    magenta: "#f4b8e4",
-                    brightMagenta: "#f2a4db",
-                    cyan: "#81c8be",
-                    brightCyan: "#5abfb5",
-                    white: "#a5adce",
-                    brightWhite: "#b5bfe2",
+                    background: "#09090b",
+                    foreground: "#e4e4e7",
+                    cursor: "#e4e4e7",
+                    cursorAccent: "#09090b",
+                    selectionBackground: "#3f3f46",
+                    selectionForeground: "#fafafa",
+                    black: "#18181b",
+                    brightBlack: "#3f3f46",
+                    red: "#f87171",
+                    brightRed: "#fca5a5",
+                    green: "#4ade80",
+                    brightGreen: "#86efac",
+                    yellow: "#fbbf24",
+                    brightYellow: "#fde68a",
+                    blue: "#60a5fa",
+                    brightBlue: "#93c5fd",
+                    magenta: "#c084fc",
+                    brightMagenta: "#d8b4fe",
+                    cyan: "#22d3ee",
+                    brightCyan: "#67e8f9",
+                    white: "#e4e4e7",
+                    brightWhite: "#fafafa",
                 },
             });
             const fit = new FitAddon.FitAddon();
