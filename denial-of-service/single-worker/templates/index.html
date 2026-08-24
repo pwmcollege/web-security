@@ -32,8 +32,9 @@
             <span id="flag" class="text-[14px] font-medium text-zinc-900 break-all"></span>
             <button id="copyFlag" aria-label="Copy flag"
                     class="ml-auto shrink-0 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-zinc-500 transition-colors cursor-pointer hover:bg-zinc-200 hover:text-zinc-900">
-                <i data-lucide="copy" class="h-4 w-4"></i>
-                <span>Copy</span>
+                <span class="js-ico-copy inline-flex"><i data-lucide="copy" class="h-4 w-4"></i></span>
+                <span class="js-ico-check hidden inline-flex"><i data-lucide="check" class="h-4 w-4"></i></span>
+                <span id="copyLabel">Copy</span>
             </button>
         </div>
         <main class="flex-1 min-h-0 w-full flex flex-col">
@@ -91,17 +92,22 @@
             };
 
             const copyBtn = document.getElementById("copyFlag");
+            const copyIco = copyBtn.querySelector(".js-ico-copy");
+            const checkIco = copyBtn.querySelector(".js-ico-check");
+            const copyLabel = document.getElementById("copyLabel");
             let copyReset;
             copyBtn.addEventListener("click", async () => {
                 try {
                     await navigator.clipboard.writeText(flagEl.textContent);
                 } catch (e) {}
-                copyBtn.innerHTML = '<i data-lucide="check" class="h-4 w-4"></i><span>Copied</span>';
-                lucide.createIcons();
+                copyIco.classList.add("hidden");
+                checkIco.classList.remove("hidden");
+                copyLabel.textContent = "Copied";
                 clearTimeout(copyReset);
                 copyReset = setTimeout(() => {
-                    copyBtn.innerHTML = '<i data-lucide="copy" class="h-4 w-4"></i><span>Copy</span>';
-                    lucide.createIcons();
+                    checkIco.classList.add("hidden");
+                    copyIco.classList.remove("hidden");
+                    copyLabel.textContent = "Copy";
                 }, 1500);
             });
 
