@@ -21,7 +21,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 UPLOAD_DIR = "/tmp/avatars"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-app = Flask(__name__)
+app = Flask(__name__, root_path="/challenge")
 
 
 class TemporaryDB:

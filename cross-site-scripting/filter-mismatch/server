@@ -6,7 +6,7 @@ import re
 from bs4 import BeautifulSoup, NavigableString, Tag
 from flask import Flask, render_template, request
 
-app = Flask(__name__)
+app = Flask(__name__, root_path="/challenge")
 
 
 def _is_ignorable_text(node):

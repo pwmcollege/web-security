@@ -15,7 +15,7 @@ from flask import (
     url_for,
 )
 
-app = Flask(__name__)
+app = Flask(__name__, root_path="/challenge")
 
 
 # Don't panic about this class. It simply implements a temporary database in which

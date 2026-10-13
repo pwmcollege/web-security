@@ -8,7 +8,7 @@ import threading
 from flask import Flask, abort, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-app = Flask(__name__)
+app = Flask(__name__, root_path="/challenge")
 
 
 class TemporaryDB:
