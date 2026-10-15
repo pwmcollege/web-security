@@ -3,6 +3,10 @@ privileged: true
 resources:
   - type: header
     content: Reflected XSS
+  - name: Additional Resources
+    type: markdown
+    content: |
+      - [CSP Evaluator](https://csp-evaluator.withgoogle.com/)
   - id: inline-reflect-alert
     name: First Reflection
     type: challenge
@@ -180,7 +184,10 @@ resources:
     content: Mutation XSS
   - name: Additional Resources
     type: markdown
-    file: resources/mxss-resources.md
+    content: |
+      - [Sonar](https://www.sonarsource.com/blog/mxss-the-vulnerability-hiding-in-your-code)
+      - [msrkp](https://github.com/msrkp/MXSS)
+      - [PortSwigger](https://portswigger.net/research/bypassing-dompurify-again-with-mutation-xss)
   - id: mxss-table
     name: Parser Disagreement
     type: challenge
@@ -211,7 +218,12 @@ resources:
     content: Filters
   - name: Additional Resources
     type: markdown
-    file: resources/filter-resources.md
+    content: |
+      - [PortSwigger XSS Cheat Sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
+      - [PortSwigger XSS contexts](https://portswigger.net/web-security/cross-site-scripting/contexts)
+      - [OWASP XSS Filter Evasion Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html)
+      - [OWASP Cross Site Scripting Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+      - [MDN Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
   - id: filter-encoding
     name: Past the Blocklist
     type: challenge

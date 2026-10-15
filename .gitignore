@@ -3,3 +3,4 @@ Dockerfile
 scratchpad/
 __pycache__/
 .vscode/
+*.log

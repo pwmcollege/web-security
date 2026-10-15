@@ -1,21 +1,35 @@
 name: DOM Clobbering
 privileged: true
-challenges:
+resources:
+  - name: Additional Resources
+    type: markdown
+    content: |
+      - [https://domclob.xyz/](https://domclob.xyz/): Covers common DOM Clobbering-vulnerable patterns
+      - [https://domclob.xyz/domc_markups/list](https://domclob.xyz/domc_markups/list): Lists DOM clobbering payloads
   - id: intro-clobber-selector
     name: Baby's First DOM Clobbering
+    type: challenge
   - id: intro-clobber-regular
     name: Real DOM Clobbering
+    type: challenge
   - id: intro-clobber-attribute
     name: Clobbering Attributes
+    type: challenge
   - id: intro-clobber-multi
     name: Clobbering Multiple Levels
+    type: challenge
   - id: golf-svg
     name: Welcome to PWN.GOLF
+    type: challenge
   - id: golf-hardcoded-wall
     name: Barrier Breaker
+    type: challenge
   - id: golf-cookies-wall
     name: Crash Course
+    type: challenge
   - id: golf-dynamic
     name: Clobbering Links
+    type: challenge
   - id: golf-sanitizer
     name: Impurifier
+    type: challenge
