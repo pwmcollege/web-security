@@ -4,7 +4,7 @@ The weakness of a blocklist is that it can only block what its authors thought t
 
 In this challenge the following elements are banned:
 
-- `script`, `img`, `svg`, `iframe`, `input`, `object`, `embed`
+- `script`, `img`, `svg`, `iframe`, `input`, `select`, `object`, `embed`
 - `video`, `audio`, `source`, `track`
 - `html`, `body`, `frame`, `frameset`, `details`, `dialog`, `marquee`
 - `style`, `link`, `template`
@@ -189,7 +189,21 @@ The following APIs and globals are also banned:
 - `media`, `Image`, `Audio`, `Video`, `Track`, `Source`, `Bitmap`, `Canvas`, `Blob`, `File`
 - `navigator`, `geolocation`, `navigation`, `postMessage`, `document`, `window`, `globalThis`, `global`, `self`, `this`, `top`, `parent`, `frames`, `form`, `element`, `constructor`
 - `eval`, `Function`, `setTimeout`, `setInterval`, `import()`
+- `RegExp`, `compile`, `exec`, `test`, `match`, `matchAll`, `search`, `split`, `replace`, `replaceAll`
 - `alert()`, `confirm()`, `prompt()`, `print()`
+
+The following timing primitives and browser APIs are also banned:
+
+- `Date`, `performance`, `PerformanceObserver`, `Temporal`, `timeStamp`, `timeOrigin`, `currentTime`, `currentFrame`
+- `Atomics`, `SharedArrayBuffer`, `WebAssembly`
+- `requestAnimationFrame`, `cancelAnimationFrame`, `requestIdleCallback`, `cancelIdleCallback`, `IdleDeadline`, `IdleDetector`, `timeRemaining`
+- `queueMicrotask`, `scheduler`, `postTask`, `TaskController`, `TaskSignal`, `AbortSignal`
+- `Worker`, `SharedWorker`, `ServiceWorker`, `Worklet`, `MessageChannel`, `MessagePort`, `BroadcastChannel`
+- `AudioContext`, `OfflineAudioContext`, `AudioWorklet`, `requestVideoFrameCallback`
+- `WebGL`, `WebGLRenderingContext`, `WebGL2RenderingContext`, `EXT_disjoint_timer_query`, `EXT_disjoint_timer_query_webgl2`, `TIME_ELAPSED_EXT`, `getQuery`, `getQueryObjectEXT`, `queryCounterEXT`
+- `GPU` and its related interfaces, `onSubmittedWorkDone`
+- `RTCPeerConnection`, `RTCDataChannel`, `RTCStatsReport`, `getStats`
+- `console`
 
 The `javascript:` URL scheme is banned, including variants containing ASCII whitespace. Nested percent encoding, HTML entities, JavaScript Unicode, hexadecimal, octal, simple, identity, and line-continuation escapes, and null bytes are normalized before these checks.
 
