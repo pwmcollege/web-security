@@ -341,9 +341,12 @@ resources:
       - name: Code
         port: 8080
       - name: SSH
-  - id: filter-shadow-global
+  - id: filter-mini-boss
     name: The Final Filter
     type: challenge
+    transfer:
+      module: cross-site-scripting
+      challenge: filter-shadow-global
     interfaces:
       - name: Terminal
         port: 7681
