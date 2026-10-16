@@ -344,9 +344,19 @@ resources:
   - id: filter-mini-boss
     name: The Final Filter
     type: challenge
-    transfer:
-      module: cross-site-scripting
-      challenge: filter-shadow-global
+    interfaces:
+      - name: Terminal
+        port: 7681
+      - name: Challenge
+        port: 80
+      - name: Desktop
+        port: 6080
+      - name: Code
+        port: 8080
+      - name: SSH
+  - id: filter-boss
+    name: The Final Side Channel
+    type: challenge
     interfaces:
       - name: Terminal
         port: 7681
