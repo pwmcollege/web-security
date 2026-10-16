@@ -7,39 +7,29 @@ resources:
     slides: 1ATO_U0aUlk2LRhlnIwdqTkDfu-lWRb5xoLDv0NQLPs8
   - type: header
     content: Shell
-  - name: Other Resources
+  - name: Additional Resources
     type: markdown
-    file: shell-resources.md
-  - id: reverse-shell
-    name: Reverse Shell
-    type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
+    content: |
+      - [What Is a Reverse Shell?](https://www.imperva.com/learn/application-security/reverse-shell/)
+      - [Reverse Shell vs Bind Shell](https://www.darkrelay.com/post/bind-and-reverse-shells/)
+      - [Reverse Shell Generator](https://www.revshells.com/)
   - id: bind-shell
     name: Bind Shell
     type: challenge
     privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
+  - id: reverse-shell
+    name: Reverse Shell
+    type: challenge
+    privileged: true
   - type: header
     content: URL & Encoding
+  - name: Additional Resources
+    type: markdown
+    content: |
+      - [Percent-encoding (MDN)](https://developer.mozilla.org/en-US/docs/Glossary/Percent-encoding)
+      - [URL quoting in Python](https://docs.python.org/3/library/urllib.parse.html#url-quoting)
+      - [Base64 (MDN)](https://developer.mozilla.org/en-US/docs/Glossary/Base64)
+      - [URL-safe Base64 in Python](https://docs.python.org/3/library/base64.html#base64.urlsafe_b64encode)
   - id: separator-smuggling
     name: Query Me This
     type: challenge

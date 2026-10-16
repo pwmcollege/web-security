@@ -1,5 +1,5 @@
-A URL parser sorts every byte into one of two piles: content, or punctuation. `&` marks the end of one parameter, `=` divides a name from its value, and the moment the parser spots one it splits the string right there, whether or not that's what you meant.
+When you send a command or another payload through a URL, the query parser may interpret part of it as URL syntax. Suppose you want to send `fish&chips` as the value of `snack`. In `/?snack=fish&chips`, a typical query parser takes `&` as the start of another parameter, leaving `snack` with just `fish`.
 
-That's fine until the value you actually need to deliver is built out of those very bytes. Send them raw and your input gets sliced apart before the server ever sees it whole.
+*Percent-encoding* represents a byte as `%` followed by two hexadecimal digits. Writing the ampersand as `%26` gives `/?snack=fish%26chips`: the parser splits the parameters before decoding the values, so `snack` contains `fish&chips`. A literal `%` is encoded as `%25`.
 
-The server is already up, and it reads a `payload` argument. Check `/challenge/server` to see what it expects. Your job is to smuggle your delimiter bytes all the way into `payload` without the parser prying them loose along the way.
+This challenge's server does its own parsing: it requires the raw query string to start with `payload=` and percent-decodes the entire remainder without splitting it at `&`. Read `/challenge/server` to find the bytes it expects, then send a percent-encoded version of them in a GET request to `https://challenge.internal/` to retrieve the flag. If you're using a shell, quote the URL so it doesn't interpret `&` before your HTTP client sees it.

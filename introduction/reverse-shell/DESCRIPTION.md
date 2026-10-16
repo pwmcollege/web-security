@@ -1,5 +1,5 @@
-You rarely break into a system and find a shell waiting for you. A bug gets your foot in the door, one command you can run or one file you can write, and from there you have to build your way up to real control of the box.
+In the last challenge, you could reach the target's listening port. Now suppose a firewall allows new incoming connections only to the web port, `443`, while permitting the server to make outgoing connections. The website is reachable, but a bind shell listening on `1337` is not.
 
-What you're building toward is a shell that talks back to you, and there are two ways to wire one up. A bind shell has the target open a port and wait for you to connect, which falls apart the moment a firewall blocks the way in, NAT hides the target, or someone notices the open port. A reverse shell flips the direction: the target connects to you. Outbound traffic is usually trusted, so the machine slips out past the firewall and hands you a shell from the inside.
+With a *reverse shell*, you run the listener and the target connects back with its shell attached. A stateful firewall can allow traffic in both directions over that established connection while still rejecting new incoming connections to other ports. Your listener must be reachable from the target, and the target must be allowed to connect to it.
 
-The server is already running, and it keeps trying to call home: once a second it dials out to `127.0.0.1` on port `1337`. Nothing answers until you do. Get a listener up on that port and catch the shell it throws you.
+The challenge server is already trying to connect to `127.0.0.1` on TCP port `1337`. Check Netcat's help for its listening option and start it in the challenge terminal. Once the connection arrives, use the shell to read `/flag`.
