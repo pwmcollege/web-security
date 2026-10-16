@@ -192,6 +192,8 @@ The following APIs and globals are also banned:
 - `RegExp`, `compile`, `exec`, `test`, `match`, `matchAll`, `search`, `split`, `replace`, `replaceAll`
 - `alert()`, `confirm()`, `prompt()`, `print()`
 
+JavaScript loops (`for`, `while`, and `do...while`) are also banned.
+
 The following timing primitives and browser APIs are also banned:
 
 - `Date`, `performance`, `PerformanceObserver`, `Temporal`, `timeStamp`, `timeOrigin`, `currentTime`, `currentFrame`
