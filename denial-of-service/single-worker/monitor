@@ -2,24 +2,14 @@
 
 import glob
 import json
-import os
-import pty
-import select
-import signal
-import struct
 import threading
 import time
-import fcntl
-import termios
 from collections import deque
 
 import requests
 from flask import Flask, Response, render_template
-from flask_sock import Sock
 
 app = Flask(__name__)
-sock = Sock(app)
-signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 session = requests.Session()
 session.mount(
@@ -28,15 +18,11 @@ session.mount(
 )
 
 state = {
-    "up": True,
-    "latency": None,
+    "up": None,
     "fails": 0,
-    "history": deque([True] * 40, maxlen=40),
+    "history": deque(maxlen=90),
     "flag": None,
 }
-
-WEB_TTYS = set()
-TIOCGPTN = 0x80045430
 
 CLEAR = "\033[2J\033[H"
 
@@ -58,8 +44,6 @@ def list_ttys():
 def broadcast_flag(flag):
     message = f"The server is down! Your flag is: {flag}\n"
     for tty in list_ttys():
-        if tty in WEB_TTYS:
-            continue
         try:
             with open(tty, "w", buffering=1, errors="ignore") as f:
                 f.write(CLEAR)
@@ -71,7 +55,6 @@ def broadcast_flag(flag):
 def probe_loop():
     broadcast_ticks = 0
     while True:
-        t0 = time.monotonic()
         try:
             r = session.get(
                 "https://victim.internal:443/health",
@@ -81,12 +64,11 @@ def probe_loop():
             up = r.status_code == 200
         except requests.RequestException:
             up = False
-        dt = int((time.monotonic() - t0) * 1000)
-
         state["up"] = up
-        state["latency"] = dt if up else None
-        state["history"].append(up)
         state["fails"] = 0 if up else state["fails"] + 1
+        state["history"].append(
+            {"up": up, "checked_at": time.time(), "fails": state["fails"]}
+        )
 
         if state["flag"] is not None:
             if broadcast_ticks % 10 == 0:
@@ -111,7 +93,6 @@ def events():
         while True:
             payload = {
                 "up": state["up"],
-                "latency": state["latency"],
                 "fails": state["fails"],
                 "history": list(state["history"]),
                 "flag": state["flag"],
@@ -120,89 +101,6 @@ def events():
             time.sleep(1)
 
     return Response(stream(), mimetype="text/event-stream")
-
-
-def set_winsize(fd, rows, cols):
-    fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", rows, cols, 0, 0))
-
-
-@sock.route("/pty")
-def pty_socket(ws):
-    pid, fd = pty.fork()
-    if pid == 0:
-        for sig in (signal.SIGCHLD, signal.SIGINT, signal.SIGQUIT, signal.SIGTSTP):
-            signal.signal(sig, signal.SIG_DFL)
-        os.environ["TERM"] = "xterm-256color"
-        os.environ["HOME"] = "/home/hacker"
-        os.environ["PS1"] = r"\[\e[32m\]hacker\[\e[0m\]:\w\$ "
-        os.closerange(3, 64)
-        try:
-            os.setgroups([1000])
-        except OSError:
-            pass
-        os.setresgid(1000, 1000, 1000)
-        os.setresuid(1000, 1000, 1000)
-        try:
-            os.chdir(os.environ["HOME"])
-        except OSError:
-            os.chdir("/tmp")
-        os.execvp("/bin/bash", ["/bin/bash", "--noprofile", "--norc", "-i"])
-        return
-
-    web_tty = None
-    try:
-        ptn = struct.unpack("i", fcntl.ioctl(fd, TIOCGPTN, struct.pack("i", 0)))[0]
-        web_tty = f"/dev/pts/{ptn}"
-        WEB_TTYS.add(web_tty)
-    except OSError:
-        pass
-
-    alive = threading.Event()
-    alive.set()
-
-    def pty_to_ws():
-        while alive.is_set():
-            r, _, _ = select.select([fd], [], [], 0.2)
-            if fd not in r:
-                continue
-            try:
-                data = os.read(fd, 4096)
-            except OSError:
-                break
-            if not data:
-                break
-            try:
-                ws.send(data.decode("utf-8", "replace"))
-            except Exception:
-                break
-        alive.clear()
-
-    threading.Thread(target=pty_to_ws, daemon=True).start()
-
-    try:
-        while alive.is_set():
-            msg = ws.receive()
-            if msg is None:
-                break
-            try:
-                m = json.loads(msg)
-            except (ValueError, TypeError):
-                continue
-            if m.get("t") == "in":
-                os.write(fd, m["d"].encode())
-            elif m.get("t") == "resize":
-                set_winsize(fd, int(m["rows"]), int(m["cols"]))
-    finally:
-        alive.clear()
-        WEB_TTYS.discard(web_tty)
-        try:
-            os.kill(pid, signal.SIGKILL)
-        except OSError:
-            pass
-        try:
-            os.close(fd)
-        except OSError:
-            pass
 
 
 threading.Thread(target=probe_loop, daemon=True).start()

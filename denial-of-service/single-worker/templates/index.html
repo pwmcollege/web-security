@@ -1,182 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#ffffff" />
         <title>DoS</title>
+        <link rel="preconnect" href="https://cdn.internal" />
         <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
-        <script src="https://cdn.internal/lucide/lucide.min.js"></script>
+        <script src="https://cdn.internal/lucide/lucide.min.js" defer></script>
         <link rel="stylesheet" href="https://cdn.internal/fonts/inter.css" />
-        <link rel="stylesheet" href="https://cdn.internal/xterm/xterm.css" />
         <link rel="stylesheet" href="/static/style.css" />
+        <script src="/static/script.js" type="module"></script>
     </head>
-    <body class="h-dvh overflow-hidden bg-white text-zinc-900 font-sans antialiased flex flex-col">
-        <header class="shrink-0 border-b border-zinc-100 bg-white">
-            <div class="h-[56px] px-5 flex items-center">
-                <span class="text-[18px] font-extrabold tracking-tight text-zinc-900 select-none">
-                    DoS<span class="text-zinc-300">.</span>
-                </span>
-            </div>
-        </header>
-        <div class="shrink-0 border-b border-zinc-100 px-5 h-[64px] flex items-center gap-4">
-            <div class="flex items-center gap-2.5 shrink-0">
-                <span id="core" class="h-2 w-2 rounded-full bg-zinc-300"></span>
-                <span class="text-[13px] font-medium text-zinc-900">victim.internal</span>
-            </div>
-            <div class="h-7 w-px bg-zinc-200"></div>
-            <div id="bars" class="flex-1 flex items-center gap-[3px]"></div>
-            <div class="h-7 w-px bg-zinc-200"></div>
-            <div class="shrink-0 flex items-center gap-2.5 text-[12px] text-zinc-400"><span>Failed</span><span id="fails" class="tabular-nums font-medium text-zinc-900">0 / 5</span></div>
+    <body class="min-h-screen bg-white font-sans text-zinc-900 antialiased">
+        <a class="skip-link" href="#main">Skip to status</a>
+        <div class="mx-auto flex min-h-screen w-full max-w-[718px] flex-col px-4 sm:px-6">
+            <header class="flex min-h-[92px] items-center justify-between gap-4">
+                <div class="flex items-baseline gap-2.5" aria-label="DoS status">
+                    <span class="select-none text-[26px] font-bold tracking-[-0.06em]">DoS<span class="text-zinc-300">.</span></span>
+                </div>
+            </header>
+            <main id="main" class="space-y-6 pb-10">
+                <section id="overallStatus" data-state="checking" class="overall-status overflow-hidden rounded-2xl border" aria-live="polite" aria-atomic="true">
+                    <div class="status-heading flex items-center gap-2.5 px-4 py-3.5">
+                        <span class="status-icons status-color shrink-0" aria-hidden="true">
+                            <i data-lucide="clock-3" class="checking-icon h-[18px] w-[18px]"></i>
+                            <i data-lucide="wifi-off" class="disconnected-icon h-[18px] w-[18px]"></i>
+                            <i data-lucide="circle-check" class="operational-icon h-[18px] w-[18px]"></i>
+                            <i data-lucide="triangle-alert" class="degraded-icon h-[18px] w-[18px]"></i>
+                            <i data-lucide="circle-x" class="outage-icon h-[18px] w-[18px]"></i>
+                        </span>
+                        <h1 id="statusTitle" class="text-pretty text-base font-medium">
+                            <span data-banner-state="checking">Checking system status…</span>
+                            <span data-banner-state="disconnected">Disconnected</span>
+                            <span data-banner-state="operational">All systems operational</span>
+                            <span data-banner-state="degraded">The service is experiencing issues</span>
+                            <span data-banner-state="outage">The service is unavailable</span>
+                        </h1>
+                    </div>
+                    <p id="statusDescription" class="px-4 py-4 text-sm leading-6 text-zinc-700">
+                        <span data-banner-state="checking">Waiting for the first health check.</span>
+                        <span data-banner-state="disconnected">The connection to the monitor was lost. Showing the last received checks while reconnecting…</span>
+                        <span data-banner-state="operational">No issues detected with victim.internal.</span>
+                        <span data-banner-state="degraded">Some health checks are failing for victim.internal.</span>
+                        <span data-banner-state="outage">Health checks are consistently failing for victim.internal.</span>
+                    </p>
+                </section>
+                <section id="flagCard" class="flag-card rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4" aria-labelledby="flagHeading" hidden>
+                    <h2 id="flagHeading" class="mb-3 flex items-center gap-2 text-sm font-medium text-emerald-900"><i data-lucide="flag" class="h-4 w-4" aria-hidden="true"></i>Challenge complete</h2>
+                    <div class="flex min-w-0 items-center gap-2 rounded-xl border border-emerald-200 bg-white p-1.5 pl-3">
+                        <p id="flagValue" class="min-w-0 flex-1 select-text break-all py-1 text-sm leading-5 text-zinc-800" aria-label="Flag"></p>
+                        <button id="copyFlag" type="button" class="action-button copy-button inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100" data-copied="false">
+                            <span class="copy-icons relative h-3.5 w-3.5" aria-hidden="true"><i data-lucide="copy" class="copy-icon absolute h-3.5 w-3.5"></i><i data-lucide="check" class="copied-icon absolute h-3.5 w-3.5"></i></span>
+                            <span id="copyLabel" class="min-w-[4.5ch]" aria-live="polite" aria-atomic="true">
+                                <span class="copy-label-default">Copy</span>
+                                <span class="copy-label-done">Copied</span>
+                            </span>
+                        </button>
+                    </div>
+                    <p id="copyMessage" class="mt-2 text-xs leading-5 text-emerald-900" aria-live="polite" hidden>Copy the flag from the text above.</p>
+                </section>
+                <section class="rounded-2xl border border-zinc-200 shadow-[0_1px_2px_rgb(0_0_0/0.03)]" aria-labelledby="systemHeading">
+                    <div class="border-b border-zinc-100 px-4 py-3.5">
+                        <h2 id="systemHeading" class="text-base font-medium">System status</h2>
+                    </div>
+                    <div id="serviceStatus" data-state="checking" class="px-4 pb-4 pt-3">
+                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 py-1">
+                            <span class="status-icons status-color shrink-0" aria-hidden="true">
+                                <i data-lucide="clock-3" class="checking-icon h-4 w-4"></i><i data-lucide="circle-check" class="operational-icon h-4 w-4"></i><i data-lucide="triangle-alert" class="degraded-icon h-4 w-4"></i><i data-lucide="circle-x" class="outage-icon h-4 w-4"></i>
+                            </span>
+                            <span class="text-sm font-medium" translate="no">victim.internal</span>
+                            <span id="uptime" class="ml-auto text-xs tabular-nums text-zinc-600" aria-describedby="uptimeHelp"><span id="uptimeValue" hidden></span><span id="unknownUptime">—</span> uptime</span>
+                        </div>
+                        <div class="history-wrap relative mt-2">
+                            <div id="bars" class="history-bars flex h-4 items-stretch" role="group" aria-label="Recent health checks" aria-describedby="chartHelp"></div>
+                            <template id="historyBar">
+                                <button type="button" class="history-bar" tabindex="-1"></button>
+                            </template>
+                            <div id="historyTooltip" class="history-tooltip" aria-hidden="true">
+                                <time id="tooltipTime" class="block font-medium" hidden></time>
+                                <span id="noCheckRecorded" class="block font-medium">No check recorded</span>
+                                <span id="tooltipResult" data-state="checking" class="tooltip-result mt-1 flex items-center gap-1.5 text-zinc-600">
+                                    <span data-check-state="checking">No data</span>
+                                    <span data-check-state="operational">Operational</span>
+                                    <span data-check-state="degraded">Degraded</span>
+                                    <span data-check-state="outage">Unavailable</span>
+                                </span>
+                            </div>
+                        </div>
+                        <p id="chartHelp" class="sr-only">Use the left and right arrow keys to inspect checks.</p>
+                        <p id="uptimeHelp" class="sr-only">Uptime is the percentage of successful checks in the displayed window.</p>
+                        <div class="mt-2 flex items-center justify-between gap-3 text-[11px] text-zinc-500"><span id="emptyHistory">No checks recorded yet</span><time id="oldestCheck" hidden></time><span>Now</span></div>
+                    </div>
+                </section>
+                <noscript><p class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Enable JavaScript to see service status.</p></noscript>
+            </main>
         </div>
-        <div id="flagCard" class="hidden shrink-0 border-b border-zinc-100 bg-zinc-50 px-5 py-3.5 flex items-center gap-3">
-            <span id="flag" class="text-[14px] font-medium text-zinc-900 break-all"></span>
-            <button id="copyFlag" aria-label="Copy flag"
-                    class="ml-auto shrink-0 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-zinc-500 transition-colors cursor-pointer hover:bg-zinc-200 hover:text-zinc-900">
-                <span class="js-ico-copy inline-flex"><i data-lucide="copy" class="h-4 w-4"></i></span>
-                <span class="js-ico-check hidden inline-flex"><i data-lucide="check" class="h-4 w-4"></i></span>
-                <span id="copyLabel">Copy</span>
-            </button>
-        </div>
-        <main class="flex-1 min-h-0 w-full flex flex-col">
-            <div class="flex-1 min-h-0 bg-[#09090b] px-4 py-3">
-                <div id="term" class="h-full"></div>
-            </div>
-        </main>
-        <script src="https://cdn.internal/xterm/xterm.js"></script>
-        <script src="https://cdn.internal/xterm/xterm-addon-fit.js"></script>
-        <script>
-            lucide.createIcons();
-
-            const UP = "#22c55e";
-            const DEGRADED = "#f59e0b";
-            const DOWN = "#ef4444";
-
-            const barsEl = document.getElementById("bars");
-            const core = document.getElementById("core");
-            const failsEl = document.getElementById("fails");
-            const flagCard = document.getElementById("flagCard");
-            const flagEl = document.getElementById("flag");
-
-            function renderBars(history) {
-                barsEl.innerHTML = "";
-                let streak = 0;
-                for (const ok of history) {
-                    streak = ok ? 0 : streak + 1;
-                    const b = document.createElement("span");
-                    b.className = "flex-1 h-[26px] rounded-full";
-                    b.style.backgroundColor = ok ? UP : streak >= 5 ? DOWN : DEGRADED;
-                    barsEl.appendChild(b);
-                }
-            }
-
-            function setStatus(up, fails) {
-                core.style.backgroundColor = fails >= 5 ? DOWN : up ? UP : DEGRADED;
-            }
-
-            const es = new EventSource("events");
-            es.onmessage = (e) => {
-                const s = JSON.parse(e.data);
-                renderBars(s.history);
-                setStatus(s.up, s.fails);
-                failsEl.textContent = s.fails + " / 5";
-                failsEl.style.color = s.fails >= 5 ? DOWN : "";
-                if (s.flag) {
-                    flagEl.textContent = s.flag;
-                    flagCard.classList.remove("hidden");
-                } else {
-                    flagCard.classList.add("hidden");
-                }
-            };
-            es.onerror = () => {
-                core.style.backgroundColor = "#a1a1aa";
-            };
-
-            const copyBtn = document.getElementById("copyFlag");
-            const copyIco = copyBtn.querySelector(".js-ico-copy");
-            const checkIco = copyBtn.querySelector(".js-ico-check");
-            const copyLabel = document.getElementById("copyLabel");
-            let copyReset;
-            copyBtn.addEventListener("click", async () => {
-                try {
-                    await navigator.clipboard.writeText(flagEl.textContent);
-                } catch (e) {}
-                copyIco.classList.add("hidden");
-                checkIco.classList.remove("hidden");
-                copyLabel.textContent = "Copied";
-                clearTimeout(copyReset);
-                copyReset = setTimeout(() => {
-                    checkIco.classList.add("hidden");
-                    copyIco.classList.remove("hidden");
-                    copyLabel.textContent = "Copy";
-                }, 1500);
-            });
-
-            const term = new Terminal({
-                fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-                fontSize: 13,
-                lineHeight: 1.35,
-                cursorBlink: true,
-                theme: {
-                    background: "#09090b",
-                    foreground: "#e4e4e7",
-                    cursor: "#e4e4e7",
-                    cursorAccent: "#09090b",
-                    selectionBackground: "#3f3f46",
-                    selectionForeground: "#fafafa",
-                    black: "#18181b",
-                    brightBlack: "#3f3f46",
-                    red: "#f87171",
-                    brightRed: "#fca5a5",
-                    green: "#4ade80",
-                    brightGreen: "#86efac",
-                    yellow: "#fbbf24",
-                    brightYellow: "#fde68a",
-                    blue: "#60a5fa",
-                    brightBlue: "#93c5fd",
-                    magenta: "#c084fc",
-                    brightMagenta: "#d8b4fe",
-                    cyan: "#22d3ee",
-                    brightCyan: "#67e8f9",
-                    white: "#e4e4e7",
-                    brightWhite: "#fafafa",
-                },
-            });
-            const fit = new FitAddon.FitAddon();
-            term.loadAddon(fit);
-            term.open(document.getElementById("term"));
-            fit.fit();
-
-            const wsUrl = new URL("pty", window.location.href);
-            wsUrl.protocol = location.protocol === "https:" ? "wss:" : "ws:";
-            const ws = new WebSocket(wsUrl);
-            ws.binaryType = "arraybuffer";
-            const sendResize = () => ws.readyState === 1 &&
-                ws.send(JSON.stringify({ t: "resize", cols: term.cols, rows: term.rows }));
-            ws.onopen = () => { sendResize(); term.focus(); };
-            new ResizeObserver(() => {
-                fit.fit();
-                sendResize();
-            }).observe(document.getElementById("term"));
-            ws.onmessage = (e) => term.write(typeof e.data === "string" ? e.data : new Uint8Array(e.data));
-            term.onData((d) => ws.readyState === 1 && ws.send(JSON.stringify({ t: "in", d })));
-            term.attachCustomKeyEventHandler((event) => {
-                if (
-                    event.type !== "keydown" ||
-                    !event.ctrlKey ||
-                    event.altKey ||
-                    event.metaKey ||
-                    event.shiftKey ||
-                    event.key.length !== 1
-                )
-                    return true;
-                const code = event.key.toUpperCase().charCodeAt(0) - 64;
-                if (code < 0 || code > 31) return true;
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({ t: "in", d: String.fromCharCode(code) }));
-                }
-                return false;
-            });
-            window.addEventListener("resize", () => { fit.fit(); sendResize(); });
-        </script>
     </body>
 </html>
