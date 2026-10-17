@@ -1,5 +1,3 @@
-`victim.internal` runs on a single worker with a single thread. It holds exactly one request at a time and won't look at the next until the current one is finished.
+Let's start with a server that has almost nothing to do. At `https://victim.internal/`, the `/health` handler simply returns `OK`. We've given it one synchronous Gunicorn worker, which handles one request at a time, from reading it to sending a response.
 
-The status page checks on it every second by asking for `/health`, and that check waits in the same line as everything else. So you don't have to flood this server. You just have to be the request it's still stuck on when the check comes around, and keep being it.
-
-Tie it up for a few checks in a row and the page marks it down.
+That includes time spent waiting for you to send the rest of a request. While it waits, the monitor's health check gets stuck behind your request. A client that barely sends anything can keep the whole service to itself! Keep that worker occupied long enough for the challenge status page to mark the service down.

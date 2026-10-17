@@ -1,5 +1,5 @@
-More threads this time, sixty-four of them, all in one process. Threads are cheap next to whole processes, so the service can juggle far more requests at once without the overhead.
+The file write at the end of the logging handler has a cost of its own. Even with enough memory to process individual entries, the filesystem has a finite capacity for handling their file operations. Letting more requests run at once does not make that capacity grow with them.
 
-But threads only get you as far as the hardware under them. They still share one disk and one set of file descriptors, and `POST /log` writes every request it takes to a file. Sixty-four threads writing at the same time don't each get their own disk; they line up for it. Push enough through and they spend their time waiting on I/O instead of answering the status page.
+Gunicorn now uses 64 request-handling threads in a single process. Each accepted entry is written to a separate temporary file, so concurrent logging requests all draw on the same storage resources. A thread waiting for a file operation to finish cannot start another request. If enough threads are occupied this way, a quick request to `/health` can be left waiting for a thread of its own.
 
-Same `/log` endpoint as before.
+Use the logging endpoint to put that shared I/O capacity under sustained pressure. Consider both the work each entry causes and how many entries the server is processing together as you try to delay the monitor's health checks.

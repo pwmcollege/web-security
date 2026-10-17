@@ -1,5 +1,3 @@
-Every challenge so far gave the server something to do once your request arrived. This one doesn't. There's a single worker with four threads, one endpoint at `/health`, and nothing behind it worth triggering. No body to parse, no work to run.
+Starting another process is not the only way to let a server handle several clients. A thread pool allows one thread to make progress while another is waiting on I/O, all within the same process. Here, Gunicorn has four request-handling threads, so one slow client does not hold up the whole service.
 
-But a thread can't answer a request until it has finished reading it, and reading happens at whatever pace the client sends. A thread stuck waiting on bytes that trickle in one at a time isn't free to do anything else, the status page's check included.
-
-There are four threads. You don't have to make the server compute anything. You just have to keep it listening.
+Before Flask can handle a request, Gunicorn has to read its HTTP headers. A client that sends those headers slowly can keep the thread reading them occupied while using very little bandwidth. The application hasn't even started on the request, and it already costs the server a thread! Keep those threads waiting long enough to deny the monitor its answer.
