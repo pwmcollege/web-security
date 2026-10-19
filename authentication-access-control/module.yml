@@ -3,7 +3,7 @@ resources:
   - type: header
     content: Authentication Bypass
   - id: session-in-url
-    name: Say You're Admin
+    name: To Whom It May Concern
     type: challenge
     privileged: true
     interfaces:

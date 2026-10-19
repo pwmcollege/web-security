@@ -16,11 +16,9 @@ resources:
   - id: bind-shell
     name: Bind Shell
     type: challenge
-    privileged: true
   - id: reverse-shell
     name: Reverse Shell
     type: challenge
-    privileged: true
   - type: header
     content: URL & Encoding
   - name: Additional Resources
@@ -31,7 +29,7 @@ resources:
       - [Base64 (MDN)](https://developer.mozilla.org/en-US/docs/Glossary/Base64)
       - [URL-safe Base64 in Python](https://docs.python.org/3/library/base64.html#base64.urlsafe_b64encode)
   - id: percent-encoding
-    name: Percent Encoded
+    name: Fish & Chips
     type: challenge
     transfer:
       module: introduction

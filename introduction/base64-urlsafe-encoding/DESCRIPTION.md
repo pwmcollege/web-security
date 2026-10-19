@@ -12,6 +12,6 @@ b'+/8='
 b'-_8='
 ```
 
-Encode your executable with URL-safe base64 and send it in the `elf` query parameter of a GET request to `https://challenge.internal/`. The decoded executable must be no larger than 1 MiB and exit with status zero; the server applies a two-second execution timeout.
+Encode your executable with URL-safe base64 and send it in the `elf` query parameter of a GET request to `https://challenge.internal/`. The decoded executable must be no larger than 1 MiB. The server applies a two-second execution timeout.
 
-The server captures the program's standard output and standard error without including either in its response, so printing the flag won't get it back to you. Read `/challenge/server` and work out how your program can make `/flag` available to you.
+The server returns the program's standard output and standard error in the `stdout` and `stderr` fields of its JSON response. A nonzero exit status returns HTTP 400 with both fields. Send a program that reads `/flag` and prints it.

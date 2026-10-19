@@ -1,1 +1,6 @@
-../reverse-shell/.init
+#!/bin/bash
+
+find -L /challenge -type f -exec chmod 0444 {} +
+
+chmod 544 /challenge/server
+/challenge/server &
