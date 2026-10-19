@@ -30,9 +30,15 @@ resources:
       - [URL quoting in Python](https://docs.python.org/3/library/urllib.parse.html#url-quoting)
       - [Base64 (MDN)](https://developer.mozilla.org/en-US/docs/Glossary/Base64)
       - [URL-safe Base64 in Python](https://docs.python.org/3/library/base64.html#base64.urlsafe_b64encode)
-  - id: separator-smuggling
-    name: Query Me This
+  - id: percent-encoding
+    name: Percent Encoded
     type: challenge
-  - id: elf-delivery
+    transfer:
+      module: introduction
+      challenge: separator-smuggling
+  - id: base64-urlsafe-encoding
     name: ELFpress Delivery
     type: challenge
+    transfer:
+      module: introduction
+      challenge: elf-delivery
