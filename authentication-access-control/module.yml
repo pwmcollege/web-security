@@ -1,32 +1,21 @@
 name: Authentication and Access Control
+privileged: true
+interfaces:
+  - name: Challenge
+    port: 80
+  - name: Terminal
+    port: 7681
+  - name: Code
+    port: 8080
+  - name: Desktop
+    port: 6080
+  - name: SSH
 resources:
   - type: header
     content: Authentication Bypass
   - id: session-in-url
     name: To Whom It May Concern
     type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
   - id: session-in-cookie
     name: Bring Your Own Cookie
     type: challenge
-    privileged: true
-    interfaces:
-      - name: Challenge
-        port: 80
-      - name: Terminal
-        port: 7681
-      - name: Code
-        port: 8080
-      - name: Desktop
-        port: 6080
-      - name: SSH
