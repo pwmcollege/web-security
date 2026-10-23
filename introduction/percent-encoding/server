@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+
+@app.route("/", methods=["GET"])
+def index():
+    parameters = list(request.args.items(multi=True))
+
+    if not parameters:
+        return "Missing query parameter", 400
+
+    if len(parameters) > 1:
+        return "Too many query parameters", 400
+
+    name, order = parameters[0]
+
+    if name != "order":
+        return "Unknown query parameter", 400
+
+    if not order:
+        return "Empty order", 400
+
+    target = "fish&chips + salt #1 with coupon SAVE%20"
+
+    if order != target:
+        return "Wrong order", 400
+
+    with open("/flag", "r") as flag_file:
+        return flag_file.read(), 200
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)

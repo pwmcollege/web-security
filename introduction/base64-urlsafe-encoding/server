@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+
+import base64
+import binascii
+import errno
+import os
+import subprocess
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+
+@app.route("/", methods=["GET"])
+def run_elf():
+    encoded = request.args.get("elf", "")
+
+    if not encoded:
+        return "Missing elf query parameter", 400
+
+    try:
+        padding = "=" * (-len(encoded) % 4)
+        blob = base64.urlsafe_b64decode(encoded + padding)
+    except (ValueError, binascii.Error):
+        return "Invalid base64 payload", 400
+
+    if not blob.startswith(b"\x7fELF"):
+        return "Not an ELF binary", 400
+
+    if len(blob) > 1024 * 1024:
+        return "Binary too large", 400
+
+    if not hasattr(os, "memfd_create"):
+        return "memfd_create is unavailable", 500
+
+    fd = os.memfd_create("fp-bin", os.MFD_CLOEXEC)
+
+    with os.fdopen(fd, "wb", buffering=0) as binary:
+        binary.write(blob)
+        os.fchmod(fd, 0o700)
+        path = f"/proc/self/fd/{fd}"
+
+        try:
+            result = subprocess.run(
+                [path],
+                capture_output=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=2,
+                check=False,
+                pass_fds=(fd,),
+            )
+        except subprocess.TimeoutExpired:
+            return "Execution timed out", 400
+        except OSError as error:
+            if error.errno in (errno.ENOEXEC, errno.ELIBBAD) or (
+                error.errno == errno.ENOENT and os.path.exists(path)
+            ):
+                return "Invalid ELF binary", 400
+
+            if error.errno in (errno.EAGAIN, errno.ENOMEM):
+                return "Execution temporarily unavailable", 503
+
+            raise
+
+        return {
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+        }, 200
+
+
+app.config["SERVER_NAME"] = "challenge.internal"
+app.run(
+    "challenge.internal",
+    443,
+    ssl_context=(
+        "/etc/ssl/certs/internal.cert.pem",
+        "/etc/ssl/private/internal.key.pem",
+    ),
+)
