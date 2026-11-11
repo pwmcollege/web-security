@@ -45,9 +45,6 @@ resources:
   - id: cmdi-basic
     name: Big Type
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: cmdi-basic
     privileged: true
     interfaces:
       - name: Challenge
@@ -62,9 +59,6 @@ resources:
   - id: cmdi-quotes
     name: Quote Unquote
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: cmdi-quotes
     privileged: true
     interfaces:
       - name: Challenge
@@ -79,9 +73,6 @@ resources:
   - id: cmdi-filter
     name: Redacted
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: cmdi-filter
     privileged: true
     interfaces:
       - name: Challenge
@@ -96,9 +87,6 @@ resources:
   - id: cmdi-blind
     name: Blackout
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: cmdi-blind
     privileged: true
     interfaces:
       - name: Challenge
@@ -113,9 +101,6 @@ resources:
   - id: cmdi-sandbox
     name: Solitary
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: cmdi-sandbox
     privileged: true
     interfaces:
       - name: Challenge
@@ -132,9 +117,6 @@ resources:
   - id: trav-basic
     name: One Level Up
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: trav-basic
     privileged: true
     interfaces:
       - name: Challenge
@@ -149,9 +131,6 @@ resources:
   - id: trav-replace
     name: Second Pass
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: trav-replace
     privileged: true
     interfaces:
       - name: Challenge
@@ -166,9 +145,6 @@ resources:
   - id: trav-absolute
     name: Dot Dot Denied
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: trav-absolute
     privileged: true
     interfaces:
       - name: Challenge
@@ -183,9 +159,6 @@ resources:
   - id: trav-strip
     name: Strip Search
     type: challenge
-    transfer:
-      module: server-side-exploitation
-      challenge: trav-strip
     privileged: true
     interfaces:
       - name: Challenge
