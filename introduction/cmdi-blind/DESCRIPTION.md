@@ -1,3 +1,0 @@
-Now the server has stopped showing its work! It still runs a command for each accepted request, but it throws away the command's output and sends back the same confirmation. An injected command could print the entire flag and the page would look exactly as if `figlet` had run normally.
-
-The filter and your injection technique are unchanged from the previous challenge, but the response no longer tells you what your command did, so you're now dealing with *blind command injection*. Printing isn't the only effect a command can have, though; it can also change a file or send data, giving you other ways to observe its result from your terminal.

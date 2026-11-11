@@ -1,9 +1,0 @@
-Web applications often do more than just serve static pages: a photo-sharing site might resize an uploaded picture before displaying it, while a reporting service might turn submitted data into a PDF before sending it back to the user.
-
-Established command-line tools already handle jobs like these, so reusing their tested implementations saves the application's developers from writing and maintaining their own image converters or document renderers. One convenient way to call them is to *shell out*: the application builds a command with the desired options, perhaps including a filename or some text from the request, then asks a shell to run it and collects the result.
-
-This connection between web requests and local programs goes back to the early web: the [Common Gateway Interface (CGI)](https://www.rfc-editor.org/rfc/rfc3875.html), in use since 1993, let a web server pass a request to an external program and use its output to answer the client. These programs had access to local files and tools, so mistakes in how they handled request data could let an attacker read private files or execute commands on the server.
-
-The shell parses the complete command string, so if the application trusts user input without proper quoting or validation, characters from the request can become shell syntax. A `;`, for example, can separate the intended command from another one, giving you control over what the server executes when you were only supposed to supply text or a filename! This is *command injection*, which lets an attacker run injected commands with the server process's permissions.
-
-In this challenge, the application uses `figlet` to turn your text into an ASCII banner, and your goal is to exploit its command injection vulnerability to read `/flag`. Read `/challenge/server` to see how it runs the command.
