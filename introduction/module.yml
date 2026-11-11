@@ -31,15 +31,9 @@ resources:
   - id: percent-encoding
     name: Fish & Chips
     type: challenge
-    transfer:
-      module: introduction
-      challenge: separator-smuggling
   - id: base64-urlsafe-encoding
     name: ELFpress Delivery
     type: challenge
-    transfer:
-      module: introduction
-      challenge: elf-delivery
   - type: header
     content: Command Injection
   - id: cmdi-basic
