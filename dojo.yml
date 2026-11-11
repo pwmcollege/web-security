@@ -11,3 +11,4 @@ modules:
   - id: dom-clobbering
   - id: request-forgery
   - id: denial-of-service
+  - id: server-side-exploitation
