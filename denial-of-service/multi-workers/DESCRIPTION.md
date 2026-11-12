@@ -1,3 +1,3 @@
 One worker was easy to tie up, so let's give the service 32! Each is a separate synchronous Gunicorn process. Holding one up leaves 31 others ready to answer the monitor, which is a much more sensible arrangement for a web server.
 
-The workers still have the same weakness: each waits on its current client before moving on to another. Now your requests need to overlap, keeping the whole pool occupied. As requests finish or connections close, workers become available again, giving a health check a chance to slip through. Take a look at `/challenge/gunicorn.conf.py` and adapt what worked last time to keep all 32 waiting on you.
+The workers still have the same weakness, each waits on its current client before moving on to another. Now your requests need to overlap, keeping the whole pool occupied, and as requests finish or connections close, workers become available again, giving a health check a chance to slip through.

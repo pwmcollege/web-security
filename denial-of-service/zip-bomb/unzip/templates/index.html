@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="csrf-token" content="{{ csrf_token }}" />
+        <meta name="description" content="Open a ZIP archive and download the files inside." />
+        <title>Unzip</title>
+        <link rel="stylesheet" href="./fonts/geist.css" />
+        <link rel="stylesheet" href="./static/style.css" />
+        <script src="./static/app.js" defer></script>
+    </head>
+    <body>
+        <a class="skip-link" href="#main">Skip to content</a>
+        <header class="site-header">
+            <div class="header-inner">
+                <a class="brand" href="./" aria-label="Unzip home">Unzip<span class="brand-dot" aria-hidden="true">.</span></a>
+            </div>
+        </header>
+        <main id="main" class="workspace">
+            <div class="content">
+                <section id="upload-view" aria-labelledby="page-title">
+                    <div class="intro">
+                        <h1 id="page-title">Extract ZIP Archive</h1>
+                    </div>
+                    <form id="archive-form">
+                        <input id="archive-input" type="file" accept=".zip,application/zip,application/x-zip-compressed" hidden />
+                        <div id="drop-zone" class="drop-zone">
+                            <div id="empty-state">
+                                <h2>Drop a ZIP here</h2>
+                            </div>
+                            <div id="selected-state" hidden>
+                                <h2 id="selected-name" class="selected-name"></h2>
+                                <p id="selected-size" class="drop-description"></p>
+                            </div>
+                            <div class="file-controls">
+                                <button id="browse-button" class="button button-primary" type="button">Choose file</button>
+                                <button id="remove-button" class="button button-secondary button-destructive" type="button" aria-label="Remove file" hidden>Remove</button>
+                            </div>
+                            <p id="file-limit" class="file-limit">ZIP · Up to 1 MB</p>
+                        </div>
+                        <div id="selection-actions" class="selection-actions" hidden>
+                            <button id="extract-button" class="button button-primary" type="submit">
+                                <span id="extract-label">Extract files</span>
+                                <svg id="extract-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
+                                <span id="extract-spinner" class="spinner" aria-hidden="true" hidden></span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <section id="results-view" aria-labelledby="results-title" hidden>
+                    <div class="results-heading">
+                        <div class="result-summary">
+                            <h1 id="results-title" tabindex="-1"></h1>
+                        </div>
+                        <button id="reset-button" class="button button-primary" type="button" aria-label="Upload another" title="Upload another">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m-4 4 4-4 4 4M5 16v4h14v-4"/></svg>
+                            <span class="reset-label">Upload another</span>
+                        </button>
+                    </div>
+                    <div id="file-list" class="file-list">
+                        <div class="file-toolbar">
+                            <nav class="folder-navigation" aria-label="Folder location">
+                                <ol id="folder-breadcrumbs"></ol>
+                            </nav>
+                        </div>
+                        <div class="file-list-heading" aria-hidden="true"><span>Name</span><span>Size</span><span></span></div>
+                        <ul id="file-rows" aria-label="Extracted files"></ul>
+                    </div>
+                    <div id="empty-archive" class="empty-archive" hidden>
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2Z"/></svg>
+                        <h2>This archive is empty</h2>
+                        <p>There are no files to download.</p>
+                    </div>
+                </section>
+
+                <div id="error-message" class="error-message" role="alert" hidden>
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/></svg>
+                    <p id="error-text"></p>
+                </div>
+                <p id="status-message" class="sr-only" role="status" aria-live="polite"></p>
+                <noscript><p class="error-message">Enable JavaScript to open an archive.</p></noscript>
+            </div>
+        </main>
+        <template id="file-row-template">
+            <li class="file-row">
+                <div class="file-details">
+                    <svg class="file-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
+                    <span class="file-path"></span>
+                </div>
+                <span class="file-size"></span>
+                <a class="download-link" download><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg></a>
+            </li>
+        </template>
+        <template id="folder-row-template">
+            <li>
+                <button class="file-row folder-row" type="button">
+                    <span class="file-details">
+                        <svg class="file-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2Z"/></svg>
+                        <span class="file-path"></span>
+                    </span>
+                    <span class="file-size"></span>
+                    <svg class="folder-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+                </button>
+            </li>
+        </template>
+    </body>
+</html>
