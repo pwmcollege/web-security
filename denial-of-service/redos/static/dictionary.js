@@ -24,7 +24,7 @@ let searchAnimation;
 
 function renderEntry(entry) {
     const item = template.content.firstElementChild.cloneNode(true);
-    item.querySelector("h2").textContent = entry.word;
+    item.querySelector("h1").textContent = entry.word;
     item.querySelector("[data-pronunciation]").textContent = entry.pronunciation;
 
     const [definitions, extraDefinitions] = item.querySelectorAll("ol");
@@ -195,5 +195,5 @@ pageJump.addEventListener("submit", (event) => {
 
 previous.addEventListener("click", () => load(page - 1));
 next.addEventListener("click", () => load(page + 1));
-window.lucide?.createIcons();
+window.lucide?.createIcons({ attrs: { "stroke-width": "1.5" }, inTemplates: true });
 load(1);

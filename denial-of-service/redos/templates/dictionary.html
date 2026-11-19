@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="scheme-light bg-white font-sans text-[#18181b] antialiased">
+<html lang="en" class="scheme-light bg-white font-sans text-(--color-ink) antialiased">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dictionary</title>
+        <link rel="icon" href="data:," />
         <link rel="stylesheet" href="https://cdn.internal/fonts/geist.css" />
         <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='dictionary.css') }}" />
@@ -11,74 +12,75 @@
         <script defer src="https://cdn.internal/motion/motion.min.js"></script>
         <script type="module" src="{{ url_for('static', filename='dictionary.js') }}"></script>
     </head>
-    <body class="m-0 flex h-screen flex-col supports-[height:100dvh]:h-dvh">
-        <main class="flex min-h-0 flex-1 flex-col">
-            <form class="search mt-4 flex min-h-14 w-4/5 shrink-0 items-center justify-between self-center
-                         gap-[clamp(0.375rem,1.4vw,0.875rem)] rounded-[999px] bg-[#fafafa] py-1 pr-2
-                         pl-[clamp(0.75rem,2vw,1.5rem)]"
+    <body class="m-0 flex h-dvh min-h-72 flex-col">
+        <header class="site-header mx-auto mt-4 w-[min(80%,64rem)] shrink-0 rounded-full bg-(--color-surface)
+                       shadow-(--shadow-island) max-[36rem]:w-[calc(100%-1.5rem)]">
+            <form class="search relative flex min-h-14 items-center gap-[clamp(0.375rem,1.4vw,0.875rem)] py-1 pe-1.75
+                         ps-[clamp(0.75rem,2vw,1.5rem)]"
                   action="{{ url_for('lookup') }}" method="post" role="search">
-                <h1 class="m-0 shrink-0 text-[1.1875rem] font-extrabold tracking-tight">
-                    <a class="text-inherit no-underline" href="{{ url_for('index') }}">Dictionary<span class="ml-0.5 inline-block size-1 rounded-full bg-[#d4d4d8]" aria-hidden="true"></span></a>
-                </h1>
-                <div class="search-control ms-auto flex h-9 min-w-11 flex-[0_1_2.75rem] items-center rounded-[999px]
-                            has-[.search-fields:not([inert])]:basis-80 has-[.search-fields:not([inert])]:bg-[#f0f0f2]
-                            pointer-coarse:h-10 motion-safe:[transition:background-color_150ms]">
-                    <button class="search-action grid min-h-11 flex-[0_0_2.75rem] cursor-pointer place-items-center
-                                   rounded-[999px] border-0 bg-transparent p-0 text-inherit"
-                            type="button" aria-label="Open search" aria-expanded="false" aria-controls="word-search">
-                        <i class="size-5" data-lucide="search" aria-hidden="true"></i>
+                <a class="wordmark inline-flex min-h-11 shrink-0 items-center rounded-lg text-[1.1875rem] font-extrabold
+                          tracking-[-0.04em] text-inherit no-underline"
+                   href="{{ url_for('index') }}"><span>Dictionary<span class="ms-0.5 inline-block size-1 rounded-full bg-[#a1a1aa]" aria-hidden="true"></span></span></a>
+                <div class="search-control ms-auto flex h-11 min-w-11 items-center rounded-full
+                            has-[.search-fields:not([inert])]:basis-80 has-[.search-fields:not([inert])]:bg-(--color-field)
+                            motion-safe:transition-colors motion-safe:duration-150">
+                    <button class="search-action search-button" type="button"
+                            aria-label="Open search" aria-expanded="false" aria-controls="word-search">
+                        <i class="size-4.5" data-lucide="search" aria-hidden="true"></i>
+                        <span class="search-label">Search</span>
                     </button>
                     <div class="search-fields flex h-11 min-w-0 flex-1 items-center overflow-clip opacity-0
-                                [&:not([inert])]:opacity-100" inert>
-                        <input class="h-full w-0 min-w-0 flex-1 rounded-[inherit] border-0 bg-transparent p-0
-                                      text-[0.9375rem] leading-[1.6] text-inherit [font-family:inherit]
-                                      placeholder:text-[#52525b] pointer-coarse:h-11 pointer-coarse:text-[1rem]"
+                                [contain:inline-size] [&:not([inert])]:opacity-100" inert>
+                        <input class="h-full w-0 min-w-0 flex-1 bg-transparent p-0 text-sm/6
+                                      placeholder:text-(--color-muted) pointer-coarse:text-base"
                                type="text" id="word-search" name="query" aria-label="Search"
                                placeholder="Search" autocomplete="off" autocapitalize="off"
                                spellcheck="false" enterkeyhint="search" />
-                        <button class="search-close grid min-h-11 flex-[0_0_2.75rem] cursor-pointer place-items-center
-                                       rounded-[999px] border-0 bg-transparent p-0 text-inherit"
-                                type="button" aria-label="Close search">
-                            <i class="size-5" data-lucide="x" aria-hidden="true"></i>
+                        <button class="search-close search-button" type="button" aria-label="Close search">
+                            <i class="size-4.5" data-lucide="x" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
             </form>
-            <section class="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-[clamp(1.75rem,6vw,4rem)]"
+        </header>
+        <main class="flex min-h-0 flex-1 flex-col">
+            <section class="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-[clamp(1.75rem,6vw,4rem)]
+                            max-[36rem]:px-4.5"
                      id="hero" aria-label="Dictionary entry">
-                <p class="m-auto w-full max-w-[40rem] flex-none px-4 py-3 text-center text-[0.875rem] text-[#52525b]"
+                <p class="m-auto w-full max-w-[40rem] flex-none px-4 py-3 text-center text-sm text-(--color-muted)"
                    id="notice" role="status" hidden></p>
                 <div class="m-auto w-full max-w-[40rem] flex-none wrap-anywhere empty:hidden
-                            [&_i]:text-[#52525b] [&_li+li]:mt-2" id="entry"></div>
+                            [&_i]:text-(--color-muted) [&_li+li]:mt-2" id="entry"></div>
             </section>
-            <nav class="pagination grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 py-3
-                        text-[0.8125rem] sm:px-6" id="pagination" aria-label="Pagination" hidden>
-                <button class="cursor-pointer justify-self-start rounded-[999px] border-0 bg-transparent px-3 py-2.5
-                               text-inherit [font-family:inherit] [font-size:inherit] font-semibold
-                               [&:hover:enabled]:bg-[#f4f4f5] disabled:cursor-default disabled:text-[#a1a1aa]"
+            <nav class="mx-auto grid w-[calc(100%-3rem)] max-w-[40rem] shrink-0 grid-cols-[1fr_auto_1fr]
+                        items-center gap-2 border-t border-(--color-rule) py-2.5 text-sm max-[36rem]:w-[calc(100%-2.25rem)]"
+                 id="pagination" aria-label="Pagination" hidden>
+                <button class="page-button justify-self-start rounded-lg pe-2"
                         id="previous" type="button">Previous</button>
-                <form class="page flex items-center gap-1.5 whitespace-nowrap text-[#52525b] tabular-nums" id="page-jump">
-                    <input class="w-[7ch] rounded-[6px] border-[0.0625rem] border-solid border-[#e4e4e7] [appearance:textfield]
-                                  bg-[#fafafa] p-1 text-center text-[#18181b] tabular-nums [font-family:inherit] [font-size:inherit]
-                                  focus:border-[#18181b] focus:bg-white"
+                <form class="page flex items-center gap-1 whitespace-nowrap text-(--color-muted) tabular-nums" id="page-jump">
+                    <input class="min-h-9 w-[7ch] rounded-lg border border-transparent px-1.5 text-end
+                                  text-(--color-ink) [appearance:textfield] focus:border-(--color-ink) focus:bg-(--color-surface)
+                                  pointer-coarse:text-base"
                            type="number" id="page" min="1" step="1" required aria-label="Page number"
                            aria-describedby="page-count" enterkeyhint="go" />
                     <span id="page-count"></span>
                 </form>
-                <button class="cursor-pointer justify-self-end rounded-[999px] border-0 bg-transparent px-3 py-2.5
-                               text-inherit [font-family:inherit] [font-size:inherit] font-semibold
-                               [&:hover:enabled]:bg-[#f4f4f5] disabled:cursor-default disabled:text-[#a1a1aa]"
+                <button class="page-button justify-self-end rounded-lg ps-2"
                         id="next" type="button">Next</button>
             </nav>
         </main>
         <template id="entry-template">
             <article>
-                <h2 class="m-0 text-[clamp(2.25rem,8vw,4rem)] leading-[1.05] font-[750] tracking-[-0.05em]"></h2>
-                <p class="mt-2 mb-6 text-[1.125rem] text-[#52525b]" data-pronunciation></p>
-                <ol class="m-0 list-decimal pl-[1.4em] text-[1.0625rem] leading-[1.6]"></ol>
-                <details hidden>
-                    <summary class="mt-4 mb-2 w-fit cursor-pointer text-[0.8125rem] text-[#52525b]">More definitions</summary>
-                    <ol class="m-0 list-decimal pl-[1.4em] text-[1.0625rem] leading-[1.6]" start="3"></ol>
+                <h1 class="m-0 text-[clamp(2.25rem,8vw,3.25rem)] leading-[1.08] font-[750] tracking-[-0.04em]"></h1>
+                <p class="mt-2 text-[1.125rem] text-(--color-muted) empty:hidden" data-pronunciation></p>
+                <ol class="mt-6 list-decimal ps-[1.4em] text-[1.0625rem]/[1.6]"></ol>
+                <details class="group mt-2" hidden>
+                    <summary class="flex min-h-11 w-fit cursor-pointer list-none items-center gap-1.5 rounded-lg pe-2
+                                    text-sm text-(--color-muted) hover:text-black [&::-webkit-details-marker]:hidden">
+                        More definitions
+                        <i class="size-3.5 group-open:rotate-180" data-lucide="chevron-down" aria-hidden="true"></i>
+                    </summary>
+                    <ol class="list-decimal ps-[1.4em] text-[1.0625rem]/[1.6]" start="3"></ol>
                 </details>
             </article>
         </template>
