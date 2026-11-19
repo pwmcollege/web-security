@@ -21,7 +21,7 @@ body {
 h1 {
     flex-shrink: 0;
     margin: 0;
-    font-size: 19px;
+    font-size: 1.1875rem;
     font-weight: 800;
     letter-spacing: -0.025em;
 }
@@ -33,9 +33,9 @@ a {
 
 h1 span {
     display: inline-block;
-    width: 4px;
-    height: 4px;
-    margin-left: 2px;
+    width: 0.25rem;
+    height: 0.25rem;
+    margin-left: 0.125rem;
     border-radius: 50%;
     background: #d4d4d8;
 }
@@ -53,29 +53,29 @@ main {
     align-items: center;
     align-self: center;
     justify-content: space-between;
-    gap: clamp(6px, 1.4vw, 14px);
+    gap: clamp(0.375rem, 1.4vw, 0.875rem);
     width: 80%;
-    min-height: 56px;
-    margin: 16px 0 0;
-    padding: 4px 8px 4px clamp(12px, 2vw, 24px);
+    min-height: 3.5rem;
+    margin: 1rem 0 0;
+    padding: 0.25rem 0.5rem 0.25rem clamp(0.75rem, 2vw, 1.5rem);
     border-radius: 999px;
     background: #fafafa;
-    box-shadow: 0 1px 4px rgb(24 24 27 / 0.08), 0 6px 18px rgb(24 24 27 / 0.07);
+    box-shadow: 0 0.0625rem 0.25rem rgb(24 24 27 / 0.08), 0 0.375rem 1.125rem rgb(24 24 27 / 0.07);
 }
 
 .search-control {
     display: flex;
-    flex: 0 1 44px;
+    flex: 0 1 2.75rem;
     align-items: center;
-    min-width: 44px;
-    height: 36px;
+    min-width: 2.75rem;
+    height: 2.25rem;
     margin-inline-start: auto;
     border-radius: 999px;
     transition: background-color 150ms;
 }
 
 .search-control:has(.search-fields:not([inert])) {
-    flex-basis: 320px;
+    flex-basis: 20rem;
     background: #f0f0f2;
 }
 
@@ -84,7 +84,7 @@ main {
     flex: 1;
     align-items: center;
     min-width: 0;
-    height: 44px;
+    height: 2.75rem;
     overflow: clip;
     opacity: 0;
 }
@@ -104,8 +104,8 @@ main {
     background: transparent;
     color: inherit;
     font: inherit;
-    font-size: 15px;
-    line-height: 24px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
 }
 
 .search input::placeholder {
@@ -118,9 +118,9 @@ main {
 
 .search button {
     display: grid;
-    flex: 0 0 44px;
+    flex: 0 0 2.75rem;
     place-items: center;
-    min-height: 44px;
+    min-height: 2.75rem;
     padding: 0;
     border: 0;
     border-radius: 999px;
@@ -135,20 +135,20 @@ main {
 }
 
 .search button[aria-expanded="false"]:hover::before {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     background: #e8e8eb;
     content: "";
 }
 
 .search button:focus-visible {
-    outline-offset: -5px;
+    outline-offset: -0.3125rem;
 }
 
 :focus-visible {
-    outline: 2px solid #18181b;
-    outline-offset: 3px;
+    outline: 0.125rem solid #18181b;
+    outline-offset: 0.1875rem;
 }
 
 .hero {
@@ -157,13 +157,13 @@ main {
     flex-direction: column;
     min-height: 0;
     overflow-y: auto;
-    padding: clamp(28px, 6vw, 64px) 24px;
+    padding: clamp(1.75rem, 6vw, 4rem) 1.5rem;
 }
 
 .entry,
 .notice {
     flex: none;
-    width: min(100%, 640px);
+    width: min(100%, 40rem);
     margin: auto;
 }
 
@@ -177,27 +177,27 @@ main {
 
 .entry h2 {
     margin: 0;
-    font-size: clamp(36px, 8vw, 64px);
+    font-size: clamp(2.25rem, 8vw, 4rem);
     font-weight: 750;
     letter-spacing: -0.05em;
     line-height: 1.05;
 }
 
 .pronunciation {
-    margin: 8px 0 24px;
+    margin: 0.5rem 0 1.5rem;
     color: #52525b;
-    font-size: 18px;
+    font-size: 1.125rem;
 }
 
 .entry ol {
     margin: 0;
     padding-left: 1.4em;
-    font-size: 17px;
+    font-size: 1.0625rem;
     line-height: 1.6;
 }
 
 .entry ol li + li {
-    margin-top: 8px;
+    margin-top: 0.5rem;
 }
 
 .entry i {
@@ -206,9 +206,9 @@ main {
 
 .entry summary {
     width: fit-content;
-    margin: 16px 0 8px;
+    margin: 1rem 0 0.5rem;
     color: #52525b;
-    font-size: 13px;
+    font-size: 0.8125rem;
     cursor: pointer;
 }
 
@@ -217,9 +217,9 @@ main {
     flex-shrink: 0;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    font-size: 13px;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
 }
 
 .pagination > :first-child {
@@ -231,7 +231,7 @@ main {
 }
 
 .pagination button {
-    padding: 10px 12px;
+    padding: 0.625rem 0.75rem;
     border: 0;
     border-radius: 999px;
     background: transparent;
@@ -262,7 +262,7 @@ main {
 .page {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 0.375rem;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
@@ -270,8 +270,8 @@ main {
 .page input {
     appearance: textfield;
     width: 7ch;
-    padding: 4px;
-    border: 1px solid #e4e4e7;
+    padding: 0.25rem;
+    border: 0.0625rem solid #e4e4e7;
     border-radius: 6px;
     background: #fafafa;
     color: #18181b;
@@ -291,9 +291,9 @@ main {
 }
 
 .notice {
-    padding: 12px 16px;
+    padding: 0.75rem 1rem;
     text-align: center;
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 .error {
@@ -302,21 +302,23 @@ main {
     color: #be123c;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 40em) {
     .pagination {
-        padding-inline: 24px;
+        padding-inline: 1.5rem;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 30em) {
     .search {
         position: relative;
     }
 
     .search h1 {
         position: absolute;
-        inset-inline-start: 12px;
+        inset-inline-start: 0.75rem;
         top: 50%;
+        max-width: calc(100% - 4rem);
+        overflow-wrap: anywhere;
         transform: translateY(-50%);
         transition: opacity 110ms ease 170ms, visibility 0s 170ms;
     }
@@ -328,14 +330,35 @@ main {
     }
 }
 
+@media (max-width: 20em) {
+    .pagination {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .pagination > :last-child {
+        margin-inline-start: auto;
+    }
+
+    .page {
+        min-width: 0;
+        margin-inline: auto;
+    }
+
+    .page input {
+        min-width: 0;
+    }
+}
+
 @media (pointer: coarse) {
     .search-control {
-        height: 40px;
+        height: 2.5rem;
     }
 
     .search input {
-        height: 44px;
-        font-size: 16px;
+        height: 2.75rem;
+        font-size: 1rem;
     }
 }
 
@@ -352,28 +375,28 @@ main {
     }
 
     .search-control:focus-within:has(.search-fields:not([inert])) {
-        outline: 2px solid #18181b;
-        outline-offset: -2px;
+        outline: 0.125rem solid #18181b;
+        outline-offset: -0.125rem;
     }
 }
 
 @media (forced-colors: active) {
     .search {
-        outline: 1px solid CanvasText;
+        outline: 0.0625rem solid CanvasText;
     }
 
     .search button {
-        border: 1px solid ButtonText;
+        border: 0.0625rem solid ButtonText;
     }
 
     .search-control:focus-within:has(.search-fields:not([inert])) {
-        outline: 2px solid Highlight;
-        outline-offset: -2px;
+        outline: 0.125rem solid Highlight;
+        outline-offset: -0.125rem;
     }
 
     .page input:focus {
         border-color: Highlight;
-        outline: 2px solid Highlight;
-        outline-offset: 2px;
+        outline: 0.125rem solid Highlight;
+        outline-offset: 0.125rem;
     }
 }

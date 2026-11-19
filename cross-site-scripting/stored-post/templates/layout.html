@@ -11,21 +11,21 @@
     </head>
     <body class="min-h-full bg-white text-zinc-900 font-sans antialiased flex flex-col">
         {% if not hide_chrome %}
-            <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100">
-                <div class="mx-auto max-w-[600px] h-[60px] px-5 flex items-center justify-between">
+            <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-[1.5rem] border-b-[0.0625rem] border-zinc-100">
+                <div class="mx-auto max-w-[37.5rem] h-[3.75rem] px-5 flex items-center justify-between">
                     <a href="/"
-                       class="text-[19px] font-extrabold tracking-tight text-zinc-900 select-none">
+                       class="text-[1.1875rem] font-extrabold tracking-tight text-zinc-900 select-none">
                         pwnpost<span class="text-zinc-300">.</span>
                     </a>
                     <button type="button"
                             id="logout"
-                            class="cursor-pointer text-[13px] font-medium text-zinc-400 hover:text-zinc-900 transition-colors">
+                            class="cursor-pointer text-[0.8125rem] font-medium text-zinc-400 hover:text-zinc-900 motion-safe:transition-colors">
                         Log out
                     </button>
                 </div>
             </header>
         {% endif %}
-        <main class="flex-grow w-full mx-auto max-w-[600px] sm:border-x border-zinc-100">
+        <main class="flex-grow w-full mx-auto max-w-[37.5rem] sm:border-x-[0.0625rem] border-zinc-100">
             {% block content %}{% endblock %}
         </main>
         <script>

@@ -27,17 +27,17 @@ button:not(:disabled) {
 }
 
 :focus-visible {
-    outline: 2px solid #18181b;
-    outline-offset: 4px;
+    outline: 0.125rem solid #18181b;
+    outline-offset: 0.25rem;
 }
 
 .skip-link {
     position: fixed;
-    top: 12px;
-    left: 12px;
+    top: 0.75rem;
+    left: 0.75rem;
     z-index: 50;
     border-radius: 6px;
-    padding: 10px 14px;
+    padding: 0.625rem 0.875rem;
     background: #18181b;
     color: white;
     transform: translateY(-150%);
@@ -84,7 +84,7 @@ button:not(:disabled) {
 
 .overall-status {
     border-color: var(--status-border);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.03);
+    box-shadow: 0 0.0625rem 0.125rem rgb(0 0 0 / 0.03);
     transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -131,7 +131,7 @@ button:not(:disabled) {
 }
 
 .history-bars {
-    gap: 2px;
+    gap: min(0.125rem, 0.5%);
 }
 
 .history-bar {
@@ -164,21 +164,23 @@ button:not(:disabled) {
 }
 
 .history-tooltip {
+    --tooltip-half-width: min(5.625rem, 50%);
     position: absolute;
     z-index: 10;
-    bottom: calc(100% + 10px);
-    left: clamp(90px, var(--tooltip-position, 50%), calc(100% - 90px));
-    width: 180px;
-    border: 1px solid #e4e4e7;
+    bottom: calc(100% + 0.625rem);
+    left: clamp(var(--tooltip-half-width), var(--tooltip-position, 50%), calc(100% - var(--tooltip-half-width)));
+    width: min(11.25rem, 100%);
+    border: 0.0625rem solid #e4e4e7;
     border-radius: 12px;
-    padding: 10px 12px;
+    padding: 0.625rem 0.75rem;
     background: white;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
-    font-size: 12px;
-    line-height: 18px;
+    box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 0.06);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
     opacity: 0;
     pointer-events: none;
-    transform: translate(-50%, 4px) scale(0.98);
+    transform: translate(-50%, 0.25rem) scale(0.98);
     transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1), transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -189,8 +191,8 @@ button:not(:disabled) {
 
 .tooltip-result::before {
     content: "";
-    width: 6px;
-    height: 6px;
+    width: 0.375rem;
+    height: 0.375rem;
     flex-shrink: 0;
     border-radius: 50%;
     background: var(--status);
@@ -239,7 +241,7 @@ button:not(:disabled) {
 @keyframes reveal {
     from {
         opacity: 0;
-        transform: translateY(-4px);
+        transform: translateY(-0.25rem);
     }
 
     to {
@@ -248,9 +250,9 @@ button:not(:disabled) {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 30em) {
     .history-bars {
-        gap: 1px;
+        gap: min(0.0625rem, 0.5%);
     }
 }
 
@@ -264,5 +266,9 @@ button:not(:disabled) {
     *::after {
         animation: none !important;
         transition: none !important;
+    }
+
+    .history-bar.is-selected {
+        transform: none;
     }
 }

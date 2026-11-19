@@ -52,7 +52,7 @@ function setSearchOpen(open) {
 
     const width = searchControl.getBoundingClientRect().width;
     const opacity = Number(getComputedStyle(searchFields).opacity);
-    searchAnimation?.stop();
+    searchAnimation?.cancel();
     searchAnimation = undefined;
     clearSearchAnimationStyles();
 
@@ -63,12 +63,14 @@ function setSearchOpen(open) {
 
     if (!animateSearch || reducedMotion.matches) return;
 
-    const targetWidth = searchControl.getBoundingClientRect().width;
-    searchControl.style.flexBasis = `${width}px`;
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const currentBasis = `${width / rootFontSize}rem`;
+    const targetBasis = `${searchControl.getBoundingClientRect().width / rootFontSize}rem`;
+    searchControl.style.flexBasis = currentBasis;
     searchFields.style.opacity = opacity;
 
     const animation = animateSearch([
-        [searchControl, { flexBasis: [`${width}px`, `${targetWidth}px`] }, open
+        [searchControl, { flexBasis: [currentBasis, targetBasis] }, open
             ? { type: "spring", duration: 0.28, bounce: 0 }
             : { duration: 0.36, ease: [0.35, 0, 0.2, 1] }],
         [searchFields, { opacity: [opacity, open ? 1 : 0] }, {
