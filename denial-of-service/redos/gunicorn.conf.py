@@ -1,7 +1,7 @@
 from gunicorn.sock import ssl_context as create_ssl_context
 
 wsgi_app = "wsgi:application"
-bind = "victim.internal:443"
+bind = "app.internal:443"
 certfile = "/etc/ssl/certs/internal.cert.pem"
 keyfile = "/etc/ssl/private/internal.key.pem"
 loglevel = "info"

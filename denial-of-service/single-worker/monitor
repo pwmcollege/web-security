@@ -57,7 +57,7 @@ def probe_loop():
     while True:
         try:
             r = session.get(
-                "https://victim.internal:443/health",
+                "https://app.internal:443/health",
                 timeout=(1, 2),
                 verify="/etc/ssl/certs/internal.cert.pem",
             )

@@ -3,7 +3,7 @@
 find -L /challenge -type f -exec chmod 0444 {} +
 echo -e "10.0.13.37\tchallenge.internal" >>/etc/hosts
 echo -e "10.0.13.36\tcdn.internal" >>/etc/hosts
-echo -e "10.0.13.38\tvictim.internal" >>/etc/hosts
+echo -e "10.0.13.38\tapp.internal" >>/etc/hosts
 
 # Network setup
 ip addr add 10.0.13.36/32 dev eth0
@@ -30,7 +30,7 @@ mkdir -p /var/log/gunicorn
 cd /challenge
 gunicorn --daemon
 
-until curl -fs --cacert /etc/ssl/certs/internal.cert.pem https://victim.internal/health >/dev/null; do sleep 0.1; done
+until curl -fs --cacert /etc/ssl/certs/internal.cert.pem https://app.internal/health >/dev/null; do sleep 0.1; done
 
 nginx -c /challenge/nginx.conf
 

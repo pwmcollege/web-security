@@ -232,6 +232,7 @@
         const title = byId("results-title");
         const summary = byId("results-summary");
         title.textContent = data.name;
+        title.title = data.name;
         summary.textContent = `${count} ${count === 1 ? "file" : "files"} · ${formatSize(data.total_size)}`;
         summary.hidden = count === 0;
         byId("file-list").hidden = count === 0;

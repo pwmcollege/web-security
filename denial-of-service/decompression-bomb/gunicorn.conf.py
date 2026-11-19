@@ -1,5 +1,5 @@
 wsgi_app = "wsgi:create_app()"
-bind = "victim.internal:443"
+bind = "app.internal:443"
 certfile = "/etc/ssl/certs/internal.cert.pem"
 keyfile = "/etc/ssl/private/internal.key.pem"
 loglevel = "info"

@@ -41,9 +41,9 @@
                     <p id="statusDescription" class="px-4 py-4 text-sm leading-6 text-zinc-700">
                         <span data-banner-state="checking">Waiting for the first health check.</span>
                         <span data-banner-state="disconnected">The connection to the monitor was lost. Showing the last received checks while reconnecting…</span>
-                        <span data-banner-state="operational">No issues detected with victim.internal.</span>
-                        <span data-banner-state="degraded">Some health checks are failing for victim.internal.</span>
-                        <span data-banner-state="outage">Health checks are consistently failing for victim.internal.</span>
+                        <span data-banner-state="operational">No issues detected with app.internal.</span>
+                        <span data-banner-state="degraded">Some health checks are failing for app.internal.</span>
+                        <span data-banner-state="outage">Health checks are consistently failing for app.internal.</span>
                     </p>
                 </section>
                 <section id="flagCard" class="flag-card rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4" aria-labelledby="flagHeading" hidden>
@@ -69,7 +69,7 @@
                             <span class="status-icons status-color shrink-0" aria-hidden="true">
                                 <i data-lucide="clock-3" class="checking-icon h-4 w-4"></i><i data-lucide="circle-check" class="operational-icon h-4 w-4"></i><i data-lucide="triangle-alert" class="degraded-icon h-4 w-4"></i><i data-lucide="circle-x" class="outage-icon h-4 w-4"></i>
                             </span>
-                            <span class="text-sm font-medium" translate="no">victim.internal</span>
+                            <span class="text-sm font-medium" translate="no">app.internal</span>
                             <span id="uptime" class="ml-auto text-xs tabular-nums text-zinc-600" aria-describedby="uptimeHelp"><span id="uptimeValue" hidden></span><span id="unknownUptime">—</span> uptime</span>
                         </div>
                         <div class="history-wrap relative mt-2">

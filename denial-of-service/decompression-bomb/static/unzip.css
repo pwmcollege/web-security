@@ -315,7 +315,10 @@ h1 {
 #results-title {
     width: fit-content;
     max-width: 100%;
+    overflow: hidden;
     border-radius: 6px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .file-toolbar {
