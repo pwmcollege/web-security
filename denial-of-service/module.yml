@@ -1,7 +1,7 @@
 name: Denial of Service
 privileged: true
 interfaces:
-  - name: Watchdog
+  - name: Challenge
     port: 80
   - name: Terminal
     port: 7681
@@ -36,16 +36,31 @@ resources:
   - id: io-bottleneck
     name: I/O Saturation
     type: challenge
-  - id: zip-bomb
+  - id: decompression-bomb
     name: Domain Expansion
+    type: challenge
+    interfaces:
+      - name: Challenge
+        port: 80
+      - name: Unzip
+        port: 81
+      - name: Terminal
+        port: 7681
+      - name: Code
+        port: 8080
+      - name: Desktop
+        port: 6080
+      - name: SSH
+  - id: redos
+    name: ReDoS
     type: challenge
     transfer:
       module: denial-of-service
-      challenge: decompression-bomb
+      challenge: cpu-bottleneck
     interfaces:
-      - name: Watchdog
-        port: 80
       - name: Challenge
+        port: 80
+      - name: Dictionary
         port: 81
       - name: Terminal
         port: 7681

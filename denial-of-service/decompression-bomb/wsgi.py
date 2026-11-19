@@ -255,7 +255,7 @@ def create_app(*, storage_parent=None):
         session.setdefault("owner", secrets.token_hex(32))
         session.setdefault("csrf", secrets.token_hex(32))
 
-        return render_template("index.html", csrf_token=session["csrf"])
+        return render_template("unzip.html", csrf_token=session["csrf"])
 
     @app.get("/health")
     def health():

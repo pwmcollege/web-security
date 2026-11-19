@@ -4,6 +4,8 @@
     const MAX_UPLOAD = 1_000_000;
     const baseUrl = new URL("./", location.href);
     const byId = (id) => document.getElementById(id);
+    const uploadView = byId("upload-view");
+    const resultsView = byId("results-view");
     const form = byId("archive-form");
     const input = byId("archive-input");
     const dropZone = byId("drop-zone");
@@ -28,8 +30,7 @@
     }
 
     function error(message) {
-        byId("error-text").textContent = message;
-        byId("error-message").hidden = !message;
+        byId(resultsView.hidden ? "upload-error" : "results-error").textContent = message;
     }
 
     function announce(message) {
@@ -40,23 +41,18 @@
         busy = value;
         browseButton.disabled = value;
         removeButton.disabled = value;
-        extractButton.disabled = value;
-        resetButton.disabled = value;
         input.disabled = value;
+        extractButton.setAttribute("aria-disabled", String(value));
         dropZone.setAttribute("aria-busy", String(value));
         byId("extract-label").textContent = value ? "Extracting…" : "Extract files";
         byId("extract-spinner").hidden = !value;
-        byId("extract-arrow").hidden = value;
+        byId("extract-arrow").toggleAttribute("hidden", value);
     }
 
     function selectFile(file) {
-        if (busy) return;
+        if (busy || !file) return;
 
         error("");
-
-        if (!file) return;
-
-        removeFile();
 
         if (!file.name.toLowerCase().endsWith(".zip")) {
             error("Choose a ZIP archive to continue.");
@@ -77,35 +73,32 @@
         }
 
         selectedFile = file;
-        byId("selected-name").textContent = file.name;
-        byId("selected-size").textContent = formatSize(file.size);
-        byId("empty-state").hidden = true;
-        byId("selected-state").hidden = false;
-        byId("selection-actions").hidden = false;
-        byId("file-limit").hidden = true;
-        removeButton.hidden = false;
-        dropZone.classList.add("has-file");
-        browseButton.textContent = "Change";
-        browseButton.setAttribute("aria-label", "Change file");
-        browseButton.classList.replace("button-primary", "button-secondary");
+        renderSelection();
         announce(`${file.name} selected. Ready to extract.`);
+        extractButton.focus();
+    }
+
+    function renderSelection() {
+        const hasFile = selectedFile !== null;
+        const size = byId("selected-size");
+        byId("upload-title").textContent = hasFile ? selectedFile.name : "Drop a ZIP here";
+        size.textContent = hasFile ? formatSize(selectedFile.size) : "";
+        size.hidden = !hasFile;
+        byId("file-limit").hidden = hasFile;
+        byId("browse-icon").toggleAttribute("hidden", hasFile);
+        byId("browse-label").textContent = hasFile ? "Change file" : "Choose file";
+        browseButton.classList.toggle("button-primary", !hasFile);
+        browseButton.classList.toggle("button-quiet", hasFile);
+        removeButton.hidden = !hasFile;
+        extractButton.hidden = !hasFile;
+        dropZone.classList.toggle("has-file", hasFile);
     }
 
     function removeFile() {
         announce("");
         selectedFile = null;
         input.value = "";
-        byId("empty-state").hidden = false;
-        byId("selected-state").hidden = true;
-        byId("selection-actions").hidden = true;
-        byId("file-limit").hidden = false;
-        removeButton.hidden = true;
-        byId("selected-name").textContent = "";
-        byId("selected-size").textContent = "";
-        dropZone.classList.remove("has-file");
-        browseButton.textContent = "Choose file";
-        browseButton.removeAttribute("aria-label");
-        browseButton.classList.replace("button-secondary", "button-primary");
+        renderSelection();
     }
 
     function requestHeaders() {
@@ -134,7 +127,6 @@
             const template = byId(isFolder ? "folder-row-template" : "file-row-template");
             const row = template.content.cloneNode(true);
             row.querySelector(".file-path").textContent = entry.name;
-            row.querySelector(".file-size").textContent = isFolder ? "—" : formatSize(entry.size);
 
             if (isFolder) {
                 const button = row.querySelector(".folder-row");
@@ -142,7 +134,9 @@
                 button.addEventListener("click", () => showFolder(entry, true));
             } else {
                 const link = row.querySelector(".download-link");
+                row.querySelector(".file-size").textContent = formatSize(entry.size);
                 link.href = entry.url;
+                link.download = "";
                 link.setAttribute("aria-label", `Download ${entry.path}`);
                 link.title = `Download ${entry.name}`;
             }
@@ -168,6 +162,7 @@
             const isCurrent = ancestor === folder;
             const crumb = document.createElement(isCurrent ? "span" : "button");
             crumb.textContent = ancestor.name;
+            crumb.dir = "auto";
 
             if (isCurrent) {
                 crumb.setAttribute("aria-current", "page");
@@ -233,14 +228,18 @@
 
         archiveId = data.id;
         showFolder(root);
-        byId("results-title").textContent = data.name;
-        byId("file-list").hidden = data.files.length === 0;
-        byId("empty-archive").hidden = data.files.length !== 0;
-        byId("upload-view").hidden = true;
-        byId("results-view").hidden = false;
-        byId("main").classList.add("showing-results");
-        byId("results-title").focus();
-        announce(`Extraction complete. ${data.files.length} ${data.files.length === 1 ? "file is" : "files are"} ready to download.`);
+        const count = data.files.length;
+        const title = byId("results-title");
+        const summary = byId("results-summary");
+        title.textContent = data.name;
+        summary.textContent = `${count} ${count === 1 ? "file" : "files"} · ${formatSize(data.total_size)}`;
+        summary.hidden = count === 0;
+        byId("file-list").hidden = count === 0;
+        byId("empty-archive").hidden = count !== 0;
+        uploadView.hidden = true;
+        resultsView.hidden = false;
+        title.focus();
+        announce(count ? `${count} ${count === 1 ? "file is" : "files are"} ready to download.` : "This archive is empty.");
     }
 
     browseButton.addEventListener("click", () => {
@@ -263,7 +262,7 @@
     dropZone.addEventListener("dragenter", (event) => {
         event.preventDefault();
 
-        if (busy) return;
+        if (busy || !event.dataTransfer.types.includes("Files")) return;
 
         dragDepth += 1;
         dropZone.classList.add("is-dragging");
@@ -309,17 +308,17 @@
             showResults(await readResponse(response));
         } catch (failure) {
             error(failure instanceof TypeError ? "Could not reach Unzip. Please try again." : failure.message);
-            announce("Extraction failed.");
+            announce("");
         } finally {
             setBusy(false);
         }
     });
 
     resetButton.addEventListener("click", async () => {
-        if (busy) return;
+        if (busy || resetButton.getAttribute("aria-disabled") === "true") return;
 
         error("");
-        resetButton.disabled = true;
+        resetButton.setAttribute("aria-disabled", "true");
 
         try {
             if (archiveId !== null) {
@@ -332,15 +331,14 @@
             removeFile();
             byId("file-rows").replaceChildren();
             byId("folder-breadcrumbs").replaceChildren();
-            byId("results-view").hidden = true;
-            byId("upload-view").hidden = false;
-            byId("main").classList.remove("showing-results");
+            resultsView.hidden = true;
+            uploadView.hidden = false;
             announce("Ready to open another archive.");
             browseButton.focus();
         } catch (failure) {
             error(failure instanceof TypeError ? "Could not reach Unzip. Please try again." : failure.message);
         } finally {
-            resetButton.disabled = false;
+            resetButton.removeAttribute("aria-disabled");
         }
     });
 })();

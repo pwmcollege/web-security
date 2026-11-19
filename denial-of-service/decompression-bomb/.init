@@ -18,9 +18,10 @@ ip route add local 10.0.13.38/32 dev lo src 127.0.0.1
 iptables-legacy -A INPUT -p tcp -d 10.0.13.36 --dport 1024: -j REJECT
 iptables-legacy -A INPUT -p tcp -d 10.0.13.37 --dport 1024: -j REJECT
 iptables-legacy -A INPUT -p tcp -d 10.0.13.38 --dport 1024: -j REJECT
+iptables-legacy -A INPUT ! -i lo -p tcp -d 10.0.13.38 --dport 443 -j REJECT
 
 iptables-legacy -A OUTPUT -d 10.0.13.37 -m owner ! --uid-owner 0 -j REJECT
-iptables-legacy -A OUTPUT -p tcp -d 127.0.0.1 --dport 8082 -m owner ! --uid-owner 0 -j REJECT
+iptables-legacy -A OUTPUT -p tcp -d 10.0.13.38 --dport 443 -m owner ! --uid-owner 0 -j REJECT
 
 /opt/cdn/server &
 
@@ -28,11 +29,9 @@ mkdir -p /var/log/gunicorn
 cd /challenge
 gunicorn --daemon
 
-until curl -fs http://127.0.0.1:8082/health >/dev/null; do sleep 0.1; done
+until curl -fs --cacert /etc/ssl/certs/internal.cert.pem https://victim.internal/health >/dev/null; do sleep 0.1; done
 
 nginx -c /challenge/nginx.conf
-
-until curl -fs --cacert /etc/ssl/certs/internal.cert.pem https://victim.internal/health >/dev/null; do sleep 0.1; done
 
 chmod 544 /challenge/monitor
 /challenge/monitor &

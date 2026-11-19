@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+
+import json
+import time
+from collections import deque
+from threading import Lock, Thread
+
+import requests
+from flask import Flask, Response, render_template
+
+app = Flask(__name__)
+state = {"up": None, "fails": 0, "history": deque(maxlen=90), "flag": None}
+state_lock = Lock()
+
+
+def probe_loop():
+    with requests.Session() as session:
+        while True:
+            try:
+                response = session.get(
+                    "https://victim.internal/health",
+                    timeout=(1, 2),
+                    verify="/etc/ssl/certs/internal.cert.pem",
+                )
+                up = response.status_code == 200
+            except requests.RequestException:
+                up = False
+
+            with state_lock:
+                state["up"] = up
+                state["fails"] = 0 if up else state["fails"] + 1
+                state["history"].append(
+                    {"up": up, "checked_at": time.time(), "fails": state["fails"]}
+                )
+
+                if state["fails"] >= 5:
+                    state["flag"] = "pwn.college{fake_dictionary_flag}"
+
+            time.sleep(1)
+
+
+@app.get("/")
+def index():
+    return render_template("index.html")
+
+
+@app.get("/monitor")
+def snapshot():
+    with state_lock:
+        return {**state, "history": list(state["history"])}
+
+
+@app.get("/events")
+def events():
+    def stream():
+        while True:
+            yield f"data: {json.dumps(snapshot())}\n\n"
+            time.sleep(1)
+
+    return Response(
+        stream(),
+        mimetype="text/event-stream",
+        headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
+    )
+
+
+if __name__ == "__main__":
+    Thread(target=probe_loop, daemon=True).start()
+    app.run("127.0.0.1", 8083)
