@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="https://cdn.internal/fonts/geist.css" />
         <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='dictionary.css') }}" />
+        <script src="https://cdn.internal/lucide/lucide.min.js" defer></script>
         <script defer src="https://cdn.internal/motion/motion.min.js"></script>
         <script type="module" src="{{ url_for('static', filename='dictionary.js') }}"></script>
     </head>
@@ -25,11 +26,7 @@
                     <button class="search-action grid min-h-11 flex-[0_0_2.75rem] cursor-pointer place-items-center
                                    rounded-[999px] border-0 bg-transparent p-0 text-inherit"
                             type="button" aria-label="Open search" aria-expanded="false" aria-controls="word-search">
-                        <svg width="1.25rem" height="1.25rem" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="m21 21-4.34-4.34" />
-                            <circle cx="11" cy="11" r="8" />
-                        </svg>
+                        <i class="size-5" data-lucide="search" aria-hidden="true"></i>
                     </button>
                     <div class="search-fields flex h-11 min-w-0 flex-1 items-center overflow-clip opacity-0
                                 [&:not([inert])]:opacity-100" inert>
@@ -42,10 +39,7 @@
                         <button class="search-close grid min-h-11 flex-[0_0_2.75rem] cursor-pointer place-items-center
                                        rounded-[999px] border-0 bg-transparent p-0 text-inherit"
                                 type="button" aria-label="Close search">
-                            <svg width="1.25rem" height="1.25rem" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="m18 6-12 12M6 6l12 12" />
-                            </svg>
+                            <i class="size-5" data-lucide="x" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>

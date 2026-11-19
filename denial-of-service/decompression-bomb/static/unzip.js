@@ -1,6 +1,8 @@
 "use strict";
 
 (() => {
+    window.lucide?.createIcons({ attrs: { "stroke-width": "1.5" }, inTemplates: true });
+
     const MAX_UPLOAD = 1_000_000;
     const baseUrl = new URL("./", location.href);
     const byId = (id) => document.getElementById(id);
@@ -14,11 +16,18 @@
     const removeButton = byId("remove-button");
     const extractButton = byId("extract-button");
     const resetButton = byId("reset-button");
+    const resultsTitle = byId("results-title");
+    const resultsSummary = byId("results-summary");
+    const folderLocation = byId("folder-location");
+    const folderBreadcrumbs = byId("folder-breadcrumbs");
+    const breadcrumbSeparator = byId("breadcrumb-separator-template");
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
     let selectedFile = null;
     let archiveId = null;
     let busy = false;
     let dragDepth = 0;
+    let breadcrumbAnimation;
 
     function formatSize(bytes) {
         if (bytes < 1_000) return `${bytes} B`;
@@ -46,7 +55,7 @@
         extractButton.setAttribute("aria-disabled", String(value));
         dropZone.setAttribute("aria-busy", String(value));
         byId("extract-label").textContent = value ? "Extracting…" : "Extract files";
-        byId("extract-spinner").hidden = !value;
+        byId("extract-spinner").toggleAttribute("hidden", !value);
         byId("extract-arrow").toggleAttribute("hidden", value);
     }
 
@@ -150,40 +159,83 @@
         byId("file-rows").replaceChildren(rows);
     }
 
-    function showBreadcrumbs(folder, focus = false) {
-        const ancestors = [];
+    function snapArchiveTitle(before) {
+        const label = folderBreadcrumbs.querySelector(".breadcrumb-label");
+        const after = label.getBoundingClientRect();
+        const size = Number.parseFloat(getComputedStyle(label).fontSize);
+        const animation = window.Motion.animate(label, {
+            x: [before.bounds.left - after.left, 0],
+            y: [before.bounds.top + before.bounds.height / 2 - after.top - after.height / 2, 0],
+            scale: [before.size / size, 1],
+        }, { type: "spring", stiffness: 500, damping: 37, mass: 0.65 });
+        breadcrumbAnimation = animation;
+        animation.finished.then(() => {
+            if (breadcrumbAnimation !== animation) return;
 
-        for (let ancestor = folder; ancestor; ancestor = ancestor.parent) {
-            ancestors.unshift(ancestor);
-        }
+            breadcrumbAnimation = undefined;
+            if (folderLocation.scrollLeft === 0) folderLocation.scrollLeft = folderLocation.scrollWidth;
+        }).catch(() => {});
+    }
 
-        const breadcrumbs = document.createDocumentFragment();
-        let currentCrumb;
+    function appendCrumb(trail, crumb) {
+        const item = document.createElement("li");
+        if (trail.firstElementChild) item.append(breadcrumbSeparator.content.cloneNode(true));
+        item.append(crumb);
+        trail.append(item);
+    }
 
-        for (const ancestor of ancestors) {
-            const item = document.createElement("li");
-            const isCurrent = ancestor === folder;
-            const crumb = document.createElement(isCurrent ? "span" : "button");
-            crumb.textContent = ancestor.name;
-            crumb.dir = "auto";
+    function showBreadcrumbs(folder, focus) {
+        breadcrumbAnimation?.cancel();
+        breadcrumbAnimation = undefined;
+        const animateTitle = focus && folder.parent && folderLocation.hidden
+            && !reducedMotion.matches && window.Motion?.animate;
+        const before = animateTitle ? {
+            bounds: resultsTitle.getBoundingClientRect(),
+            size: Number.parseFloat(getComputedStyle(resultsTitle).fontSize),
+        } : null;
 
-            if (isCurrent) {
-                crumb.setAttribute("aria-current", "page");
-                crumb.tabIndex = -1;
-                currentCrumb = crumb;
-            } else {
-                crumb.type = "button";
-                crumb.className = "breadcrumb-button";
-                crumb.addEventListener("click", () => showFolder(ancestor, true));
+        resultsTitle.textContent = folder.name;
+        resultsTitle.title = folder.name;
+        resultsSummary.hidden = Boolean(folder.parent) || !resultsSummary.textContent;
+
+        if (folder.parent) {
+            const ancestors = [];
+            for (let ancestor = folder.parent; ancestor; ancestor = ancestor.parent) {
+                ancestors.unshift(ancestor);
             }
 
-            item.append(crumb);
-            breadcrumbs.append(item);
+            const trail = document.createDocumentFragment();
+            for (const ancestor of ancestors) {
+                const crumb = document.createElement("button");
+                const label = document.createElement("span");
+                label.textContent = ancestor.name;
+                if (!ancestor.parent) label.className = "breadcrumb-label";
+                crumb.append(label);
+                crumb.type = "button";
+                crumb.className = "breadcrumb-button";
+                crumb.dir = "auto";
+                crumb.addEventListener("click", () => showFolder(ancestor, true));
+                appendCrumb(trail, crumb);
+            }
+
+            resultsTitle.setAttribute("aria-current", "page");
+            appendCrumb(trail, resultsTitle);
+            folderLocation.hidden = false;
+            folderBreadcrumbs.replaceChildren(trail);
+            folderLocation.scrollLeft = before ? 0 : folderLocation.scrollWidth;
+        } else {
+            folderLocation.before(resultsTitle);
+            resultsTitle.removeAttribute("aria-current");
+            folderLocation.hidden = true;
+            folderBreadcrumbs.replaceChildren();
         }
 
-        byId("folder-breadcrumbs").replaceChildren(breadcrumbs);
-
-        if (focus) currentCrumb.focus();
+        if (focus) {
+            const location = folder.parent ? folderLocation : resultsTitle;
+            location.scrollIntoView({ block: "nearest" });
+            resultsTitle.focus({ preventScroll: true });
+        }
+        if (before) snapArchiveTitle(before);
     }
 
     function showFolder(folder, focus = false) {
@@ -201,7 +253,7 @@
     }
 
     function showResults(data) {
-        const root = { name: "Files", type: "folder", parent: null, entries: new Map() };
+        const root = { name: data.name, type: "folder", parent: null, entries: new Map() };
 
         for (const file of data.files) {
             const url = new URL(file.url, baseUrl);
@@ -230,19 +282,14 @@
         }
 
         archiveId = data.id;
-        showFolder(root);
         const count = data.files.length;
-        const title = byId("results-title");
-        const summary = byId("results-summary");
-        title.textContent = data.name;
-        title.title = data.name;
-        summary.textContent = `${count} ${count === 1 ? "file" : "files"} · ${formatSize(data.total_size)}`;
-        summary.hidden = count === 0;
+        resultsSummary.textContent = count ? `${count} ${count === 1 ? "file" : "files"} · ${formatSize(data.total_size)}` : "";
+        showFolder(root);
         byId("file-list").hidden = count === 0;
         byId("empty-archive").hidden = count !== 0;
         uploadView.hidden = true;
         resultsView.hidden = false;
-        title.focus();
+        resultsTitle.focus();
         announce(count ? `${count} ${count === 1 ? "file is" : "files are"} ready to download.` : "This archive is empty.");
     }
 
@@ -334,7 +381,10 @@
             archiveId = null;
             removeFile();
             byId("file-rows").replaceChildren();
-            byId("folder-breadcrumbs").replaceChildren();
+            breadcrumbAnimation?.cancel();
+            breadcrumbAnimation = undefined;
+            folderLocation.before(resultsTitle);
+            folderBreadcrumbs.replaceChildren();
             resultsView.hidden = true;
             uploadView.hidden = false;
             announce("Ready to open another archive.");

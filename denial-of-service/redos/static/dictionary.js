@@ -195,4 +195,5 @@ pageJump.addEventListener("submit", (event) => {
 
 previous.addEventListener("click", () => load(page - 1));
 next.addEventListener("click", () => load(page + 1));
+window.lucide?.createIcons();
 load(1);
