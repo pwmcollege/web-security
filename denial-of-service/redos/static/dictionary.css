@@ -1,132 +1,15 @@
 :root {
-    color-scheme: light;
-    font-family: Geist, ui-sans-serif, system-ui, sans-serif;
-    color: #18181b;
-    background: #fff;
-    -webkit-font-smoothing: antialiased;
+    --font-sans: Geist, ui-sans-serif, system-ui, sans-serif;
+    line-height: normal;
 }
 
-* {
-    box-sizing: border-box;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    height: 100dvh;
-    margin: 0;
-}
-
-h1 {
-    flex-shrink: 0;
-    margin: 0;
-    font-size: 1.1875rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-h1 span {
-    display: inline-block;
-    width: 0.25rem;
-    height: 0.25rem;
-    margin-left: 0.125rem;
-    border-radius: 50%;
-    background: #d4d4d8;
-}
-
-main {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-height: 0;
+:focus-visible {
+    outline: 0.125rem solid #18181b;
+    outline-offset: 0.1875rem;
 }
 
 .search {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    align-self: center;
-    justify-content: space-between;
-    gap: clamp(0.375rem, 1.4vw, 0.875rem);
-    width: 80%;
-    min-height: 3.5rem;
-    margin: 1rem 0 0;
-    padding: 0.25rem 0.5rem 0.25rem clamp(0.75rem, 2vw, 1.5rem);
-    border-radius: 999px;
-    background: #fafafa;
     box-shadow: 0 0.0625rem 0.25rem rgb(24 24 27 / 0.08), 0 0.375rem 1.125rem rgb(24 24 27 / 0.07);
-}
-
-.search-control {
-    display: flex;
-    flex: 0 1 2.75rem;
-    align-items: center;
-    min-width: 2.75rem;
-    height: 2.25rem;
-    margin-inline-start: auto;
-    border-radius: 999px;
-    transition: background-color 150ms;
-}
-
-.search-control:has(.search-fields:not([inert])) {
-    flex-basis: 20rem;
-    background: #f0f0f2;
-}
-
-.search-fields {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    min-width: 0;
-    height: 2.75rem;
-    overflow: clip;
-    opacity: 0;
-}
-
-.search-fields:not([inert]) {
-    opacity: 1;
-}
-
-.search input {
-    flex: 1;
-    width: 0;
-    min-width: 0;
-    height: 100%;
-    padding: 0;
-    border: 0;
-    border-radius: inherit;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    font-size: 0.9375rem;
-    line-height: 1.6;
-}
-
-.search input::placeholder {
-    color: #52525b;
-}
-
-.search input:focus {
-    outline: none;
-}
-
-.search button {
-    display: grid;
-    flex: 0 0 2.75rem;
-    place-items: center;
-    min-height: 2.75rem;
-    padding: 0;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
 }
 
 .search button svg,
@@ -146,166 +29,19 @@ main {
     outline-offset: -0.3125rem;
 }
 
-:focus-visible {
-    outline: 0.125rem solid #18181b;
-    outline-offset: 0.1875rem;
-}
-
-.hero {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-height: 0;
-    overflow-y: auto;
-    padding: clamp(1.75rem, 6vw, 4rem) 1.5rem;
-}
-
-.entry,
-.notice {
-    flex: none;
-    width: min(100%, 40rem);
-    margin: auto;
-}
-
-.entry:empty {
-    display: none;
-}
-
-.entry {
-    overflow-wrap: anywhere;
-}
-
-.entry h2 {
-    margin: 0;
-    font-size: clamp(2.25rem, 8vw, 4rem);
-    font-weight: 750;
-    letter-spacing: -0.05em;
-    line-height: 1.05;
-}
-
-.pronunciation {
-    margin: 0.5rem 0 1.5rem;
-    color: #52525b;
-    font-size: 1.125rem;
-}
-
-.entry ol {
-    margin: 0;
-    padding-left: 1.4em;
-    font-size: 1.0625rem;
-    line-height: 1.6;
-}
-
-.entry ol li + li {
-    margin-top: 0.5rem;
-}
-
-.entry i {
-    color: #52525b;
-}
-
-.entry summary {
-    width: fit-content;
-    margin: 1rem 0 0.5rem;
-    color: #52525b;
-    font-size: 0.8125rem;
-    cursor: pointer;
-}
-
-.pagination {
-    display: grid;
-    flex-shrink: 0;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.8125rem;
-}
-
-.pagination > :first-child {
-    justify-self: start;
-}
-
-.pagination > :last-child {
-    justify-self: end;
-}
-
-.pagination button {
-    padding: 0.625rem 0.75rem;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.pagination button:hover:not(:disabled) {
-    background: #f4f4f5;
-}
-
-.pagination button:disabled {
-    color: #a1a1aa;
-    cursor: default;
-}
-
-[hidden] {
-    display: none !important;
-}
-
-.page,
-.notice {
-    color: #52525b;
-}
-
-.page {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.page input {
-    appearance: textfield;
-    width: 7ch;
-    padding: 0.25rem;
-    border: 0.0625rem solid #e4e4e7;
-    border-radius: 6px;
-    background: #fafafa;
-    color: #18181b;
-    font: inherit;
-    font-variant-numeric: tabular-nums;
-    text-align: center;
+.search input:focus,
+.page input:focus {
+    outline: none;
 }
 
 .page input::-webkit-inner-spin-button {
     appearance: none;
 }
 
-.page input:focus {
-    border-color: #18181b;
-    background: #fff;
-    outline: none;
-}
-
-.notice {
-    padding: 0.75rem 1rem;
-    text-align: center;
-    font-size: 0.875rem;
-}
-
 .error {
     border-radius: 12px;
     background: #fff1f2;
     color: #be123c;
-}
-
-@media (min-width: 40em) {
-    .pagination {
-        padding-inline: 1.5rem;
-    }
 }
 
 @media (max-width: 30em) {
@@ -320,13 +56,18 @@ main {
         max-width: calc(100% - 4rem);
         overflow-wrap: anywhere;
         transform: translateY(-50%);
-        transition: opacity 110ms ease 170ms, visibility 0s 170ms;
     }
 
     .search:has(.search-fields:not([inert])) h1 {
         visibility: hidden;
         opacity: 0;
         transition: none;
+    }
+}
+
+@media (max-width: 30em) and (prefers-reduced-motion: no-preference) {
+    .search h1 {
+        transition: opacity 110ms ease 170ms, visibility 0s 170ms;
     }
 }
 
@@ -351,26 +92,8 @@ main {
     }
 }
 
-@media (pointer: coarse) {
-    .search-control {
-        height: 2.5rem;
-    }
-
-    .search input {
-        height: 2.75rem;
-        font-size: 1rem;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .search-control,
-    .search h1 {
-        transition: none;
-    }
-}
-
 @media (prefers-contrast: more) {
-    .page input {
+    .page input:not(:focus) {
         border-color: #71717a;
     }
 

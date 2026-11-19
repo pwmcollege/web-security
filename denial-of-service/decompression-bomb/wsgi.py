@@ -357,6 +357,7 @@ def security_headers(response):
     response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; script-src 'self'; style-src 'self'; "
+        "style-src-elem 'self' 'unsafe-inline'; "
         "img-src 'self' data:; font-src 'self'; connect-src 'self'; "
         "object-src 'none'; base-uri 'none'; form-action 'self'"
     )

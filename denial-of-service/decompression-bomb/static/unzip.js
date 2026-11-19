@@ -129,7 +129,7 @@
             const isFolder = entry.type === "folder";
             const template = byId(isFolder ? "folder-row-template" : "file-row-template");
             const row = template.content.cloneNode(true);
-            row.querySelector(".file-path").textContent = entry.name;
+            row.querySelector("[data-file-path]").textContent = entry.name;
 
             if (isFolder) {
                 const button = row.querySelector(".folder-row");

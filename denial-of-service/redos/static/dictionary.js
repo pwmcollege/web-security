@@ -25,7 +25,7 @@ let searchAnimation;
 function renderEntry(entry) {
     const item = template.content.firstElementChild.cloneNode(true);
     item.querySelector("h2").textContent = entry.word;
-    item.querySelector(".pronunciation").textContent = entry.pronunciation;
+    item.querySelector("[data-pronunciation]").textContent = entry.pronunciation;
 
     const [definitions, extraDefinitions] = item.querySelectorAll("ol");
     const senses = entry.senses.map(({ part, definition }) => {
