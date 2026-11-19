@@ -183,10 +183,10 @@ svg {
 }
 
 h1 {
-    font-size: clamp(2rem, 1.5rem + 2.25vw, 3.25rem);
-    font-weight: 750;
-    letter-spacing: -.055em;
-    line-height: 1.08;
+    font-size: clamp(1.25rem, 1.125rem + .65vw, 1.625rem);
+    font-weight: 700;
+    letter-spacing: -.025em;
+    line-height: 1.25;
     overflow-wrap: anywhere;
 }
 
@@ -270,8 +270,7 @@ h1 {
 }
 
 .has-file h1 {
-    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
-    letter-spacing: -.04em;
+    font-size: 1.125rem;
 }
 
 #extract-button {
@@ -317,6 +316,7 @@ h1 {
     max-width: 100%;
     overflow: hidden;
     border-radius: 6px;
+    font-size: 1.25rem;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -439,7 +439,7 @@ h1 {
 }
 
 .file-path {
-    font-size: .9375rem;
+    font-size: .875rem;
     line-height: 1.45;
     overflow-wrap: anywhere;
 }
