@@ -1,9 +1,13 @@
 import atexit
+import bz2
+import gzip
 import io
+import lzma
 import os
 import secrets
 import shutil
 import stat
+import tarfile
 import tempfile
 import time
 import unicodedata
@@ -16,31 +20,67 @@ from flask import Flask, abort, jsonify, render_template, request, send_file, se
 from werkzeug.exceptions import HTTPException, RequestEntityTooLarge
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+try:
+    from compression import zstd
+except ImportError:
+    zstd = None
+
 MAX_UPLOAD = 1_000_000
+TAR_FORMATS = {
+    ".tar": "tar",
+    ".tar.gz": "gz",
+    ".tgz": "gz",
+    ".tar.bz2": "bz2",
+    ".tbz2": "bz2",
+    ".tbz": "bz2",
+    ".tb2": "bz2",
+    ".tar.xz": "xz",
+    ".txz": "xz",
+    ".tar.lzma": "lzma",
+    ".tlz": "lzma",
+    ".tar.zst": "zst",
+    ".tar.zstd": "zst",
+    ".tzst": "zst",
+}
+
+app = Flask(__name__)
+app.config.update(
+    SECRET_KEY=secrets.token_bytes(32),
+    MAX_CONTENT_LENGTH=MAX_UPLOAD,
+    SESSION_COOKIE_NAME="unpack_session",
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Strict",
+)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=0, x_proto=1)
+
+root = Path(tempfile.mkdtemp(prefix="unpack-"))
+archives = {}
+app.extensions["archive_root"] = root
+app.extensions["archives"] = archives
+atexit.register(shutil.rmtree, root, ignore_errors=True)
 
 
-def validate_entries(archive):
+def validate_entries(entries, kind):
     reserved_names = {"CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"} | {
         f"{prefix}{number}" for prefix in ("COM", "LPT") for number in "123456789¹²³"
     }
     result = []
     paths = {}
 
-    for entry in archive.infolist():
-        original = entry.orig_filename
-
-        if not original or original != entry.filename:
-            abort(400, "This ZIP contains an unsafe file path.")
-
-        if "\\" in original or original.startswith("/") or ":" in original:
-            abort(400, "This ZIP contains an unsafe file path.")
+    for entry, original, directory in entries:
+        if (
+            not original
+            or "\\" in original
+            or original.startswith("/")
+            or ":" in original
+        ):
+            abort(400, f"This {kind} contains an unsafe file path.")
 
         if any(unicodedata.category(char) in {"Cc", "Cf", "Cs"} for char in original):
-            abort(400, "This ZIP contains an unsafe file path.")
+            abort(400, f"This {kind} contains an unsafe file path.")
 
         name = unicodedata.normalize("NFC", original)
-        directory = name.endswith("/")
-        parts = name[:-1].split("/") if directory else name.split("/")
+        parts = name.removesuffix("/").split("/") if directory else name.split("/")
 
         if len(name.encode("utf-8")) > 4096 or any(
             part in {"", ".", ".."}
@@ -49,6 +89,34 @@ def validate_entries(archive):
             or part.split(".", 1)[0].upper() in reserved_names
             for part in parts
         ):
+            abort(400, f"This {kind} contains an unsafe file path.")
+
+        canonical = "/".join(parts).casefold()
+
+        if canonical in paths:
+            abort(400, f"This {kind} contains duplicate or conflicting file names.")
+
+        paths[canonical] = directory
+        result.append((entry, "/".join(parts), directory))
+
+    for path in paths:
+        parts = path.split("/")
+
+        for end in range(1, len(parts)):
+            ancestor = "/".join(parts[:end])
+
+            if ancestor in paths and not paths[ancestor]:
+                abort(400, f"This {kind} contains conflicting file and folder names.")
+
+    return result
+
+
+def zip_entries(archive):
+    for entry in archive.infolist():
+        original = entry.orig_filename
+        directory = original.endswith("/")
+
+        if original != entry.filename:
             abort(400, "This ZIP contains an unsafe file path.")
 
         mode = (entry.external_attr >> 16) & 0xFFFF
@@ -80,24 +148,99 @@ def validate_entries(archive):
         if directory and entry.file_size:
             abort(400, "This ZIP contains conflicting folder information.")
 
-        canonical = "/".join(parts).casefold()
+        yield entry, original, directory
 
-        if canonical in paths:
-            abort(400, "This ZIP contains duplicate or conflicting file names.")
 
-        paths[canonical] = directory
-        result.append((entry, "/".join(parts), directory))
+def tar_entries(archive, size):
+    remaining = size
 
-    for path in paths:
-        parts = path.split("/")
+    for count, entry in enumerate(archive, 1):
+        if count > 1_024:
+            abort(400, "A TAR archive can contain up to 1,024 entries.")
 
-        for end in range(1, len(parts)):
-            ancestor = "/".join(parts[:end])
+        directory = entry.isdir()
 
-            if ancestor in paths and not paths[ancestor]:
-                abort(400, "This ZIP contains conflicting file and folder names.")
+        if entry.issparse() or not (directory or entry.isreg()):
+            abort(400, "TAR archives can contain regular files and directories only.")
 
-    return result
+        if not 0 <= entry.size <= min(remaining, size - entry.offset_data) or (
+            directory and entry.size
+        ):
+            raise tarfile.ReadError("Invalid TAR member size")
+
+        remaining -= entry.size
+
+        if directory and entry.name in {".", "./"}:
+            continue
+
+        yield entry, entry.name.removeprefix("./"), directory
+
+
+def decompress_tar(payload, compression):
+    if compression == "tar":
+        return payload
+
+    if compression in {"xz", "lzma"}:
+        decoded = bytearray()
+        decoder_format = lzma.FORMAT_XZ if compression == "xz" else lzma.FORMAT_ALONE
+
+        for _ in range(256):
+            decoder = lzma.LZMADecompressor(
+                format=decoder_format, memlimit=64 * 1024 * 1024
+            )
+            decoded.extend(decoder.decompress(payload))
+
+            if not decoder.eof:
+                raise EOFError("Incomplete LZMA stream")
+
+            payload = decoder.unused_data
+
+            if compression == "xz":
+                unpadded = payload.lstrip(b"\0")
+
+                if (len(payload) - len(unpadded)) % 4:
+                    raise lzma.LZMAError("Invalid XZ stream padding")
+
+                payload = unpadded
+
+            if not payload:
+                return decoded
+
+        abort(400, "This TAR contains too many compressed streams.")
+
+    source = io.BytesIO(payload)
+
+    if compression == "zst":
+        if zstd is None:
+            abort(400, "Zstandard support is unavailable on this server.")
+
+        try:
+            with zstd.ZstdFile(
+                source, options={zstd.DecompressionParameter.window_log_max: 25}
+            ) as stream:
+                return stream.read()
+        except zstd.ZstdError as error:
+            raise tarfile.ReadError("Invalid Zstandard stream") from error
+
+    open_compressed = gzip.open if compression == "gz" else bz2.open
+
+    try:
+        with open_compressed(source) as stream:
+            return stream.read()
+    except OSError as error:
+        raise tarfile.ReadError("Invalid compressed TAR") from error
+
+
+def save_file(directory, path, source):
+    file_id = secrets.token_hex(16)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+    fd = os.open(directory / file_id, flags, 0o600)
+
+    with os.fdopen(fd, "wb") as destination:
+        shutil.copyfileobj(source, destination, 64 * 1024)
+        size = destination.tell()
+
+    return {"id": file_id, "path": path, "size": size}
 
 
 def remove_archive(archives, archive_id):
@@ -107,35 +250,38 @@ def remove_archive(archives, archive_id):
         shutil.rmtree(archive["directory"], ignore_errors=True)
 
 
-def extract_archive(root, archives, payload, name, owner):
+def extract_archive(root, archives, payload, name, owner, tar_format=None):
     archive_id = secrets.token_hex(16)
     directory = Path(tempfile.mkdtemp(prefix="archive-", dir=root))
     files = []
 
     try:
-        with zipfile.ZipFile(io.BytesIO(payload)) as archive:
-            entries = validate_entries(archive)
+        if tar_format is not None:
+            data = decompress_tar(payload, tar_format)
 
-            for entry, display_path, is_directory in entries:
-                with archive.open(entry, "r") as source:
-                    if is_directory:
-                        if source.read(1):
-                            abort(
-                                400, "This ZIP contains conflicting folder information."
-                            )
+            with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as archive:
+                entries = validate_entries(tar_entries(archive, len(data)), "TAR")
 
-                        continue
+                for entry, path, is_directory in entries:
+                    if not is_directory:
+                        with archive.extractfile(entry) as source:
+                            files.append(save_file(directory, path, source))
+        else:
+            with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+                entries = validate_entries(zip_entries(archive), "ZIP")
 
-                    file_id = secrets.token_hex(16)
-                    blob = directory / file_id
-                    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
-                    fd = os.open(blob, flags, 0o600)
+                for entry, path, is_directory in entries:
+                    with archive.open(entry, "r") as source:
+                        if is_directory:
+                            if source.read(1):
+                                abort(
+                                    400,
+                                    "This ZIP contains conflicting folder information.",
+                                )
 
-                    with os.fdopen(fd, "wb") as destination:
-                        shutil.copyfileobj(source, destination, 64 * 1024)
-                        size = destination.tell()
+                            continue
 
-                    files.append({"id": file_id, "path": display_path, "size": size})
+                        files.append(save_file(directory, path, source))
 
         record = {
             "id": archive_id,
@@ -160,214 +306,237 @@ def extract_archive(root, archives, payload, name, owner):
         raise
 
 
-def create_app(*, storage_parent=None):
-    app = Flask(__name__)
-    app.config.update(
-        SECRET_KEY=secrets.token_bytes(32),
-        MAX_CONTENT_LENGTH=MAX_UPLOAD,
-        SESSION_COOKIE_NAME="unpack_session",
-        SESSION_COOKIE_HTTPONLY=True,
-        SESSION_COOKIE_SAMESITE="Strict",
-    )
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=0, x_proto=1)
-    root = Path(tempfile.mkdtemp(prefix="unpack-", dir=storage_parent))
-    archives = {}
-    app.extensions["archive_root"] = root
-    app.extensions["archives"] = archives
-    atexit.register(shutil.rmtree, root, ignore_errors=True)
+@app.before_request
+def protect_requests():
+    now = time.monotonic()
 
-    @app.before_request
-    def protect_requests():
-        now = time.monotonic()
+    for archive_id, archive in list(archives.items()):
+        if now - archive["created_at"] >= 30 * 60:
+            remove_archive(archives, archive_id)
 
-        for archive_id, archive in list(archives.items()):
-            if now - archive["created_at"] >= 30 * 60:
-                remove_archive(archives, archive_id)
+    if request.method not in {"GET", "HEAD", "OPTIONS"}:
+        if request.headers.get("Sec-Fetch-Site") == "cross-site":
+            abort(403)
 
-        if request.method not in {"GET", "HEAD", "OPTIONS"}:
-            if request.headers.get("Sec-Fetch-Site") == "cross-site":
+        origin = request.headers.get("Origin")
+
+        if origin:
+            try:
+                parsed = urlsplit(origin)
+            except ValueError:
                 abort(403)
 
-            origin = request.headers.get("Origin")
-
-            if origin:
-                try:
-                    parsed = urlsplit(origin)
-                except ValueError:
-                    abort(403)
-
-                if (
-                    parsed.scheme != request.scheme
-                    or parsed.netloc != request.host
-                    or parsed.path
-                    or parsed.query
-                    or parsed.fragment
-                ):
-                    abort(403)
-
-            token = request.headers.get("X-CSRF-Token", "")
-            expected = session.get("csrf", "")
-
             if (
-                not expected
-                or not token.isascii()
-                or not secrets.compare_digest(token, expected)
+                parsed.scheme != request.scheme
+                or parsed.netloc != request.host
+                or parsed.path
+                or parsed.query
+                or parsed.fragment
             ):
                 abort(403)
 
-            if request.headers.get("X-Unpack-Request") != "1":
-                abort(403)
-
-    @app.after_request
-    def security_headers(response):
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["Referrer-Policy"] = "no-referrer"
-        response.headers["Cache-Control"] = "no-store"
-        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
-        response.headers["Content-Security-Policy"] = (
-            "default-src 'self'; script-src 'self'; style-src 'self'; "
-            "img-src 'self' data:; font-src 'self'; connect-src 'self'; "
-            "object-src 'none'; base-uri 'none'; form-action 'self'"
-        )
-
-        return response
-
-    @app.errorhandler(HTTPException)
-    def http_error(error):
-        messages = {
-            400: error.description,
-            403: "Refresh this page and try again.",
-            404: "These files are no longer available. Extract your ZIP again.",
-            405: "That action is not available.",
-            413: "Choose a ZIP file no larger than 1 MB.",
-            415: "Choose a ZIP file to extract.",
-        }
-
-        return (
-            jsonify(
-                error=messages.get(error.code, "The request could not be completed.")
-            ),
-            error.code,
-        )
-
-    @app.get("/")
-    def index():
-        session.setdefault("owner", secrets.token_hex(32))
-        session.setdefault("csrf", secrets.token_hex(32))
-
-        return render_template("unzip.html", csrf_token=session["csrf"])
-
-    @app.get("/health")
-    def health():
-        return "OK\n"
-
-    @app.post("/api/extract")
-    def extract():
-        if request.mimetype not in {"application/zip", "application/octet-stream"}:
-            abort(415)
-
-        payload = request.stream.read(MAX_UPLOAD + 1)
-
-        if len(payload) > MAX_UPLOAD:
-            raise RequestEntityTooLarge()
-
-        if not payload:
-            return jsonify(error="Choose a ZIP file to extract."), 400
-
-        name = unquote(request.headers.get("X-Archive-Name", "archive.zip"))
-        name = name.replace("\\", "/").rsplit("/", 1)[-1]
-        name = "".join(
-            c for c in name if unicodedata.category(c) not in {"Cc", "Cf", "Cs"}
-        )[:255]
-        name = name or "archive.zip"
-
-        try:
-            archive = extract_archive(root, archives, payload, name, session["owner"])
-        except (
-            zipfile.BadZipFile,
-            zipfile.LargeZipFile,
-            zlib.error,
-            NotImplementedError,
-            RuntimeError,
-            EOFError,
-            ValueError,
-        ):
-            return (
-                jsonify(error="This ZIP is damaged or uses an unsupported format."),
-                400,
-            )
-        except OSError:
-            return (
-                jsonify(
-                    error="The files could not be extracted. Clear this archive and try again."
-                ),
-                507,
-            )
-
-        files = [
-            dict(file, url=f"api/archives/{archive['id']}/files/{file['id']}")
-            for file in archive["files"]
-        ]
-
-        return jsonify(
-            id=archive["id"],
-            name=archive["name"],
-            files=files,
-            total_size=archive["total_size"],
-        )
-
-    def owned_archive(archive_id):
-        archive = archives.get(archive_id)
-        owner = session.get("owner", "")
+        token = request.headers.get("X-CSRF-Token", "")
+        expected = session.get("csrf", "")
 
         if (
-            archive is None
-            or not owner
-            or not secrets.compare_digest(archive["owner"], owner)
+            not expected
+            or not token.isascii()
+            or not secrets.compare_digest(token, expected)
         ):
-            abort(404)
+            abort(403)
 
-        return archive
+        if request.headers.get("X-Unpack-Request") != "1":
+            abort(403)
 
-    @app.get("/api/archives/<archive_id>/files/<file_id>")
-    def download(archive_id, file_id):
-        archive = owned_archive(archive_id)
-        file = next((item for item in archive["files"] if item["id"] == file_id), None)
 
-        if file is None:
-            abort(404)
+@app.after_request
+def security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; script-src 'self'; style-src 'self'; "
+        "img-src 'self' data:; font-src 'self'; connect-src 'self'; "
+        "object-src 'none'; base-uri 'none'; form-action 'self'"
+    )
 
-        try:
-            fd = os.open(
-                archive["directory"] / file["id"],
-                os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
-            )
-        except OSError:
-            abort(404)
+    return response
 
-        if not stat.S_ISREG(os.fstat(fd).st_mode):
-            os.close(fd)
-            abort(404)
 
-        stream = os.fdopen(fd, "rb")
-        response = send_file(
-            stream,
-            as_attachment=True,
-            download_name=file["path"].rsplit("/", 1)[-1],
-            mimetype="application/octet-stream",
-            conditional=False,
-            etag=False,
+@app.errorhandler(HTTPException)
+def http_error(error):
+    messages = {
+        400: error.description,
+        403: "Refresh this page and try again.",
+        404: "These files are no longer available. Extract your archive again.",
+        405: "That action is not available.",
+        413: "Choose an archive no larger than 1 MB.",
+        415: "Choose a ZIP or TAR archive to extract.",
+    }
+
+    return (
+        jsonify(error=messages.get(error.code, "The request could not be completed.")),
+        error.code,
+    )
+
+
+@app.get("/")
+def index():
+    session.setdefault("owner", secrets.token_hex(32))
+    session.setdefault("csrf", secrets.token_hex(32))
+
+    extensions = (
+        suffix for suffix, kind in TAR_FORMATS.items() if zstd or kind != "zst"
+    )
+
+    return render_template(
+        "unzip.html",
+        csrf_token=session["csrf"],
+        archive_extensions=",".join((".zip", *extensions)),
+    )
+
+
+@app.get("/health")
+def health():
+    return "OK\n"
+
+
+@app.post("/api/extract")
+def extract():
+    media_types = {
+        "application/octet-stream": ".zip",
+        "application/zip": ".zip",
+        "application/x-zip-compressed": ".zip",
+        "application/x-tar": ".tar",
+        "application/gzip": ".tar.gz",
+        "application/x-gzip": ".tar.gz",
+        "application/x-bzip2": ".tar.bz2",
+        "application/x-xz": ".tar.xz",
+        "application/x-lzma": ".tar.lzma",
+        "application/zstd": ".tar.zst",
+    }
+    extension = media_types.get(request.mimetype)
+
+    if extension is None:
+        abort(415)
+
+    payload = request.stream.read(MAX_UPLOAD + 1)
+
+    if len(payload) > MAX_UPLOAD:
+        raise RequestEntityTooLarge()
+
+    if not payload:
+        return jsonify(error="Choose a ZIP or TAR archive to extract."), 400
+
+    name = unquote(request.headers.get("X-Archive-Name", f"archive{extension}"))
+    name = name.replace("\\", "/").rsplit("/", 1)[-1]
+    name = "".join(c for c in name if unicodedata.category(c) not in {"Cc", "Cf", "Cs"})
+    name = name or f"archive{extension}"
+    archive_name = name.lower()
+    tar_format = next(
+        (kind for suffix, kind in TAR_FORMATS.items() if archive_name.endswith(suffix)),
+        None,
+    )
+
+    try:
+        archive = extract_archive(
+            root, archives, payload, name[:255], session["owner"], tar_format
         )
-        response.content_length = file["size"]
-        response.call_on_close(stream.close)
+    except (
+        zipfile.BadZipFile,
+        zipfile.LargeZipFile,
+        tarfile.TarError,
+        lzma.LZMAError,
+        zlib.error,
+        NotImplementedError,
+        RuntimeError,
+        EOFError,
+        OverflowError,
+        ValueError,
+    ):
+        kind = "TAR" if tar_format is not None else "ZIP"
 
-        return response
+        return (
+            jsonify(error=f"This {kind} is damaged or uses an unsupported format."),
+            400,
+        )
+    except OSError:
+        return (
+            jsonify(
+                error="The files could not be extracted. Clear this archive and try again."
+            ),
+            507,
+        )
 
-    @app.delete("/api/archives/<archive_id>")
-    def clear(archive_id):
-        owned_archive(archive_id)
-        remove_archive(archives, archive_id)
+    files = [
+        dict(file, url=f"api/archives/{archive['id']}/files/{file['id']}")
+        for file in archive["files"]
+    ]
 
-        return "", 204
+    return jsonify(
+        id=archive["id"],
+        name=archive["name"],
+        files=files,
+        total_size=archive["total_size"],
+    )
 
-    return app
+
+def owned_archive(archive_id):
+    archive = archives.get(archive_id)
+    owner = session.get("owner", "")
+
+    if (
+        archive is None
+        or not owner
+        or not secrets.compare_digest(archive["owner"], owner)
+    ):
+        abort(404)
+
+    return archive
+
+
+@app.get("/api/archives/<archive_id>/files/<file_id>")
+def download(archive_id, file_id):
+    archive = owned_archive(archive_id)
+    file = next((item for item in archive["files"] if item["id"] == file_id), None)
+
+    if file is None:
+        abort(404)
+
+    try:
+        fd = os.open(
+            archive["directory"] / file["id"],
+            os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+        )
+    except OSError:
+        abort(404)
+
+    if not stat.S_ISREG(os.fstat(fd).st_mode):
+        os.close(fd)
+        abort(404)
+
+    stream = os.fdopen(fd, "rb")
+    response = send_file(
+        stream,
+        as_attachment=True,
+        download_name=file["path"].rsplit("/", 1)[-1],
+        mimetype="application/octet-stream",
+        conditional=False,
+        etag=False,
+    )
+    response.content_length = file["size"]
+    response.call_on_close(stream.close)
+
+    return response
+
+
+@app.delete("/api/archives/<archive_id>")
+def clear(archive_id):
+    owned_archive(archive_id)
+    remove_archive(archives, archive_id)
+
+    return "", 204
+
+
+application = app

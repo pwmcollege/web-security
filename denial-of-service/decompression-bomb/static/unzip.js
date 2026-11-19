@@ -8,6 +8,7 @@
     const resultsView = byId("results-view");
     const form = byId("archive-form");
     const input = byId("archive-input");
+    const archiveExtensions = input.accept.split(",");
     const dropZone = byId("drop-zone");
     const browseButton = byId("browse-button");
     const removeButton = byId("remove-button");
@@ -54,20 +55,22 @@
 
         error("");
 
-        if (!file.name.toLowerCase().endsWith(".zip")) {
-            error("Choose a ZIP archive to continue.");
+        const name = file.name.toLowerCase();
+
+        if (!archiveExtensions.some(extension => name.endsWith(extension))) {
+            error("Choose a ZIP or TAR archive to continue.");
 
             return;
         }
 
         if (file.size > MAX_UPLOAD) {
-            error("This archive is too large. Choose a ZIP file of 1 MB or less.");
+            error("This archive is too large. Choose an archive of 1 MB or less.");
 
             return;
         }
 
         if (file.size === 0) {
-            error("This file is empty. Choose a valid ZIP archive.");
+            error("This file is empty. Choose a valid archive.");
 
             return;
         }
@@ -81,7 +84,7 @@
     function renderSelection() {
         const hasFile = selectedFile !== null;
         const size = byId("selected-size");
-        byId("upload-title").textContent = hasFile ? selectedFile.name : "Drop a ZIP here";
+        byId("upload-title").textContent = hasFile ? selectedFile.name : "Drop an archive here";
         size.textContent = hasFile ? formatSize(selectedFile.size) : "";
         size.hidden = !hasFile;
         byId("file-limit").hidden = hasFile;
@@ -111,7 +114,7 @@
         try {
             data = await response.json();
         } catch {
-            throw new Error(response.status === 413 ? "This archive is too large. Choose a ZIP file of 1 MB or less." : "The archive could not be opened. Please try again.");
+            throw new Error(response.status === 413 ? "This archive is too large. Choose an archive of 1 MB or less." : "The archive could not be opened. Please try again.");
         }
 
         if (!response.ok) throw new Error(typeof data.error === "string" ? data.error : "The archive could not be opened. Please try again.");
@@ -283,7 +286,7 @@
         if (busy) return;
 
         if (event.dataTransfer.files.length !== 1) {
-            error("Choose one ZIP archive at a time.");
+            error("Choose one archive at a time.");
 
             return;
         }
@@ -303,12 +306,12 @@
         try {
             const response = await fetch(new URL("api/extract", baseUrl), {
                 method: "POST",
-                headers: { ...requestHeaders(), "Content-Type": "application/zip", "X-Archive-Name": encodeURIComponent(selectedFile.name) },
+                headers: { ...requestHeaders(), "Content-Type": "application/octet-stream", "X-Archive-Name": encodeURIComponent(selectedFile.name) },
                 body: selectedFile,
             });
             showResults(await readResponse(response));
         } catch (failure) {
-            error(failure instanceof TypeError ? "Could not reach Unzip. Please try again." : failure.message);
+            error(failure instanceof TypeError ? "Could not reach Unarchive. Please try again." : failure.message);
             announce("");
         } finally {
             setBusy(false);
@@ -337,7 +340,7 @@
             announce("Ready to open another archive.");
             browseButton.focus();
         } catch (failure) {
-            error(failure instanceof TypeError ? "Could not reach Unzip. Please try again." : failure.message);
+            error(failure instanceof TypeError ? "Could not reach Unarchive. Please try again." : failure.message);
         } finally {
             resetButton.removeAttribute("aria-disabled");
         }

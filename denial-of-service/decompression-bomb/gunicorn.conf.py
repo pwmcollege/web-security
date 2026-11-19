@@ -1,4 +1,4 @@
-wsgi_app = "wsgi:create_app()"
+wsgi_app = "wsgi:application"
 bind = "app.internal:443"
 certfile = "/etc/ssl/certs/internal.cert.pem"
 keyfile = "/etc/ssl/private/internal.key.pem"

@@ -5,6 +5,10 @@ from pathlib import Path
 from flask import Flask, render_template, request
 
 
+app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 4096
+
+
 def load_entries():
     wordnet = Path(os.getenv("WORDNET_DATA", "/usr/share/wordnet"))
     ipa = Path(os.getenv("IPA_DATA", "/usr/share/dictionary/en_US.txt"))
@@ -74,23 +78,21 @@ def search_words(query):
     return matches
 
 
-application = Flask(__name__)
-application.config["MAX_CONTENT_LENGTH"] = 4096
 entries = load_entries()
 words = list(entries)
 
 
-@application.get("/")
+@app.get("/")
 def index():
     return render_template("dictionary.html")
 
 
-@application.get("/health")
+@app.get("/health")
 def health():
     return "OK\n", 200
 
 
-@application.post("/api/words")
+@app.post("/api/words")
 def lookup():
     data = request.get_json(silent=True)
 
@@ -116,3 +118,6 @@ def lookup():
         "page": page,
         "page_count": page_count,
     }
+
+
+application = app
