@@ -54,9 +54,6 @@ resources:
   - id: redos
     name: ReDoS
     type: challenge
-    transfer:
-      module: denial-of-service
-      challenge: cpu-bottleneck
     interfaces:
       - name: Challenge
         port: 80
