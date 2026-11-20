@@ -55,7 +55,6 @@ app = Flask(__name__)
 app.config.update(
     SECRET_KEY=secrets.token_bytes(32),
     MAX_CONTENT_LENGTH=MAX_UPLOAD,
-    SESSION_COOKIE_NAME="unpack_session",
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Strict",
 )
