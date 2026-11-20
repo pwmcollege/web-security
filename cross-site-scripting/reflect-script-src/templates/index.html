@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
     <head>
+        {% set asset_root = 'https://cdn.internal' if request.host == 'challenge.internal' else './assets' %}
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Incognito</title>
-        <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
-        <script src="https://cdn.internal/lucide/lucide.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.internal/fonts/geist.css" />
-        <link rel="stylesheet" href="/static/style.css" />
+        <script src="{{ asset_root }}/tailwind/tailwind.min.js"></script>
+        <script src="{{ asset_root }}/lucide/lucide.min.js"></script>
+        <link rel="stylesheet" href="{{ asset_root }}/fonts/geist.css" />
+        <link rel="stylesheet" href="./static/style.css" />
     </head>
     <body class="min-h-full bg-white text-zinc-900 font-sans antialiased flex flex-col">
         <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-[1.5rem] border-b-[0.0625rem] border-zinc-100">
@@ -40,7 +41,7 @@
                     </div>
                 {% endif %}
             </div>
-            <form action="/"
+            <form action="./"
                   method="GET"
                   class="sticky bottom-0 bg-white/80 backdrop-blur-[1.5rem] border-t-[0.0625rem] border-zinc-100 px-4 py-3">
                 <div class="flex items-center gap-2">
@@ -58,6 +59,6 @@
                 </div>
             </form>
         </main>
-        <script src="/static/share.js"></script>
+        <script src="./static/share.js"></script>
     </body>
 </html>

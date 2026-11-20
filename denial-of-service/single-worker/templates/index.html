@@ -5,20 +5,27 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="#ffffff" />
         <title>Watchdog</title>
-        <link rel="preconnect" href="https://cdn.internal" />
-        <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
-        <script src="https://cdn.internal/lucide/lucide.min.js" defer></script>
-        <link rel="stylesheet" href="https://cdn.internal/fonts/geist.css" />
-        <link rel="stylesheet" href="/static/style.css" />
-        <script src="/static/script.js" type="module"></script>
+        {% set assets = 'https://cdn.internal' if request.host.partition(':')[0] == 'challenge.internal' else './assets' %}
+        <script src="{{ assets }}/tailwind/tailwind.min.js"></script>
+        <script src="{{ assets }}/lucide/lucide.min.js" defer></script>
+        <script src="{{ assets }}/motion/motion.min.js" defer></script>
+        <link rel="stylesheet" href="{{ assets }}/fonts/geist.css" />
+        <link rel="stylesheet" href="./static/style.css" />
+        <script src="./static/script.js" type="module"></script>
     </head>
     <body class="flow-root min-h-dvh bg-white font-sans text-zinc-900 antialiased">
         <a class="skip-link" href="#main">Skip to status</a>
-        <header class="watchdog-header mx-auto mt-4 flex min-h-14 items-center rounded-full bg-zinc-50
-                       ps-[clamp(0.75rem,2vw,1.5rem)] shadow-(--shadow-island)">
+        <header class="watchdog-header mx-auto mt-4 flex min-h-14 items-center gap-2 rounded-full bg-zinc-50
+                       pe-1.75 ps-[clamp(0.75rem,2vw,1.5rem)] shadow-(--shadow-island)">
             <span class="select-none text-[1.1875rem] font-extrabold leading-11 tracking-[-0.04em]">
                 Watchdog<span class="ms-0.5 inline-block size-1 rounded-full bg-[#a1a1aa]" aria-hidden="true"></span>
             </span>
+            <button id="showFlag" class="ms-auto inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#f0f0f2]
+                                         px-3.5 text-sm font-[550] whitespace-nowrap text-[#18181b] hover:bg-[#e4e4e7] hover:text-[#047857]"
+                    type="button" aria-haspopup="dialog" aria-controls="flagDialog" hidden>
+                <i data-lucide="flag" class="size-4.5 shrink-0" aria-hidden="true"></i>
+                Flag
+            </button>
         </header>
         <main id="main" class="mx-auto flex flex-col gap-7.5 pt-[clamp(3rem,10vh,6rem)] pb-8">
             <section id="overallStatus" data-state="checking"
@@ -48,21 +55,6 @@
                     </p>
                 </div>
             </section>
-            <section id="flagCard" class="flag-card rounded-(--radius-menu) border border-emerald-200 bg-emerald-50/50 p-4" aria-labelledby="flagHeading" hidden>
-                <h2 id="flagHeading" class="mb-3 flex items-center gap-2 text-sm font-medium text-emerald-900"><i data-lucide="flag" class="h-4 w-4" aria-hidden="true"></i>Challenge complete</h2>
-                <div class="flex min-w-0 items-center gap-2 rounded-xl border border-emerald-200 bg-white pe-1 ps-3">
-                    <p id="flagValue" class="min-w-0 flex-1 select-text break-all py-1 text-sm leading-5 text-zinc-800" aria-label="Flag"></p>
-                    <button id="copyFlag" type="button" class="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-2.5
-                                                               text-sm font-medium text-zinc-600 hover:text-zinc-900 motion-safe:transition-colors" data-copied="false">
-                        <span class="copy-icons relative h-3.5 w-3.5" aria-hidden="true"><i data-lucide="copy" class="copy-icon absolute h-3.5 w-3.5"></i><i data-lucide="check" class="copied-icon absolute h-3.5 w-3.5"></i></span>
-                        <span id="copyLabel" class="min-w-[4.5ch]" aria-live="polite" aria-atomic="true">
-                            <span class="copy-label-default">Copy</span>
-                            <span class="copy-label-done">Copied</span>
-                        </span>
-                    </button>
-                </div>
-                <p id="copyMessage" class="mt-2 text-xs leading-5 text-emerald-900" aria-live="polite" hidden>Copy the flag from the text above.</p>
-            </section>
             <section id="serviceStatus" data-state="checking" aria-labelledby="systemHeading">
                 <div class="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-(--color-rule) pb-2.5">
                     <h2 id="systemHeading" class="text-sm font-medium" translate="no">app.internal</h2>
@@ -90,5 +82,36 @@
             </section>
             <noscript><p class="rounded-xl border-[length:0.0625rem] border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Enable JavaScript to see service status.</p></noscript>
         </main>
+        <dialog id="flagDialog" class="fixed inset-0 m-auto w-[min(calc(100%-1.5rem),40rem)] overflow-auto overscroll-contain rounded-[1.25rem]
+                                      border border-[#e4e4e7] bg-white p-5 text-[#18181b] shadow-(--shadow-island)"
+                aria-labelledby="flagHeading">
+            <div class="flex items-center justify-between gap-2">
+                <h2 id="flagHeading" class="text-[1.1875rem] leading-[normal] font-bold tracking-[-0.025em] wrap-anywhere"
+                    tabindex="-1" autofocus>Challenge complete</h2>
+                <form method="dialog">
+                    <button type="submit" class="grid size-11 place-items-center rounded-full hover:bg-[#f0f0f2]" aria-label="Close flag">
+                        <i data-lucide="x" class="size-4.5" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="mt-3 max-h-[52dvh] overflow-auto rounded-xl bg-[#fafafa] p-3.5">
+                <pre id="flagValue" class="select-text" aria-label="Flag"></pre>
+            </div>
+            <p id="copyMessage" class="mt-2 text-xs/5 text-zinc-600" role="status" hidden>Select the flag text to copy it.</p>
+            <div class="mt-4 flex justify-end gap-1.5">
+                <button id="copyFlag" type="button" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#18181b] px-3.5
+                                                           text-sm leading-[normal] font-[550] whitespace-nowrap text-white hover:bg-[#3f3f46]"
+                        data-copied="false">
+                    <span class="relative size-4.5 shrink-0" aria-hidden="true">
+                        <i data-lucide="copy" class="copy-icon absolute inset-0 size-4.5"></i>
+                        <i data-lucide="check" class="copied-icon absolute inset-0 size-4.5"></i>
+                    </span>
+                    <span aria-live="polite" aria-atomic="true">
+                        <span class="copy-label-default">Copy flag</span>
+                        <span class="copy-label-done">Copied</span>
+                    </span>
+                </button>
+            </div>
+        </dialog>
     </body>
 </html>

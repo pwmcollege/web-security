@@ -5,22 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dictionary</title>
         <link rel="icon" href="data:," />
-        <link rel="stylesheet" href="https://cdn.internal/fonts/geist.css" />
-        <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
-        <link rel="stylesheet" href="{{ url_for('static', filename='dictionary.css') }}" />
-        <script src="https://cdn.internal/lucide/lucide.min.js" defer></script>
-        <script defer src="https://cdn.internal/motion/motion.min.js"></script>
-        <script type="module" src="{{ url_for('static', filename='dictionary.js') }}"></script>
+        <link rel="stylesheet" href="./assets/fonts/geist.css" />
+        <script src="./assets/tailwind/tailwind.min.js"></script>
+        <link rel="stylesheet" href="./static/dictionary.css" />
+        <script src="./assets/lucide/lucide.min.js" defer></script>
+        <script defer src="./assets/motion/motion.min.js"></script>
+        <script type="module" src="./static/dictionary.js"></script>
     </head>
     <body class="m-0 flex h-dvh min-h-72 flex-col">
         <header class="site-header mx-auto mt-4 w-[min(80%,64rem)] shrink-0 rounded-full bg-(--color-surface)
                        shadow-(--shadow-island) max-[36rem]:w-[calc(100%-1.5rem)]">
             <form class="search relative flex min-h-14 items-center gap-[clamp(0.375rem,1.4vw,0.875rem)] py-1 pe-1.75
                          ps-[clamp(0.75rem,2vw,1.5rem)]"
-                  action="{{ url_for('lookup') }}" method="post" role="search">
+                  action="./api/words" method="post" role="search">
                 <a class="wordmark inline-flex min-h-11 shrink-0 items-center rounded-lg text-[1.1875rem] font-extrabold
                           tracking-[-0.04em] text-inherit no-underline"
-                   href="{{ url_for('index') }}"><span>Dictionary<span class="ms-0.5 inline-block size-1 rounded-full bg-[#a1a1aa]" aria-hidden="true"></span></span></a>
+                   href="./"><span>Dictionary<span class="ms-0.5 inline-block size-1 rounded-full bg-[#a1a1aa]" aria-hidden="true"></span></span></a>
                 <div class="search-control ms-auto flex h-11 min-w-11 items-center rounded-full
                             has-[.search-fields:not([inert])]:basis-80 has-[.search-fields:not([inert])]:bg-(--color-field)
                             motion-safe:transition-colors motion-safe:duration-150">

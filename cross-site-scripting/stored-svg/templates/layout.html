@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
     <head>
+        {% set asset_root = 'https://cdn.internal' if request.host == 'challenge.internal' else './assets' %}
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>pwnpost</title>
-        <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
-        <script src="https://cdn.internal/lucide/lucide.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.internal/fonts/geist.css" />
-        <link rel="stylesheet" href="/static/style.css" />
+        <script src="{{ asset_root }}/tailwind/tailwind.min.js"></script>
+        <script src="{{ asset_root }}/lucide/lucide.min.js"></script>
+        <link rel="stylesheet" href="{{ asset_root }}/fonts/geist.css" />
+        <link rel="stylesheet" href="./static/style.css" />
     </head>
     <body class="min-h-full bg-white text-zinc-900 font-sans antialiased flex flex-col">
         {% if not hide_chrome %}
             <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-[1.5rem] border-b-[0.0625rem] border-zinc-100">
                 <div class="mx-auto max-w-[37.5rem] h-[3.75rem] px-5 flex items-center justify-between">
-                    <a href="/"
+                    <a href="./"
                        class="text-[1.1875rem] font-extrabold tracking-tight text-zinc-900 select-none">
                         pwnpost<span class="text-zinc-300">.</span>
                     </a>
@@ -34,8 +35,8 @@
       const logout = document.getElementById("logout");
       if (logout) {
         logout.addEventListener("click", async () => {
-          await fetch("/api/auth/logout", { method: "POST" });
-          location.href = "/login";
+          await fetch("./api/auth/logout", { method: "POST" });
+          location.href = "./login";
         });
       }
 

@@ -14,9 +14,18 @@ import unicodedata
 import zipfile
 import zlib
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
-from flask import Flask, abort, jsonify, render_template, request, send_file, session
+from flask import (
+    Flask,
+    abort,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    session,
+)
 from werkzeug.exceptions import HTTPException, RequestEntityTooLarge
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -355,10 +364,15 @@ def security_headers(response):
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["Cache-Control"] = "no-store"
     response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+    assets = (
+        " https://cdn.internal"
+        if request.host.partition(":")[0] == "app.internal"
+        else ""
+    )
     response.headers["Content-Security-Policy"] = (
-        "default-src 'self'; script-src 'self'; style-src 'self'; "
-        "style-src-elem 'self' 'unsafe-inline'; "
-        "img-src 'self' data:; font-src 'self'; connect-src 'self'; "
+        f"default-src 'self'; script-src 'self'{assets}; style-src 'self'{assets}; "
+        f"style-src-elem 'self' 'unsafe-inline'{assets}; "
+        f"img-src 'self' data:; font-src 'self'{assets}; connect-src 'self'; "
         "object-src 'none'; base-uri 'none'; form-action 'self'"
     )
 
@@ -401,6 +415,14 @@ def index():
 @app.get("/health")
 def health():
     return "OK\n"
+
+
+@app.get("/assets/<path:filename>")
+def asset(filename):
+    query = request.query_string.decode("latin-1")
+    return redirect(
+        urlunsplit(("https", "cdn.internal", "/" + quote(filename), query, ""))
+    )
 
 
 @app.post("/api/extract")

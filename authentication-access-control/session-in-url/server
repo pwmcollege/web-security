@@ -4,6 +4,7 @@ import os
 import sqlite3
 import tempfile
 import threading
+from urllib.parse import quote
 
 from flask import Flask, flash, redirect, render_template, request
 
@@ -70,7 +71,7 @@ def address(username):
 
 @app.route("/")
 def root():
-    return redirect("/login")
+    return redirect("./login")
 
 
 @app.route("/login")
@@ -89,15 +90,15 @@ def api_login():
     password = request.form.get("password")
     if not username or not password:
         flash("Enter your username and password")
-        return redirect("/login")
+        return redirect("../../login")
     user = db.execute(
         "SELECT username FROM users WHERE username = ? AND password = ?",
         (username, password),
     ).fetchone()
     if not user:
         flash("Incorrect username or password")
-        return redirect("/login")
-    return redirect(f"/u/{user['username']}/")
+        return redirect("../../login")
+    return redirect(f"../../u/{user['username']}/")
 
 
 @app.route("/api/auth/logout", methods=["POST"])
@@ -111,22 +112,22 @@ def api_register():
     password = request.form.get("password") or ""
     if not username or not password:
         flash("Enter a username and password")
-        return redirect("/register")
+        return redirect("../../register")
     if username.lower() in ("admin", "system"):
         flash("That username is reserved")
-        return redirect("/register")
+        return redirect("../../register")
     if db.execute(
         "SELECT 1 FROM users WHERE username = ? COLLATE NOCASE", [username]
     ).fetchone():
         flash("That username is taken")
-        return redirect("/register")
+        return redirect("../../register")
     db.execute(
         "INSERT INTO users (username, password) VALUES (?, ?)",
         (username, password),
     )
     welcome_email(username)
     flash("Account created. Please log in.")
-    return redirect("/login")
+    return redirect("../../login")
 
 
 @app.route("/u/<username>/api/mail", methods=["POST"])
@@ -158,8 +159,15 @@ def api_mail_delete(username, mail_id):
     return ("", 204)
 
 
-@app.route("/u/<username>/")
+@app.route("/u/<username>/", strict_slashes=False)
 def inbox_page(username):
+    if not request.path.endswith("/"):
+        location = f"./{quote(username, safe='')}/"
+        if request.query_string:
+            location += f"?{request.query_string.decode('latin-1')}"
+
+        return redirect(location, code=308)
+
     inbox = db.execute(
         "SELECT rowid, * FROM emails WHERE recipient = ? ORDER BY rowid DESC",
         [username],
@@ -175,7 +183,7 @@ def inbox_page(username):
         inbox=inbox,
         sent=sent,
         panels={e["rowid"]: e for e in list(inbox) + list(sent)}.values(),
-        base=f"/u/{username}",
+        app_root="../../",
     )
 
 

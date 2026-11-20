@@ -89,15 +89,15 @@ def api_login():
     password = request.form.get("password")
     if not username or not password:
         flash("Enter your username and password")
-        return redirect("/login")
+        return redirect("../../login")
     user = db.execute(
         "SELECT username FROM users WHERE username = ? AND password = ?",
         (username, password),
     ).fetchone()
     if not user:
         flash("Incorrect username or password")
-        return redirect("/login")
-    response = make_response(redirect("/"))
+        return redirect("../../login")
+    response = make_response(redirect("../../"))
     response.set_cookie("session", user["username"])
     return response
 
@@ -115,22 +115,22 @@ def api_register():
     password = request.form.get("password") or ""
     if not username or not password:
         flash("Enter a username and password")
-        return redirect("/register")
+        return redirect("../../register")
     if username.lower() in ("admin", "system"):
         flash("That username is reserved")
-        return redirect("/register")
+        return redirect("../../register")
     if db.execute(
         "SELECT 1 FROM users WHERE username = ? COLLATE NOCASE", [username]
     ).fetchone():
         flash("That username is taken")
-        return redirect("/register")
+        return redirect("../../register")
     db.execute(
         "INSERT INTO users (username, password) VALUES (?, ?)",
         (username, password),
     )
     welcome_email(username)
     flash("Account created. Please log in.")
-    return redirect("/login")
+    return redirect("../../login")
 
 
 @app.route("/api/mail", methods=["POST"])
@@ -172,7 +172,7 @@ def api_mail_delete(mail_id):
 def inbox_page():
     username = current_user()
     if not username:
-        return redirect("/login")
+        return redirect("./login")
     inbox = db.execute(
         "SELECT rowid, * FROM emails WHERE recipient = ? ORDER BY rowid DESC",
         [username],
@@ -188,7 +188,6 @@ def inbox_page():
         inbox=inbox,
         sent=sent,
         panels={e["rowid"]: e for e in list(inbox) + list(sent)}.values(),
-        base="",
     )
 
 

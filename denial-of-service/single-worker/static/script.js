@@ -41,15 +41,18 @@ const historyTooltip = document.getElementById("historyTooltip");
 const tooltipTime = document.getElementById("tooltipTime");
 const noCheckRecorded = document.getElementById("noCheckRecorded");
 const tooltipResult = document.getElementById("tooltipResult");
-const flagCard = document.getElementById("flagCard");
+const showFlag = document.getElementById("showFlag");
+const flagDialog = document.getElementById("flagDialog");
 const flagValue = document.getElementById("flagValue");
 const copyFlag = document.getElementById("copyFlag");
 const copyMessage = document.getElementById("copyMessage");
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const barButtons = [];
 let currentResults = [];
 let lastHistory = "";
 let selectedBar = null;
 let copyReset;
+let flagAnimation;
 let events;
 
 function ageOf(sample) {
@@ -163,19 +166,41 @@ function renderHistory(history) {
     refreshTimes();
 }
 
+function openFlag() {
+    if (flagDialog.open) return;
+    flagDialog.showModal();
+    if (!reducedMotion.matches) {
+        flagAnimation = window.Motion?.animate(
+            flagDialog, { opacity: [0, 1], scale: [0.97, 1], y: [6, 0] }, { duration: 0.2, ease: "easeOut" },
+        );
+    }
+}
+
 function render(snapshot) {
     const state = getCheckState(snapshot);
     overallStatus.dataset.state = state;
     serviceStatus.dataset.state = state;
     renderHistory(snapshot.history ?? []);
-    if (snapshot.flag) {
-        flagCard.hidden = false;
-        if (flagValue.textContent !== snapshot.flag) {
-            flagValue.textContent = snapshot.flag;
-            copyMessage.hidden = true;
-        }
+    if (typeof snapshot.flag === "string" && snapshot.flag && flagValue.textContent !== snapshot.flag) {
+        flagValue.textContent = snapshot.flag;
+        copyMessage.hidden = true;
+        copyFlag.dataset.copied = "false";
+        clearTimeout(copyReset);
+        showFlag.hidden = false;
+        openFlag();
     }
 }
+
+showFlag.addEventListener("click", openFlag);
+flagDialog.addEventListener("close", () => {
+    flagAnimation?.cancel();
+    showFlag.focus({ preventScroll: true });
+});
+flagDialog.addEventListener("click", (event) => {
+    if (event.target !== flagDialog) return;
+    const { left, right, top, bottom } = flagDialog.getBoundingClientRect();
+    if (event.clientX < left || event.clientX > right || event.clientY < top || event.clientY > bottom) flagDialog.close();
+});
 
 copyFlag.addEventListener("click", async () => {
     clearTimeout(copyReset);

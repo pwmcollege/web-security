@@ -76,7 +76,7 @@
                     <span class="text-[0.9375rem] font-semibold text-zinc-900">New message</span>
                 </div>
                 <form id="compose-form"
-                      action="{{ base }}/api/mail"
+                      action="./api/mail"
                       method="post"
                       class="flex min-h-0 flex-1 flex-col">
                     <div class="flex items-center gap-3 border-b-[0.0625rem] border-zinc-100 px-6 py-3">
@@ -147,7 +147,6 @@
         </section>
     </div>
     <script>
-  const BASE = {{ base | tojson }};
   const panels = document.querySelectorAll("[data-panel]");
   const rows = document.querySelectorAll("[data-select]");
 
@@ -211,7 +210,8 @@
       if (res.ok) {
           const to = toField.value.split("@")[0].trim();
           sessionStorage.setItem("mailToast", "Message sent to " + to + "@pwm.college");
-          location.href = BASE + "/#sent";
+          location.hash = "sent";
+          location.reload();
           return;
       }
       const data = await res.json().catch(() => ({ error: "Could not send message" }));
@@ -225,7 +225,7 @@
 
   document.querySelectorAll("[data-delete]").forEach((b) =>
       b.addEventListener("click", async () => {
-          await fetch(BASE + "/api/mail/" + b.dataset.delete, { method: "DELETE" });
+          await fetch("./api/mail/" + b.dataset.delete, { method: "DELETE" });
           location.reload();
       }),
   );
