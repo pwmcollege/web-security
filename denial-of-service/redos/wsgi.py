@@ -4,7 +4,6 @@ from pathlib import Path
 
 from flask import Flask, render_template, request
 
-
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 4096
 

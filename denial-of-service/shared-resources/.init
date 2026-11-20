@@ -36,3 +36,5 @@ nginx -c /challenge/nginx.conf
 
 chmod 544 /challenge/monitor
 /challenge/monitor &
+
+until curl -fs --noproxy '*' --max-time 2 http://127.0.0.1:80/ >/dev/null; do sleep 0.1; done

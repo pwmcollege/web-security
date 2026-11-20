@@ -5,6 +5,7 @@ import json
 import threading
 import time
 from collections import deque
+from contextlib import suppress
 
 import requests
 from flask import Flask, Response, render_template
@@ -44,12 +45,9 @@ def list_ttys():
 def broadcast_flag(flag):
     message = f"The server is down! Your flag is: {flag}\n"
     for tty in list_ttys():
-        try:
-            with open(tty, "w", buffering=1, errors="ignore") as f:
-                f.write(CLEAR)
-                f.write(message)
-        except Exception:
-            pass
+        with suppress(OSError), open(tty, "w", buffering=1, errors="ignore") as f:
+            f.write(CLEAR)
+            f.write(message)
 
 
 def probe_loop():

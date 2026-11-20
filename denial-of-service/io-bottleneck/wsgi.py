@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import json
 import tempfile
 
@@ -20,11 +18,12 @@ def log():
         "message": str,
     }
 
-    for field in fields:
+    for field, field_type in fields.items():
         if field not in request.json:
             return {"error": "Missing required data"}, 400
-        if isinstance(fields[field], list):
-            for sub_field in fields[field]:
+
+        if isinstance(field_type, list):
+            for sub_field in field_type:
                 if sub_field not in request.json[field]:
                     return {"error": "Missing required data"}, 400
 
