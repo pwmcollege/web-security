@@ -186,7 +186,7 @@ function openFlag() {
     flagDialog.showModal();
     if (!reducedMotion.matches) {
         flagAnimation = window.Motion?.animate(
-            flagDialog, { opacity: [0, 1], scale: [0.97, 1], y: [6, 0] }, { duration: 0.2, ease: "easeOut" },
+            flagDialog, { opacity: [0, 1], scale: [0.97, 1], y: ["0.375rem", "0rem"] }, { duration: 0.2, ease: "easeOut" },
         );
     }
 }
@@ -208,8 +208,15 @@ function render(snapshot) {
 }
 
 showFlag.addEventListener("click", openFlag);
+reducedMotion.addEventListener("change", (event) => {
+    if (!event.matches) return;
+
+    flagAnimation?.complete();
+    flagAnimation = undefined;
+});
 flagDialog.addEventListener("close", () => {
     flagAnimation?.cancel();
+    flagAnimation = undefined;
     showFlag.focus({ preventScroll: true });
 });
 flagDialog.addEventListener("click", (event) => {

@@ -293,6 +293,10 @@
         announce(count ? `${count} ${count === 1 ? "file is" : "files are"} ready to download.` : "This archive is empty.");
     }
 
+    reducedMotion.addEventListener("change", (event) => {
+        if (event.matches) breadcrumbAnimation?.complete();
+    });
+
     browseButton.addEventListener("click", () => {
         input.value = "";
         input.click();

@@ -39,7 +39,7 @@
     --color-field: #f0f0f2;
     --rule: #ededf0;
     --radius-menu: 1.25rem;
-    --danger: #be123c;
+    --danger: #9f1239;
     --danger-surface: #fff1f2;
     line-height: normal;
 }
@@ -74,7 +74,7 @@
 }
 
 .drop-zone {
-    border: 0.0625rem dashed #8b8b95;
+    border: 0.0625rem dashed var(--color-muted);
     border-radius: var(--radius-menu);
     background: #fff;
 }
@@ -360,6 +360,7 @@ h1 {
 
     .results-toolbar .button-upload {
         align-self: flex-start;
+        white-space: normal;
     }
 
     .file-list-heading, .file-row {
@@ -372,6 +373,22 @@ h1 {
     #extract-button {
         flex-basis: 100%;
         margin-block-start: 0.25rem;
+    }
+}
+
+@media (max-width: 16rem) {
+    .file-list-heading, .file-row {
+        grid-template: "name action" auto "size action" auto / minmax(0, 1fr) 2.75rem;
+        row-gap: 0;
+    }
+
+    .file-list-heading > :last-child {
+        display: none;
+    }
+
+    .file-size {
+        padding-inline-start: 1.875rem;
+        text-align: start;
     }
 }
 

@@ -17,6 +17,10 @@
     :root {
         --watchdog-width: calc(100% - 2.25rem);
     }
+
+    .watchdog-header {
+        width: calc(100% - 1.5rem);
+    }
 }
 
 body.font-sans {
@@ -49,7 +53,7 @@ button:not(:disabled) {
 
 :focus-visible {
     outline: 0.125rem solid #18181b;
-    outline-offset: 0.25rem;
+    outline-offset: 0.1875rem;
 }
 
 .skip-link {
@@ -184,7 +188,7 @@ button:not(:disabled) {
 }
 
 .history-bar:focus-visible {
-    outline-offset: 1px;
+    outline-offset: 0.0625rem;
 }
 
 .history-tooltip {
@@ -268,7 +272,7 @@ button:not(:disabled) {
 
 #flagDialog::backdrop {
     background: rgb(24 24 27 / 0.36);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(0.375rem);
 }
 
 #flagHeading:focus {
@@ -327,7 +331,7 @@ button:not(:disabled) {
     }
 
     .history-bar[data-state="degraded"]::before {
-        background: repeating-linear-gradient(CanvasText 0 2px, Canvas 2px 4px);
+        background: repeating-linear-gradient(CanvasText 0 0.125rem, Canvas 0.125rem 0.25rem);
     }
 
     .history-bar[data-state="outage"]::before {
@@ -335,7 +339,7 @@ button:not(:disabled) {
     }
 
     #showFlag, #copyFlag {
-        border: 1px solid ButtonText;
+        border: 0.0625rem solid ButtonText;
     }
 }
 

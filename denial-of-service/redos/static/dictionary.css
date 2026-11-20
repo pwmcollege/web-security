@@ -46,7 +46,7 @@
 }
 
 .search-control:has(.search-fields:where(:not([inert]))) {
-    border: 1px solid var(--color-edge);
+    border: 0.0625rem solid var(--color-edge);
     background-color: var(--color-field);
 }
 
@@ -56,8 +56,12 @@
     background-color: white;
 }
 
-.search input:focus,
-.page input:focus {
+.search-control:has(input:focus-visible) {
+    outline: 0.125rem solid var(--color-ink);
+    outline-offset: 0.1875rem;
+}
+
+.search input:focus {
     outline: none;
 }
 
@@ -92,7 +96,7 @@
 #notice.error {
     border-radius: 0.75rem;
     background: #fff1f2;
-    color: #be123c;
+    color: #9f1239;
 }
 
 @media (max-width: 30em) {
@@ -119,6 +123,50 @@
 @media (max-width: 30em) and (prefers-reduced-motion: no-preference) {
     .wordmark {
         transition: opacity 110ms ease 170ms, visibility 0s 170ms;
+    }
+}
+
+@media (max-width: 22em) {
+    .wordmark {
+        position: static;
+        min-width: 0;
+        flex-shrink: 1;
+    }
+
+    .wordmark > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .search:has(.search-fields:not([inert])) .wordmark {
+        position: absolute;
+    }
+
+    .search-action[aria-expanded="false"] {
+        width: 2.75rem;
+        justify-content: center;
+        padding-inline: 0;
+    }
+
+    .search-label {
+        display: none;
+    }
+
+    .pagination {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pagination .page {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        max-width: 100%;
+        justify-self: center;
+    }
+
+    .pagination .page-button {
+        max-width: 100%;
+        overflow-wrap: anywhere;
     }
 }
 
@@ -149,5 +197,10 @@
     .search-control:has(input:focus),
     .page input:focus {
         border-color: Highlight;
+    }
+
+    :focus-visible,
+    .search-control:has(input:focus-visible) {
+        outline-color: Highlight;
     }
 }

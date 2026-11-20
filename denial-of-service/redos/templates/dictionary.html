@@ -53,14 +53,14 @@
                 <div class="m-auto w-full max-w-[40rem] flex-none wrap-anywhere empty:hidden
                             [&_i]:text-(--color-muted) [&_li+li]:mt-2" id="entry"></div>
             </section>
-            <nav class="mx-auto grid w-[calc(100%-3rem)] max-w-[40rem] shrink-0 grid-cols-[1fr_auto_1fr]
-                        items-center gap-2 border-t border-(--color-rule) py-2.5 text-sm max-[36rem]:w-[calc(100%-2.25rem)]"
+            <nav class="pagination mx-auto grid w-[calc(100%-3rem)] max-w-[40rem] shrink-0 grid-cols-[1fr_auto_1fr]
+                        items-center gap-2 border-t-[0.0625rem] border-(--color-rule) py-2.5 text-sm max-[36rem]:w-[calc(100%-2.25rem)]"
                  id="pagination" aria-label="Pagination" hidden>
                 <button class="page-button justify-self-start rounded-lg pe-2"
                         id="previous" type="button">Previous</button>
                 <form class="page flex items-center gap-1 whitespace-nowrap text-(--color-muted) tabular-nums" id="page-jump">
-                    <input class="min-h-9 w-[7ch] rounded-lg border border-transparent px-1.5 text-end
-                                  text-(--color-ink) [appearance:textfield] pointer-coarse:text-base"
+                    <input class="min-h-11 w-[7ch] min-w-0 rounded-lg border-[0.0625rem] border-(--color-edge)
+                                  bg-(--color-field) px-1.5 text-end text-(--color-ink) [appearance:textfield] pointer-coarse:text-base"
                            type="number" id="page" min="1" step="1" required aria-label="Page number"
                            aria-describedby="page-count" enterkeyhint="go" />
                     <span id="page-count"></span>
