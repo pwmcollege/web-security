@@ -14,13 +14,12 @@ import unicodedata
 import zipfile
 import zlib
 from pathlib import Path
-from urllib.parse import quote, unquote, urlsplit, urlunsplit
+from urllib.parse import unquote, urlsplit
 
 from flask import (
     Flask,
     abort,
     jsonify,
-    redirect,
     render_template,
     request,
     send_file,
@@ -366,7 +365,7 @@ def security_headers(response):
     response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
     assets = (
         " https://cdn.internal"
-        if request.host.partition(":")[0] == "app.internal"
+        if request.host.partition(":")[0].lower() == "app.internal"
         else ""
     )
     response.headers["Content-Security-Policy"] = (
@@ -415,14 +414,6 @@ def index():
 @app.get("/health")
 def health():
     return "OK\n"
-
-
-@app.get("/assets/<path:filename>")
-def asset(filename):
-    query = request.query_string.decode("latin-1")
-    return redirect(
-        urlunsplit(("https", "cdn.internal", "/" + quote(filename), query, ""))
-    )
 
 
 @app.post("/api/extract")

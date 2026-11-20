@@ -6,12 +6,13 @@
         <meta name="csrf-token" content="{{ csrf_token }}" />
         <meta name="description" content="Open ZIP and TAR archives and download the files inside." />
         <title>Unarchive</title>
+        {% set asset_base = 'https://cdn.internal/' if request.host.split(':', 1)[0] | lower == 'app.internal' else './assets/' %}
         <link rel="icon" href="data:," />
-        <link rel="stylesheet" href="./assets/fonts/geist.css" />
-        <script src="./assets/tailwind/tailwind.min.js"></script>
+        <link rel="stylesheet" href="{{ asset_base }}fonts/geist.css" />
+        <script src="{{ asset_base }}tailwind/tailwind.min.js"></script>
         <link rel="stylesheet" href="./static/unzip.css" />
-        <script src="./assets/lucide/lucide.min.js" defer></script>
-        <script src="./assets/motion/motion.min.js" defer></script>
+        <script src="{{ asset_base }}lucide/lucide.min.js" defer></script>
+        <script src="{{ asset_base }}motion/motion.min.js" defer></script>
         <script src="./static/unzip.js" defer></script>
     </head>
     <body class="m-0 flex min-h-dvh flex-col">

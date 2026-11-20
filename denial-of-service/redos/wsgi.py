@@ -1,9 +1,8 @@
 import os
 import re
 from pathlib import Path
-from urllib.parse import quote, urlunsplit
 
-from flask import Flask, redirect, render_template, request
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 4096
@@ -90,14 +89,6 @@ def index():
 @app.get("/health")
 def health():
     return "OK\n", 200
-
-
-@app.get("/assets/<path:filename>")
-def asset(filename):
-    query = request.query_string.decode("latin-1")
-    return redirect(
-        urlunsplit(("https", "cdn.internal", "/" + quote(filename), query, ""))
-    )
 
 
 @app.post("/api/words")

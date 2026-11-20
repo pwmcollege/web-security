@@ -4,12 +4,13 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dictionary</title>
+        {% set asset_base = 'https://cdn.internal/' if request.host.split(':', 1)[0] | lower == 'app.internal' else './assets/' %}
         <link rel="icon" href="data:," />
-        <link rel="stylesheet" href="./assets/fonts/geist.css" />
-        <script src="./assets/tailwind/tailwind.min.js"></script>
+        <link rel="stylesheet" href="{{ asset_base }}fonts/geist.css" />
+        <script src="{{ asset_base }}tailwind/tailwind.min.js"></script>
         <link rel="stylesheet" href="./static/dictionary.css" />
-        <script src="./assets/lucide/lucide.min.js" defer></script>
-        <script defer src="./assets/motion/motion.min.js"></script>
+        <script src="{{ asset_base }}lucide/lucide.min.js" defer></script>
+        <script defer src="{{ asset_base }}motion/motion.min.js"></script>
         <script type="module" src="./static/dictionary.js"></script>
     </head>
     <body class="m-0 flex h-dvh min-h-72 flex-col">
