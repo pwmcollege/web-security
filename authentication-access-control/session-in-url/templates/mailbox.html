@@ -1,0 +1,85 @@
+{% from "icons.html" import icon %}
+{% for folder, emails in (("inbox", inbox), ("sent", sent)) %}
+    <template data-folder="{{ folder }}">
+        <h1 class="visually-hidden" data-folder="{{ folder }}">{{ folder|capitalize }}</h1>
+        <section class="flex min-h-0 flex-col pe-[clamp(1.25rem,2.5vw,2rem)]
+                        [@container(max-width:48rem)]:h-full [@container(max-width:48rem)]:pe-0 [@container(max-width:48rem)]:group-data-reading/workspace:hidden" aria-label="{{ folder|capitalize }} messages">
+            <div class="@container/mailbox flex flex-none items-center justify-between gap-2 ps-3 [@container(max-width:48rem)]:ps-2.5">
+                <nav class="flex min-w-0 flex-wrap items-center gap-x-5 [@container_mailbox_(max-width:16.5rem)]:gap-x-3" aria-label="Mail folders">
+                    {% for name in ("inbox", "sent") %}
+                        <a class="folder
+                                  text-muted aria-[current=page]:font-[730] aria-[current=page]:text-ink hover:text-black motion-safe:transition-colors motion-safe:duration-[140ms]" href="#{{ name }}" data-folder="{{ name }}"
+                           {% if name == folder %}aria-current="page"{% endif %}>
+                            {{ name|capitalize }}
+                            {% if name == folder %}<span class="min-w-[1.3125rem] rounded-full bg-[#f1f1f3] px-[0.3125rem] text-center
+                                              text-xs/[1.3125rem] font-[550] tracking-normal text-zinc-600 tabular-nums" aria-label="{{ emails|length }} messages">{{ emails|length }}</span>{% endif %}
+                        </a>
+                    {% endfor %}
+                </nav>
+                <button type="button" class="group/compose inline-grid size-11 flex-none place-items-center rounded-full text-ink" data-compose aria-label="Compose" title="Compose" aria-haspopup="dialog" aria-controls="compose">
+                    <span class="grid size-9 place-items-center rounded-full bg-field group-hover/compose:bg-edge
+                                 motion-safe:transition-colors motion-safe:duration-[140ms] forced-colors:border-[0.0625rem] forced-colors:border-[ButtonText]">{{ icon("square-pen") }}</span>
+                </button>
+            </div>
+            <ul class="rows [@container(max-width:48rem)]:mt-2.5 [@container(max-width:48rem)]:pb-4">
+                {% for email in emails %}
+                    <li class="border-rule not-first:border-t-[0.0625rem] has-[>[aria-current]]:border-transparent [&:has(>[aria-current])+li]:border-transparent">
+                        <button type="button" class="message-row group/row
+                                       aria-[current=true]:bg-[#f5f5f6] focus-visible:outline-offset-[-0.125rem]
+                                       [@container(max-width:48rem)]:px-2.5 [@container(max-width:48rem)]:aria-[current=true]:bg-transparent" data-message="{{ email.rowid }}"
+                           {% if loop.first %}aria-current="true"{% endif %}>
+                            <span class="truncate text-[0.8125rem] font-[550] text-muted group-hover/row:text-black motion-safe:transition-colors motion-safe:duration-[140ms]">{% if folder == "sent" %}<span class="text-ink">To:</span> {{ email.recipient }}{% else %}{{ email.sender }}{% endif %}</span>
+                            <span class="truncate text-[0.9375rem] font-[620] tracking-[-0.02em] text-zinc-800 group-hover/row:text-black motion-safe:transition-colors motion-safe:duration-[140ms]">{{ email.subject or "(no subject)" }}</span>
+                            {% if email.body %}<span class="truncate text-sm/normal text-muted group-hover/row:text-black motion-safe:transition-colors motion-safe:duration-[140ms]">{{ email.body|truncate(160, true, "…") }}</span>{% endif %}
+                        </button>
+                    </li>
+                {% else %}
+                    <li class="px-3 py-4 text-[0.9375rem] text-muted">{{ "Your inbox is empty." if folder == "inbox" else "No sent mail yet." }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="[--reading-width:min(calc(100%-3rem),33rem)] [@container(max-width:22rem)]:[--reading-width:min(calc(100%-2rem),33rem)]
+                        min-w-0 overflow-y-auto border-s-[0.0625rem] border-rule ps-[clamp(1.5rem,3.5vw,3rem)] pe-[clamp(0.25rem,1vw,0.875rem)] pb-6 wrap-anywhere
+                        [@container(max-width:48rem)]:hidden [@container(max-width:48rem)]:h-full [@container(max-width:48rem)]:border-0 [@container(max-width:48rem)]:group-data-reading/workspace:block
+                        [@container(max-width:48rem)]:ps-[env(safe-area-inset-left)] [@container(max-width:48rem)]:pe-[env(safe-area-inset-right)]" aria-label="Message">
+            {% for email in emails %}
+                {% set recipient = email.recipient ~ "@pwm.college" %}
+                <article data-message="{{ email.rowid }}" data-subject="{{ email.subject or '' }}"
+                         data-reply-to="{{ recipient if folder == 'sent' else email.sender_addr }}"{% if not loop.first %} hidden{% endif %}>
+                    <header class="grid grid-cols-[auto_minmax(0,1fr)_auto] [@container(max-width:48rem)]:grid-cols-[minmax(0,1fr)_auto]
+                                   items-start gap-x-2.5 border-b-[0.0625rem] border-rule pb-6 [@container(max-width:48rem)]:border-0 [@container(max-width:48rem)]:pb-0">
+                        <a class="back-link
+                                 text-muted hover:text-black motion-safe:transition-colors motion-safe:duration-[140ms] [@container(max-width:48rem)]:inline-flex" href="#{{ folder }}" data-back>
+                            {{ icon("chevron-left") }}{{ folder|capitalize }}
+                        </a>
+                        <div class="col-span-full row-start-2 contents grid-cols-[auto_minmax(0,1fr)]
+                                    [@container(max-width:30rem)]:grid-cols-[minmax(0,1fr)] [@container(max-width:48rem)]:grid [@container(max-width:48rem)]:justify-self-center [@container(max-width:48rem)]:items-start
+                                    [@container(max-width:48rem)]:w-(--reading-width) [@container(max-width:48rem)]:gap-x-2.5
+                                    [@container(max-width:48rem)]:border-b-[0.0625rem] [@container(max-width:48rem)]:border-rule [@container(max-width:48rem)]:pb-6">
+                            <h2 class="subject [@container(max-width:48rem)]:mt-2.5" tabindex="-1">{{ email.subject or "(no subject)" }}</h2>
+                            <span class="col-start-1 row-start-2 inline-grid size-10.5 flex-none place-items-center rounded-full bg-[#f1f1f3] text-[0.8125rem]
+                                         font-[650] tracking-[-0.025em] text-zinc-600 [@container(max-width:30rem)]:hidden" aria-hidden="true">{{ email.sender[:1]|upper }}</span>
+                            <div class="col-start-2 row-start-2 min-w-0 [@container(max-width:30rem)]:col-start-1">
+                                <strong class="block truncate text-[0.9375rem] font-[620]" title="{{ email.sender }}">{{ email.sender }}</strong>
+                                <p class="address wrap-anywhere">{{ email.sender_addr }}</p>
+                                <p class="address wrap-anywhere"><span class="text-ink">To:</span> {{ recipient }}</p>
+                            </div>
+                        </div>
+                        <button type="button" data-actions class="col-start-3 row-start-2 [@container(max-width:48rem)]:col-start-2 [@container(max-width:48rem)]:row-start-1
+                                       -mt-[0.5625rem] inline-grid size-11 flex-none place-items-center justify-self-end rounded-full border-[0.3125rem] border-transparent
+                                       bg-clip-padding text-muted [anchor-name:--mail-actions] hover:bg-field hover:text-ink aria-expanded:bg-field aria-expanded:text-ink
+                                       motion-safe:transition-colors motion-safe:duration-[140ms] [@container(max-width:48rem)]:mt-0 [@container(max-width:48rem)]:focus-visible:outline-offset-[-0.125rem]" aria-label="Message actions" title="Message actions"
+                                aria-haspopup="dialog" aria-controls="message-actions" aria-expanded="false">{{ icon("ellipsis-vertical") }}</button>
+                    </header>
+                    <div class="mt-6 mb-5 max-w-[60ch] text-base/[1.75] whitespace-pre-wrap text-zinc-700 [@container(max-width:48rem)]:mx-auto [@container(max-width:48rem)]:w-(--reading-width)">{{ email.body }}</div>
+                </article>
+            {% else %}
+                <div class="grid min-h-72 place-content-center justify-items-center gap-2.5 text-sm/normal text-muted">
+                    {{ icon("mail-open", "size-7") }}
+                    <p>No message selected</p>
+                </div>
+            {% endfor %}
+        </section>
+    </template>
+{% endfor %}

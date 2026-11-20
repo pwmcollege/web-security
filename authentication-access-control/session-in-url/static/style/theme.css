@@ -1,0 +1,84 @@
+@theme {
+    --font-sans: "Geist Variable", Geist, system-ui, sans-serif;
+    --color-ink: #18181b;
+    --color-muted: #606069;
+    --color-field: #f0f0f2;
+    --color-edge: #e4e4e7;
+    --color-rule: #ededf0;
+    --color-danger: #9f1239;
+    --color-danger-surface: #fff1f2;
+    --shadow-floating: 0 0.0625rem 0.25rem rgb(24 24 27 / 8%), 0 0.375rem 1.125rem rgb(24 24 27 / 7%);
+    --animate-popover-in: popover-in 160ms ease-out;
+
+    @keyframes popover-in {
+        from { opacity: 0; scale: 0.98; }
+        to { opacity: 1; scale: 1; }
+    }
+}
+
+@layer base {
+    button, summary { @apply cursor-pointer; }
+    button:disabled { @apply cursor-wait opacity-55; }
+    :focus-visible { @apply outline-solid outline-[0.125rem] outline-ink outline-offset-[0.1875rem]; }
+}
+
+@utility visually-hidden {
+    @apply absolute -m-[0.0625rem] size-[0.0625rem] overflow-hidden whitespace-nowrap [clip-path:inset(50%)];
+}
+
+@utility destructive {
+    @apply text-danger enabled:hover:bg-danger-surface focus-visible:outline-danger;
+}
+
+@utility wordmark {
+    @apply inline-flex min-h-11 min-w-11 flex-none items-center rounded-3xl text-[1.1875rem];
+    @apply leading-[normal] font-extrabold tracking-[-0.04em];
+}
+
+@utility icon { @apply inline-block flex-none stroke-[1.5]; }
+
+@utility account-menu { @apply relative ms-auto; }
+
+@utility account-popover {
+    @apply absolute end-0 top-[calc(100%+0.625rem)] w-[min(15rem,calc(100vw-2.5rem))] origin-top-right;
+    @apply rounded-3xl border-[0.0625rem] border-edge bg-white px-4 pt-4 pb-1.5 wrap-anywhere;
+    @apply shadow-floating;
+}
+
+@utility workspace {
+    @apply mx-auto mt-6 mb-8 grid min-h-0 w-[min(calc(100%-4rem),60rem)] flex-1;
+    @apply grid-cols-[minmax(0,0.89fr)_minmax(0,1.55fr)];
+}
+
+@utility rows { @apply mt-[0.9375rem] min-h-0 list-none overflow-y-auto p-0; }
+
+@utility folder {
+    @apply inline-flex min-h-11 items-center gap-[0.4375rem] rounded-3xl text-xl/normal font-[580];
+    @apply tracking-[-0.04em];
+}
+
+@utility message-row { @apply relative grid w-full grid-cols-1 gap-[0.1875rem] rounded-3xl p-3.5 text-start; }
+
+@utility subject {
+    @apply col-span-full row-start-1 mb-[1.375rem] text-[clamp(1.5rem,2.5vw,1.875rem)] leading-[1.16];
+    @apply font-[680] tracking-[-0.045em];
+}
+
+@utility back-link {
+    @apply col-start-1 row-start-1 hidden min-h-11 items-center justify-center gap-2 justify-self-start;
+    @apply rounded-full px-2.5 text-sm/normal font-[550];
+}
+
+@utility address { @apply text-[0.8125rem] text-muted; }
+
+@layer utilities {
+    @supports (position-area: bottom span-left) {
+        #message-actions {
+            @apply inset-auto mx-0 my-1.5 self-start justify-self-end;
+            position-anchor: --mail-actions;
+            position-area: bottom span-left;
+            position-try-fallbacks: flip-block;
+        }
+        #message-actions::backdrop { @apply bg-transparent; }
+    }
+}

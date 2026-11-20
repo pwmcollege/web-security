@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% set title = "Create account" if registering else "Log in" %}
+{% block title %}{{ title }} · Mail{% endblock %}
+{% block content %}
+    <main class="flex flex-1 overflow-y-auto px-5 py-8">
+        <div class="m-auto w-full max-w-80">
+            {{ wordmark("mb-6") }}
+            <h1 class="mb-5 text-[1.625rem] font-[690] tracking-[-0.04em]">{{ title }}</h1>
+            {% for message in get_flashed_messages() %}<p class="text-[0.875rem] text-muted" role="status">{{ message }}</p>{% endfor %}
+            <form method="post" action="./api/auth/{{ 'register' if registering else 'login' }}">
+                <label class="mt-4 mb-1.5 block text-[0.875rem] text-zinc-600" for="username">Username</label>
+                <input class="w-full rounded-3xl border-[0.0625rem] border-edge px-3.5 py-2.5" type="text" id="username" name="username"
+                       autocomplete="username" autocapitalize="none" spellcheck="false" required>
+                <label class="mt-4 mb-1.5 block text-[0.875rem] text-zinc-600" for="password">Password</label>
+                <input class="w-full rounded-3xl border-[0.0625rem] border-edge px-3.5 py-2.5" type="password" id="password" name="password" autocomplete="{{ 'new-password' if registering else 'current-password' }}" required>
+                <button class="mt-5 mb-2.5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-4 text-[0.875rem] font-[550] text-white hover:bg-[#36363b] motion-safe:transition-colors motion-safe:duration-[140ms]" type="submit">{{ title }}</button>
+            </form>
+            <nav class="flex flex-wrap justify-between gap-x-4 gap-y-1" aria-label="Account">
+                {% if registering %}
+                    <a class="inline-flex min-h-11 items-center rounded-3xl text-muted hover:text-black motion-safe:transition-colors motion-safe:duration-[140ms]" href="./login">Back to log in</a>
+                {% else %}
+                    <a class="inline-flex min-h-11 items-center rounded-3xl text-muted hover:text-black motion-safe:transition-colors motion-safe:duration-[140ms]" href="./register">Create an account</a>
+                {% endif %}
+            </nav>
+        </div>
+    </main>
+{% endblock %}

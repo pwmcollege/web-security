@@ -1,239 +1,98 @@
 {% extends "layout.html" %}
+{% block title %}Inbox · Mail{% endblock %}
 {% block content %}
-    <div class="flex flex-1 min-h-0 sm:border-x-[0.0625rem] border-zinc-100">
-        <nav class="hidden w-[11rem] shrink-0 flex-col gap-1 border-r-[0.0625rem] border-zinc-100 p-3 sm:flex">
-            <button type="button"
-                    data-select="compose"
-                    class="mb-2 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-[0.875rem] font-semibold text-white motion-safe:transition-all hover:bg-zinc-700 motion-safe:active:scale-[0.98]">
-                <i data-lucide="pencil" class="h-4 w-4"></i>
-                Compose
-            </button>
-            <a href="#inbox"
-               data-folder="inbox"
-               class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[0.875rem] font-medium text-zinc-500 motion-safe:transition-colors hover:bg-zinc-50">
-                <i data-lucide="inbox" class="h-4 w-4"></i>
-                Inbox
-            </a>
-            <a href="#sent"
-               data-folder="sent"
-               class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[0.875rem] font-medium text-zinc-500 motion-safe:transition-colors hover:bg-zinc-50">
-                <i data-lucide="send" class="h-4 w-4"></i>
-                Sent
-            </a>
-            <div class="mt-auto flex items-center gap-2.5 rounded-lg px-3 py-2">
-                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-[0.75rem] font-semibold uppercase text-white">
-                    {{ username[0] }}
-                </div>
-                <span class="truncate text-[0.75rem] leading-4 text-zinc-400">{{ me }}</span>
-            </div>
-        </nav>
-        <aside class="flex min-h-0 w-full flex-col border-r-[0.0625rem] border-zinc-100 sm:max-w-[22.5rem]">
-            <div class="flex shrink-0 items-center gap-2 px-4 h-[3.25rem] border-b-[0.0625rem] border-zinc-100">
-                <span id="folder-title"
-                      class="text-[0.9375rem] font-bold tracking-tight text-zinc-900">Inbox</span>
-                <span id="folder-count" class="text-[0.8125rem] font-medium text-zinc-400"></span>
-            </div>
-            <div class="min-h-0 flex-1 overflow-y-auto">
-                {% for folder, rows in [("inbox", inbox), ("sent", sent)] %}
-                    <div data-list="{{ folder }}"
-                         {% if folder == "sent" %}class="hidden"{% endif %}>
-                        {% for email in rows %} {% set who = email.sender if folder == "inbox"
-                            else email.recipient %}
-                            <button type="button"
-                                    data-select="{{ email.rowid }}"
-                                    class="flex w-full items-start gap-3 border-b-[0.0625rem] border-zinc-100 px-4 py-3 text-left motion-safe:transition-colors hover:bg-zinc-50">
-                                <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-[0.8125rem] font-semibold uppercase text-zinc-600 ring-[0.0625rem] ring-zinc-200/70">
-                                    {{ who[0] }}
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <div class="truncate text-[0.875rem] font-semibold text-zinc-900">
-                                        {% if folder == "sent" %}To {{ who }}{% else %}{{ who }}{% endif %}
-                                    </div>
-                                    <div class="truncate text-[0.8125rem] font-medium leading-5 text-zinc-700">{{ email.subject or "(no subject)" }}</div>
-                                    <div class="truncate text-[0.8125rem] leading-5 text-zinc-400">{{ email.body }}</div>
-                                </div>
-                            </button>
-                        {% else %}
-                            <div class="px-4 py-16 text-center text-[0.8125rem] text-zinc-400">
-                                {{ "Your inbox is empty" if folder == "inbox" else "No sent mail" }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-            </div>
-        </aside>
-        <section class="hidden min-h-0 min-w-0 flex-1 flex-col sm:flex">
-            <div data-panel="empty"
-                 class="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-50 text-zinc-300">
-                    <i data-lucide="mail-open" class="h-6 w-6"></i>
-                </div>
-                <p class="text-[0.875rem] text-zinc-400">Select a message to read</p>
-            </div>
-            <div data-panel="compose" class="hidden min-h-0 flex-1 flex-col flex">
-                <div class="flex shrink-0 items-center gap-2 px-6 h-[3.25rem] border-b-[0.0625rem] border-zinc-100">
-                    <i data-lucide="pencil" class="h-4 w-4 text-zinc-400"></i>
-                    <span class="text-[0.9375rem] font-semibold text-zinc-900">New message</span>
-                </div>
-                <form id="compose-form"
-                      action="./api/mail"
-                      method="post"
-                      class="flex min-h-0 flex-1 flex-col">
-                    <div class="flex items-center gap-3 border-b-[0.0625rem] border-zinc-100 px-6 py-3">
-                        <label class="w-16 shrink-0 text-[0.8125rem] font-medium text-zinc-400">To</label>
-                        <input type="text"
-                               name="to"
-                               placeholder="admin@pwm.college"
-                               autocomplete="off"
-                               class="min-w-0 flex-1 bg-transparent text-[0.875rem] text-zinc-900 placeholder:text-zinc-300 outline-none" />
-                    </div>
-                    <div class="flex items-center gap-3 border-b-[0.0625rem] border-zinc-100 px-6 py-3">
-                        <label class="w-16 shrink-0 text-[0.8125rem] font-medium text-zinc-400">Subject</label>
-                        <input type="text"
-                               name="subject"
-                               placeholder="Subject"
-                               autocomplete="off"
-                               class="min-w-0 flex-1 bg-transparent text-[0.875rem] text-zinc-900 placeholder:text-zinc-300 outline-none" />
-                    </div>
-                    <textarea name="body"
-                              placeholder="Write your message…"
-                              class="min-h-0 flex-1 w-full resize-none bg-transparent px-6 py-5 text-[0.9375rem] leading-7 text-zinc-900 placeholder:text-zinc-300 outline-none"></textarea>
-                    <div class="flex shrink-0 items-center gap-2 border-t-[0.0625rem] border-zinc-100 px-6 py-3">
-                        <button type="submit"
-                                class="flex cursor-pointer items-center gap-1.5 rounded-full bg-zinc-900 px-5 py-2 text-[0.875rem] font-semibold text-white motion-safe:transition-all hover:bg-zinc-700 motion-safe:active:scale-95">
-                            <i data-lucide="send" class="h-3.5 w-3.5"></i>
-                            Send
-                        </button>
-                        <button type="button"
-                                data-discard
-                                class="flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-2 text-[0.875rem] font-medium text-rose-500 motion-safe:transition-colors hover:bg-rose-50 hover:text-rose-600">
-                            <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
-                            Discard
-                        </button>
-                    </div>
+    <header class="relative z-1 mx-auto mt-4 flex min-h-14 w-[min(80%,64rem)] flex-none items-center gap-3
+                   rounded-full bg-[#fafafa] py-1 ps-[clamp(0.75rem,2vw,1.5rem)] pe-[0.4375rem] shadow-floating
+                   @max-[36rem]:w-[calc(100%-1.5rem)] @max-[22rem]:gap-1 @max-[22rem]:ps-3 @max-[22rem]:pe-1
+                   @max-[14rem]:w-[calc(100%-0.5rem)] @max-[14rem]:ps-1.5">
+        {{ wordmark() }}
+        <details class="account-menu group/account not-open:details-content:hidden">
+            <summary class="group inline-flex size-11 list-none items-center justify-center rounded-full [&::-webkit-details-marker]:hidden"
+                     title="{{ me }}">
+                <span class="inline-grid size-9 flex-none place-items-center rounded-full bg-[#ebebee] text-xs/[1.5]
+                             font-[650] tracking-[-0.025em] text-[#52525b] group-hover:text-black
+                             motion-safe:transition-colors motion-safe:duration-[140ms]">{{ username[:1]|upper }}</span>
+                <span class="visually-hidden">Account for {{ username }}</span>
+            </summary>
+            <div class="account-popover motion-safe:group-open/account:animate-popover-in">
+                <p class="text-[0.9375rem] font-semibold">{{ username }}</p>
+                <p class="address">{{ me }}</p>
+                <form class="mt-3.5 border-t-[0.0625rem] border-rule" method="post" action="{{ root }}api/auth/logout" data-login="{{ root }}login">
+                    <button type="submit" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full text-sm/[1.5]
+                                                font-[550] text-muted hover:text-black motion-safe:transition-colors
+                                                motion-safe:duration-[140ms]">{{ icon("log-out") }}Log out</button>
                 </form>
             </div>
-            {% for email in panels %}
-                <div data-panel="{{ email.rowid }}"
-                     class="hidden min-h-0 flex-1 flex-col flex">
-                    <div class="flex shrink-0 items-start gap-3 border-b-[0.0625rem] border-zinc-100 px-6 pt-5 pb-4">
-                        <div class="min-w-0 flex-1">
-                            <h1 class="text-[1.1875rem] font-bold tracking-tight text-zinc-900">{{ email.subject or "(no subject)" }}</h1>
-                            <div class="mt-3 flex items-center gap-3">
-                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-[0.8125rem] font-semibold uppercase text-zinc-600 ring-[0.0625rem] ring-zinc-200/70">
-                                    {{ email.sender[0] }}
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="text-[0.875rem] font-semibold leading-4 text-zinc-900">
-                                        {{ email.sender }}
-                                        <span class="font-normal text-zinc-400">&lt;{{ email.sender_addr }}&gt;</span>
-                                    </div>
-                                    <div class="mt-1 text-[0.75rem] leading-4 text-zinc-400">To: {{ email.recipient }}@pwm.college</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button"
-                                data-delete="{{ email.rowid }}"
-                                aria-label="Delete"
-                                class="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-400 motion-safe:transition-colors hover:bg-rose-50 hover:text-rose-600">
-                            <i data-lucide="trash-2" class="h-4 w-4"></i>
-                        </button>
-                    </div>
-                    <div class="min-h-0 flex-1 overflow-y-auto px-6 py-6">
-                        <div class="whitespace-pre-wrap break-words text-[0.9375rem] leading-7 text-zinc-800">{{- email.body -}}</div>
-                    </div>
+        </details>
+    </header>
+
+    <main class="workspace group/workspace
+                 [@container(max-width:48rem)]:mt-4 [@container(max-width:48rem)]:mb-0 [@container(max-width:48rem)]:block
+                 [@container(max-width:48rem)]:w-[min(calc(100%-2rem),34rem)] [@container(max-width:22rem)]:not-data-reading:w-[calc(100%-1.25rem)]
+                 [@container(max-width:48rem)]:data-reading:w-full"></main>
+    {% include "mailbox.html" %}
+
+    <dialog id="message-actions" aria-label="Message actions"
+            class="fixed inset-0 m-auto max-h-[calc(100dvh-1.5rem)] w-[min(11rem,calc(100vw-1.5rem))] max-w-none overflow-y-auto
+                   rounded-3xl border-[0.0625rem] border-edge bg-white p-0 text-ink shadow-floating
+                   backdrop:bg-[rgb(24_24_27/30%)] @max-[14rem]:max-h-[calc(100dvh-0.5rem)]">
+        <div class="p-1.25">
+            <button type="button" data-reply aria-haspopup="dialog"
+                    class="flex min-h-11 w-full items-center gap-2.5 rounded-2xl px-3 text-start text-sm/[1.5] font-[550]
+                           hover:bg-field focus-visible:outline-offset-[-0.125rem] motion-safe:transition-colors motion-safe:duration-[140ms]">
+                {{ icon("reply") }}Reply
+            </button>
+            <button type="button" aria-label="Delete message" data-delete
+                    class="destructive flex min-h-11 w-full items-center gap-2.5 rounded-2xl px-3 text-start text-sm/[1.5]
+                           font-[550] focus-visible:outline-offset-[-0.125rem]
+                           motion-safe:transition-colors motion-safe:duration-[140ms]">{{ icon("trash-2") }}Delete</button>
+        </div>
+    </dialog>
+
+    <dialog id="compose" aria-labelledby="compose-title"
+            class="fixed inset-0 m-auto max-h-[calc(100dvh-1.5rem)] w-[min(32rem,calc(100%-1.5rem))] max-w-none overflow-y-auto
+                   rounded-3xl border-[0.0625rem] border-edge bg-white text-ink shadow-[0_1rem_4rem_rgb(24_24_27/15%)]
+                   backdrop:bg-[rgb(24_24_27/30%)] @max-[14rem]:max-h-[calc(100dvh-0.5rem)] @max-[14rem]:w-[calc(100%-0.5rem)]">
+        <form id="compose-form" class="flex min-h-[min(28rem,calc(100dvh-2rem))] flex-col px-6 py-3.5
+                                       @max-[22rem]:px-3 @max-[14rem]:px-2 @max-[14rem]:py-1.5"
+              action="./api/mail" method="post" data-mailbox="{{ username }}">
+            <div class="mb-2.5 flex items-center justify-between gap-2 @max-[14rem]:mb-1 @max-[14rem]:gap-1">
+                <h2 id="compose-title" class="min-w-0 text-xl/[1.2] font-[690] tracking-[-0.04em] wrap-anywhere @max-[14rem]:text-[1.125rem]">New message</h2>
+                <button type="button" data-close aria-label="Close compose" title="Close"
+                        class="-me-2 inline-flex size-11 flex-none items-center justify-center rounded-full text-muted
+                               hover:text-black motion-safe:transition-colors motion-safe:duration-[140ms] @max-[14rem]:me-0">{{ icon("x") }}</button>
+            </div>
+            {% for name, label in (("to", "To"), ("subject", "Subject")) %}
+                <div class="flex items-baseline gap-3 border-b-[0.0625rem] border-rule
+                            focus-within:-mb-[0.0625rem] focus-within:border-b-[0.125rem] focus-within:border-ink
+                            @max-[22rem]:block @max-[22rem]:pt-1.5">
+                    <label class="w-13 flex-none text-sm/[1.5] text-muted" for="{{ name }}">{{ label }}</label>
+                    <input id="{{ name }}" name="{{ name }}" type="text" autocomplete="off"
+                           class="w-full min-w-0 appearance-none rounded-none border-0 bg-transparent py-3 shadow-none focus-visible:outline-none
+                                  placeholder:text-muted placeholder:opacity-100 @max-[22rem]:block @max-[22rem]:py-1.5"
+                           {% if name == "to" %}placeholder="Recipient" autocapitalize="none" spellcheck="false" required autofocus{% endif %}>
                 </div>
             {% endfor %}
-        </section>
+            <textarea name="body" aria-label="Message body" placeholder="Write your message…"
+                      class="mt-2.5 min-h-24 flex-1 resize-none appearance-none rounded-none border-0 border-b-[0.0625rem]
+                             border-rule bg-transparent pt-2 pb-3.5 leading-[1.65] shadow-none focus-visible:outline-none
+                             placeholder:text-muted placeholder:opacity-100 focus:-mb-[0.0625rem] focus:border-b-[0.125rem]
+                             focus:border-ink @max-[14rem]:min-h-16"></textarea>
+            <p id="compose-error" class="my-2 text-sm/[1.5] wrap-anywhere text-danger" role="alert" hidden></p>
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-3 @max-[14rem]:gap-1 @max-[14rem]:pt-1.5">
+                <button type="button" data-discard
+                        class="destructive -ms-3 inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm/[1.5] font-[550]
+                               motion-safe:transition-colors
+                               motion-safe:duration-[140ms] @max-[14rem]:ms-0 @max-[14rem]:px-1.5">Discard</button>
+                <button type="submit" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-ink px-4
+                                            text-sm/[1.5] font-[550] text-white hover:bg-[#36363b] motion-safe:transition-colors
+                                            motion-safe:duration-[140ms] @max-[14rem]:px-1.5 @max-[14rem]:[&_.icon]:hidden">{{ icon("send") }}Send</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="notice" class="fixed bottom-5 left-1/2 w-max max-w-[calc(100%-2rem)] -translate-x-1/2 rounded-3xl
+                            bg-ink px-4 py-2.5 text-center text-sm/[1.5] wrap-anywhere text-white" role="status" hidden>
+        <span></span><button class="ms-2 underline focus-visible:outline-white" type="button" hidden>Retry</button>
     </div>
-    <script>
-  const panels = document.querySelectorAll("[data-panel]");
-  const rows = document.querySelectorAll("[data-select]");
-
-  function select(id) {
-      panels.forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== id));
-      rows.forEach((r) => r.classList.toggle("bg-zinc-50", r.dataset.select === id));
-  }
-  rows.forEach((r) => r.addEventListener("click", () => select(r.dataset.select)));
-
-  const lists = {
-      inbox: document.querySelector('[data-list="inbox"]'),
-      sent: document.querySelector('[data-list="sent"]'),
-  };
-  const folderLinks = document.querySelectorAll("[data-folder]");
-  const folderTitle = document.getElementById("folder-title");
-  const folderCount = document.getElementById("folder-count");
-
-  function showFolder(name) {
-      if (name !== "inbox" && name !== "sent") name = "inbox";
-      Object.entries(lists).forEach(([k, el]) =>
-          el.classList.toggle("hidden", k !== name),
-      );
-      folderLinks.forEach((a) => {
-          const on = a.dataset.folder === name;
-          a.classList.toggle("bg-zinc-100", on);
-          a.classList.toggle("text-zinc-900", on);
-          a.classList.toggle("text-zinc-500", !on);
-      });
-      folderTitle.textContent = name === "inbox" ? "Inbox" : "Sent";
-      folderCount.textContent = lists[name].querySelectorAll("[data-select]").length;
-      select("empty");
-  }
-  window.addEventListener("hashchange", () =>
-      showFolder(location.hash.slice(1)),
-  );
-  showFolder(location.hash.slice(1) || "inbox");
-
-  document.querySelector("[data-select='compose']").addEventListener("click", () =>
-      select("compose"),
-  );
-
-  function toast(message, isError) {
-      const el = document.createElement("div");
-      el.className =
-          "fixed left-1/2 top-4 z-50 -translate-x-1/2 rounded-full px-4 py-2 text-[0.8125rem] font-medium shadow-[0_0.0625rem_0.1875rem_0_rgb(0_0_0/0.1),0_0.0625rem_0.125rem_-0.0625rem_rgb(0_0_0/0.1)] " +
-          (isError ? "bg-rose-50 text-rose-600" : "bg-zinc-900 text-white");
-      el.textContent = message;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 3000);
-  }
-
-  const form = document.getElementById("compose-form");
-  const toField = form.querySelector("[name='to']");
-
-  form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const res = await fetch(form.action, {
-          method: "POST",
-          body: new FormData(form),
-      });
-      if (res.ok) {
-          const to = toField.value.split("@")[0].trim();
-          sessionStorage.setItem("mailToast", "Message sent to " + to + "@pwm.college");
-          location.hash = "sent";
-          location.reload();
-          return;
-      }
-      const data = await res.json().catch(() => ({ error: "Could not send message" }));
-      toast(data.error, true);
-  });
-
-  document.querySelector("[data-discard]").addEventListener("click", () => {
-      form.reset();
-      select("empty");
-  });
-
-  document.querySelectorAll("[data-delete]").forEach((b) =>
-      b.addEventListener("click", async () => {
-          await fetch("./api/mail/" + b.dataset.delete, { method: "DELETE" });
-          location.reload();
-      }),
-  );
-
-  const pending = sessionStorage.getItem("mailToast");
-  if (pending) {
-      sessionStorage.removeItem("mailToast");
-      toast(pending);
-  }
-    </script>
 {% endblock %}
