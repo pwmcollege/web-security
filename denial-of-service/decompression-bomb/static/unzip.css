@@ -38,7 +38,7 @@
     --color-surface: #fafafa;
     --color-field: #f0f0f2;
     --rule: #ededf0;
-    --radius-menu: 1.125rem;
+    --radius-menu: 1.25rem;
     --danger: #be123c;
     --danger-surface: #fff1f2;
     line-height: normal;
@@ -121,19 +121,19 @@ h1 {
     color: var(--color-muted);
 }
 
-.button-upload[aria-disabled="true"] {
-    color: var(--color-muted);
+.button-destructive {
+    color: var(--danger);
 }
 
 .button:is(:disabled, [aria-disabled="true"]) {
     cursor: wait;
 }
 
-.button-primary[aria-disabled="true"] {
+.button-primary:is(:disabled, [aria-disabled="true"]) {
     background: #3f3f46;
 }
 
-.button-quiet:disabled {
+:is(.button-quiet, .button-upload):is(:disabled, [aria-disabled="true"]) {
     color: var(--color-muted);
 }
 
@@ -227,7 +227,7 @@ h1 {
     transform-origin: left center;
 }
 
-#folder-breadcrumbs :focus-visible {
+#folder-breadcrumbs :focus-visible, .folder-row:focus-visible {
     outline-offset: -0.1875rem;
 }
 
@@ -257,8 +257,8 @@ h1 {
     border-bottom: 0.0625rem solid var(--rule);
 }
 
-.folder-row:focus-visible {
-    outline-offset: -0.125rem;
+.folder-row {
+    border-radius: 0.5rem;
 }
 
 .file-details {
@@ -306,20 +306,20 @@ h1 {
         background-color: #3f3f46;
     }
 
-    .button-quiet:hover:not(:disabled) {
+    .button-quiet:hover:not(:disabled, [aria-disabled="true"]) {
         background-color: var(--color-field);
         color: var(--color-ink);
     }
 
-    .button-upload:hover:not([aria-disabled="true"]) {
+    .button-upload:hover:not(:disabled, [aria-disabled="true"]) {
         background-color: var(--color-edge);
     }
 
-    .breadcrumb-button:hover {
+    .breadcrumb-button:hover, .folder-row:hover {
         color: #000;
     }
 
-    .button-destructive:hover:not(:disabled) {
+    .button-destructive:hover:not(:disabled, [aria-disabled="true"]) {
         background-color: var(--danger-surface);
         color: var(--danger);
     }
@@ -334,6 +334,10 @@ h1 {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+    .button {
+        transition: background-color 150ms, color 150ms;
+    }
+
     .download-link::before {
         transition: background-color 150ms;
     }
@@ -349,7 +353,13 @@ h1 {
     }
 
     .results-toolbar {
+        flex-direction: column;
+        align-items: stretch;
         margin-block-end: 1.25rem;
+    }
+
+    .results-toolbar .button-upload {
+        align-self: flex-start;
     }
 
     .file-list-heading, .file-row {

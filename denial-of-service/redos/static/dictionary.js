@@ -94,41 +94,51 @@ function closeSearch() {
     searchButton.focus();
 }
 
-async function load(nextPage) {
+async function load(nextPage, nextQuery = query) {
     request?.abort();
     request = new AbortController();
     const { signal } = request;
-    previous.disabled = true;
-    next.disabled = true;
     notice.hidden = true;
     input.removeAttribute("aria-invalid");
     entry.setAttribute("aria-busy", "true");
+    pagination.setAttribute("aria-busy", "true");
 
     try {
         const response = await fetch(form.action, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query, page: nextPage }),
+            body: JSON.stringify({ query: nextQuery, page: nextPage }),
             signal,
         });
         const data = await response.json().catch(() => ({}));
+        if (signal.aborted) return;
 
         if (!response.ok) {
-            if (response.status === 400) input.setAttribute("aria-invalid", "true");
+            if (response.status === 400) {
+                if (input.value !== nextQuery) return;
+                input.setAttribute("aria-invalid", "true");
+            }
+
             throw new Error(data.error || "Couldn't load words.");
         }
 
+        query = nextQuery;
         page = data.page;
         entry.replaceChildren(...data.words.map(renderEntry));
         notice.classList.remove("error");
         notice.textContent = "No matching words.";
         notice.hidden = data.words.length > 0;
+        const focused = document.activeElement;
         pagination.hidden = data.page_count <= 1;
         previous.disabled = page <= 1;
         next.disabled = page >= data.page_count;
         pageInput.value = page;
         pageInput.max = Math.max(data.page_count, 1);
         pageCount.textContent = `of ${data.page_count.toLocaleString()}`;
+        if (!pagination.hidden && (focused === previous || focused === next) && focused.disabled) {
+            pageInput.focus({ preventScroll: true });
+        }
+
         hero.scrollTop = 0;
     } catch (error) {
         if (signal.aborted) return;
@@ -138,7 +148,11 @@ async function load(nextPage) {
         notice.textContent = error instanceof TypeError ? "Couldn't load words." : error.message;
         notice.hidden = false;
     } finally {
-        if (!signal.aborted) entry.removeAttribute("aria-busy");
+        if (!signal.aborted) {
+            request = undefined;
+            entry.removeAttribute("aria-busy");
+            pagination.removeAttribute("aria-busy");
+        }
     }
 }
 
@@ -147,8 +161,14 @@ form.addEventListener("submit", (event) => {
 
     if (searchFields.inert) return;
 
-    query = input.value;
-    load(1);
+    load(1, input.value);
+});
+
+input.addEventListener("input", () => {
+    if (!input.hasAttribute("aria-invalid")) return;
+
+    input.removeAttribute("aria-invalid");
+    notice.hidden = true;
 });
 
 searchButton.addEventListener("click", (event) => {
@@ -193,7 +213,11 @@ pageJump.addEventListener("submit", (event) => {
     load(pageInput.valueAsNumber);
 });
 
-previous.addEventListener("click", () => load(page - 1));
-next.addEventListener("click", () => load(page + 1));
+previous.addEventListener("click", () => {
+    if (!request) load(page - 1);
+});
+next.addEventListener("click", () => {
+    if (!request) load(page + 1);
+});
 window.lucide?.createIcons({ attrs: { "stroke-width": "1.5" }, inTemplates: true });
 load(1);

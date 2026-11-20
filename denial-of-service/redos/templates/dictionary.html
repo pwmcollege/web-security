@@ -22,7 +22,7 @@
                           tracking-[-0.04em] text-inherit no-underline"
                    href="./"><span>Dictionary<span class="ms-0.5 inline-block size-1 rounded-full bg-[#a1a1aa]" aria-hidden="true"></span></span></a>
                 <div class="search-control ms-auto flex h-11 min-w-11 items-center rounded-full
-                            has-[.search-fields:not([inert])]:basis-80 has-[.search-fields:not([inert])]:bg-(--color-field)
+                            has-[.search-fields:not([inert])]:basis-80
                             motion-safe:transition-colors motion-safe:duration-150">
                     <button class="search-action search-button" type="button"
                             aria-label="Open search" aria-expanded="false" aria-controls="word-search">
@@ -33,7 +33,7 @@
                                 [contain:inline-size] [&:not([inert])]:opacity-100" inert>
                         <input class="h-full w-0 min-w-0 flex-1 bg-transparent p-0 text-sm/6
                                       placeholder:text-(--color-muted) pointer-coarse:text-base"
-                               type="text" id="word-search" name="query" aria-label="Search"
+                               type="text" id="word-search" name="query" aria-label="Search" aria-errormessage="notice"
                                placeholder="Search" autocomplete="off" autocapitalize="off"
                                spellcheck="false" enterkeyhint="search" />
                         <button class="search-close search-button" type="button" aria-label="Close search">
@@ -59,8 +59,7 @@
                         id="previous" type="button">Previous</button>
                 <form class="page flex items-center gap-1 whitespace-nowrap text-(--color-muted) tabular-nums" id="page-jump">
                     <input class="min-h-9 w-[7ch] rounded-lg border border-transparent px-1.5 text-end
-                                  text-(--color-ink) [appearance:textfield] focus:border-(--color-ink) focus:bg-(--color-surface)
-                                  pointer-coarse:text-base"
+                                  text-(--color-ink) [appearance:textfield] pointer-coarse:text-base"
                            type="number" id="page" min="1" step="1" required aria-label="Page number"
                            aria-describedby="page-count" enterkeyhint="go" />
                     <span id="page-count"></span>

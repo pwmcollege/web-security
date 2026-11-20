@@ -21,13 +21,13 @@
                 Watchdog<span class="ms-0.5 inline-block size-1 rounded-full bg-[#a1a1aa]" aria-hidden="true"></span>
             </span>
             <button id="showFlag" class="ms-auto inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#f0f0f2]
-                                         px-3.5 text-sm font-[550] whitespace-nowrap text-[#18181b] hover:bg-[#e4e4e7] hover:text-[#047857]"
+                                         px-3.5 text-sm font-[550] whitespace-nowrap text-[#18181b] hover:bg-[#e4e4e7]"
                     type="button" aria-haspopup="dialog" aria-controls="flagDialog" hidden>
                 <i data-lucide="flag" class="size-4.5 shrink-0" aria-hidden="true"></i>
                 Flag
             </button>
         </header>
-        <main id="main" class="mx-auto flex flex-col gap-7.5 pt-[clamp(3rem,10vh,6rem)] pb-8">
+        <main id="main" class="mx-auto flex flex-col gap-7.5 pt-[clamp(3rem,10vh,6rem)] pb-8" tabindex="-1">
             <section id="overallStatus" data-state="checking"
                      class="overall-status flex items-start gap-2.5 rounded-(--radius-menu) border p-4"
                      aria-live="polite" aria-atomic="true">
@@ -60,8 +60,8 @@
                     <h2 id="systemHeading" class="text-sm font-medium" translate="no">app.internal</h2>
                     <span id="uptime" class="ms-auto text-[0.8125rem] tabular-nums text-zinc-600" aria-describedby="uptimeHelp"><span id="uptimeValue" hidden></span><span id="unknownUptime">—</span> uptime</span>
                 </div>
-                <div class="history-wrap relative mt-4">
-                    <div id="bars" class="history-bars flex h-4 items-stretch" role="group" aria-label="Recent health checks" aria-describedby="chartHelp"></div>
+                <div class="history-wrap relative mt-2">
+                    <div id="bars" class="history-bars flex h-11 items-stretch" role="group" aria-label="Recent health checks" aria-describedby="chartHelp"></div>
                     <template id="historyBar">
                         <button type="button" class="history-bar" tabindex="-1"></button>
                     </template>
@@ -78,18 +78,18 @@
                 </div>
                 <p id="chartHelp" class="sr-only">Use the left and right arrow keys to inspect checks.</p>
                 <p id="uptimeHelp" class="sr-only">Uptime is the percentage of successful checks in the displayed window.</p>
-                <div class="mt-2 flex items-center justify-between gap-3 text-[0.6875rem] text-zinc-500"><span id="emptyHistory">No checks recorded yet</span><time id="oldestCheck" hidden></time><span>Now</span></div>
+                <div class="mt-1 flex items-center justify-between gap-3 text-[0.6875rem] text-zinc-500"><span id="emptyHistory">No checks recorded yet</span><time id="oldestCheck" hidden></time><span>Now</span></div>
             </section>
             <noscript><p class="rounded-xl border-[length:0.0625rem] border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Enable JavaScript to see service status.</p></noscript>
         </main>
-        <dialog id="flagDialog" class="fixed inset-0 m-auto w-[min(calc(100%-1.5rem),40rem)] overflow-auto overscroll-contain rounded-[1.25rem]
+        <dialog id="flagDialog" class="fixed inset-0 m-auto w-[min(calc(100%-1.5rem),40rem)] overflow-auto overscroll-contain rounded-(--radius-menu)
                                       border border-[#e4e4e7] bg-white p-5 text-[#18181b] shadow-(--shadow-island)"
                 aria-labelledby="flagHeading">
             <div class="flex items-center justify-between gap-2">
                 <h2 id="flagHeading" class="text-[1.1875rem] leading-[normal] font-bold tracking-[-0.025em] wrap-anywhere"
                     tabindex="-1" autofocus>Challenge complete</h2>
                 <form method="dialog">
-                    <button type="submit" class="grid size-11 place-items-center rounded-full hover:bg-[#f0f0f2]" aria-label="Close flag">
+                    <button type="submit" class="flag-close grid size-11 place-items-center rounded-full" aria-label="Close flag">
                         <i data-lucide="x" class="size-4.5" aria-hidden="true"></i>
                     </button>
                 </form>
@@ -97,16 +97,16 @@
             <div class="mt-3 max-h-[52dvh] overflow-auto rounded-xl bg-[#fafafa] p-3.5">
                 <pre id="flagValue" class="select-text" aria-label="Flag"></pre>
             </div>
-            <p id="copyMessage" class="mt-2 text-xs/5 text-zinc-600" role="status" hidden>Select the flag text to copy it.</p>
+            <p id="copyMessage" class="sr-only mt-2 text-xs/5 text-zinc-600" role="status"></p>
             <div class="mt-4 flex justify-end gap-1.5">
                 <button id="copyFlag" type="button" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#18181b] px-3.5
                                                            text-sm leading-[normal] font-[550] whitespace-nowrap text-white hover:bg-[#3f3f46]"
-                        data-copied="false">
+                        data-copied="false" aria-label="Copy flag">
                     <span class="relative size-4.5 shrink-0" aria-hidden="true">
                         <i data-lucide="copy" class="copy-icon absolute inset-0 size-4.5"></i>
                         <i data-lucide="check" class="copied-icon absolute inset-0 size-4.5"></i>
                     </span>
-                    <span aria-live="polite" aria-atomic="true">
+                    <span class="copy-labels" aria-hidden="true">
                         <span class="copy-label-default">Copy flag</span>
                         <span class="copy-label-done">Copied</span>
                     </span>

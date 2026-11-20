@@ -94,8 +94,7 @@ function showBar(button) {
     updateTooltip();
 }
 
-function hideBar(force = false) {
-    if (!force && bars.contains(document.activeElement)) return;
+function hideBar() {
     selectedBar?.classList.remove("is-selected");
     selectedBar = null;
     bars.dataset.interacting = "false";
@@ -108,17 +107,33 @@ for (let index = 0; index < HISTORY_LIMIT; index++) {
     barButtons.push(button);
 }
 bars.addEventListener("pointerover", (event) => showBar(event.target.closest(".history-bar")));
-bars.addEventListener("pointerleave", () => hideBar());
+bars.addEventListener("pointermove", (event) => {
+    if (event.pointerType !== "touch") return;
+    const { left, width } = bars.getBoundingClientRect();
+    const index = Math.floor((event.clientX - left) / width * HISTORY_LIMIT);
+    showBar(barButtons[Math.max(0, Math.min(HISTORY_LIMIT - 1, index))]);
+});
+bars.addEventListener("pointerleave", (event) => {
+    if (event.pointerType === "touch") return;
+    if (bars.contains(document.activeElement)) showBar(document.activeElement);
+    else hideBar();
+});
+bars.addEventListener("pointercancel", hideBar);
+document.addEventListener("pointerdown", (event) => {
+    if (!bars.contains(event.target)) hideBar();
+});
 bars.addEventListener("focusin", (event) => showBar(event.target.closest(".history-bar")));
 bars.addEventListener("focusout", (event) => {
-    if (!bars.contains(event.relatedTarget)) hideBar(true);
+    if (!bars.contains(event.relatedTarget)) hideBar();
 });
-bars.addEventListener("click", (event) => showBar(event.target.closest(".history-bar")));
+bars.addEventListener("click", (event) => {
+    if (event.pointerType !== "touch") showBar(event.target.closest(".history-bar"));
+});
 bars.addEventListener("keydown", (event) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End", "Escape"].includes(event.key)) return;
     event.preventDefault();
     if (event.key === "Escape") {
-        hideBar(true);
+        hideBar();
         return;
     }
     let index = Number(event.target.dataset.index);
@@ -183,7 +198,8 @@ function render(snapshot) {
     renderHistory(snapshot.history ?? []);
     if (typeof snapshot.flag === "string" && snapshot.flag && flagValue.textContent !== snapshot.flag) {
         flagValue.textContent = snapshot.flag;
-        copyMessage.hidden = true;
+        copyMessage.textContent = "";
+        copyMessage.classList.add("sr-only");
         copyFlag.dataset.copied = "false";
         clearTimeout(copyReset);
         showFlag.hidden = false;
@@ -204,16 +220,19 @@ flagDialog.addEventListener("click", (event) => {
 
 copyFlag.addEventListener("click", async () => {
     clearTimeout(copyReset);
-    copyMessage.hidden = true;
+    copyMessage.textContent = "";
+    copyMessage.classList.add("sr-only");
     try {
         await navigator.clipboard.writeText(flagValue.textContent);
         copyFlag.dataset.copied = "true";
+        copyMessage.textContent = "Flag copied.";
         copyReset = setTimeout(() => {
             copyFlag.dataset.copied = "false";
         }, 1800);
     } catch {
         copyFlag.dataset.copied = "false";
-        copyMessage.hidden = false;
+        copyMessage.classList.remove("sr-only");
+        copyMessage.textContent = "Select the flag text to copy it.";
     }
 });
 
