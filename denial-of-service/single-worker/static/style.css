@@ -1,3 +1,24 @@
+:root {
+    --color-rule: #ededf0;
+    --radius-menu: 1.125rem;
+    --shadow-island: 0 0.0625rem 0.25rem rgb(24 24 27 / 0.08), 0 0.375rem 1.125rem rgb(24 24 27 / 0.07);
+    --watchdog-width: min(calc(100% - 3rem), 40rem);
+}
+
+.watchdog-header {
+    width: max(min(80%, 64rem), var(--watchdog-width));
+}
+
+#main {
+    width: var(--watchdog-width);
+}
+
+@media (max-width: 36rem) {
+    :root {
+        --watchdog-width: calc(100% - 2.25rem);
+    }
+}
+
 body.font-sans {
     font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
 }
@@ -47,12 +68,7 @@ button:not(:disabled) {
     transform: translateY(0);
 }
 
-[data-state="checking"] {
-    --status: #71717a;
-    --status-border: #d4d4d8;
-    --status-wash: #f4f4f5;
-}
-
+[data-state="checking"],
 [data-state="disconnected"] {
     --status: #71717a;
     --status-border: #d4d4d8;
@@ -84,13 +100,8 @@ button:not(:disabled) {
 
 .overall-status {
     border-color: var(--status-border);
-    box-shadow: 0 0.0625rem 0.125rem rgb(0 0 0 / 0.03);
-    transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.status-heading {
     background: var(--status-wash);
-    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 [data-banner-state] {
@@ -126,10 +137,6 @@ button:not(:disabled) {
     transform: scale(1);
 }
 
-.action-button {
-    transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .history-bars {
     gap: min(0.125rem, 0.5%);
 }
@@ -137,7 +144,7 @@ button:not(:disabled) {
 .history-bar {
     min-width: 0;
     flex: 1 1 0;
-    border-radius: 1.5px;
+    border-radius: 999px;
     background: #e4e4e7;
     transform-origin: center;
     transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms ease, transform 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -171,10 +178,10 @@ button:not(:disabled) {
     left: clamp(var(--tooltip-half-width), var(--tooltip-position, 50%), calc(100% - var(--tooltip-half-width)));
     width: min(11.25rem, 100%);
     border: 0.0625rem solid #e4e4e7;
-    border-radius: 12px;
+    border-radius: var(--radius-menu);
     padding: 0.625rem 0.75rem;
     background: white;
-    box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 0.06);
+    box-shadow: var(--shadow-island);
     font-size: 0.75rem;
     line-height: 1.5;
     overflow-wrap: anywhere;

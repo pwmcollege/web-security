@@ -218,4 +218,4 @@ window.addEventListener("pagehide", () => events.close());
 window.addEventListener("pageshow", (event) => {
     if (event.persisted) connectEvents();
 });
-document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons(), { once: true });
+document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons({ attrs: { "stroke-width": "1.5" } }), { once: true });

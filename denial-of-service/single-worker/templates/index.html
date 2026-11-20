@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="#ffffff" />
-        <title>DoS</title>
+        <title>Watchdog</title>
         <link rel="preconnect" href="https://cdn.internal" />
         <script src="https://cdn.internal/tailwind/tailwind.min.js"></script>
         <script src="https://cdn.internal/lucide/lucide.min.js" defer></script>
@@ -12,89 +12,86 @@
         <link rel="stylesheet" href="/static/style.css" />
         <script src="/static/script.js" type="module"></script>
     </head>
-    <body class="min-h-screen bg-white font-sans text-zinc-900 antialiased">
+    <body class="min-h-dvh bg-white font-sans text-zinc-900 antialiased">
         <a class="skip-link" href="#main">Skip to status</a>
-        <div class="mx-auto flex min-h-screen w-full max-w-[44.875rem] flex-col px-4 sm:px-6">
-            <header class="flex min-h-[5.75rem] items-center justify-between gap-4">
-                <div class="flex items-baseline gap-2.5" aria-label="DoS status">
-                    <span class="select-none text-[1.625rem] font-bold tracking-[-0.06em]">DoS<span class="text-zinc-300">.</span></span>
-                </div>
-            </header>
-            <main id="main" class="space-y-6 pb-10">
-                <section id="overallStatus" data-state="checking" class="overall-status overflow-hidden rounded-2xl border-[length:0.0625rem]" aria-live="polite" aria-atomic="true">
-                    <div class="status-heading flex items-center gap-2.5 px-4 py-3.5">
-                        <span class="status-icons status-color shrink-0" aria-hidden="true">
-                            <i data-lucide="clock-3" class="checking-icon h-[1.125rem] w-[1.125rem]"></i>
-                            <i data-lucide="wifi-off" class="disconnected-icon h-[1.125rem] w-[1.125rem]"></i>
-                            <i data-lucide="circle-check" class="operational-icon h-[1.125rem] w-[1.125rem]"></i>
-                            <i data-lucide="triangle-alert" class="degraded-icon h-[1.125rem] w-[1.125rem]"></i>
-                            <i data-lucide="circle-x" class="outage-icon h-[1.125rem] w-[1.125rem]"></i>
-                        </span>
-                        <h1 id="statusTitle" class="text-pretty text-base font-medium">
-                            <span data-banner-state="checking">Checking system status…</span>
-                            <span data-banner-state="disconnected">Disconnected</span>
-                            <span data-banner-state="operational">All systems operational</span>
-                            <span data-banner-state="degraded">The service is experiencing issues</span>
-                            <span data-banner-state="outage">The service is unavailable</span>
-                        </h1>
-                    </div>
-                    <p id="statusDescription" class="px-4 py-4 text-sm leading-6 text-zinc-700">
+        <header class="watchdog-header mx-auto mt-4 flex min-h-14 items-center rounded-full bg-zinc-50
+                       ps-[clamp(0.75rem,2vw,1.5rem)] shadow-(--shadow-island)">
+            <span class="select-none text-[1.1875rem] font-extrabold leading-11 tracking-[-0.04em]">
+                Watchdog<span class="ms-0.5 inline-block size-1 rounded-full bg-[#a1a1aa]" aria-hidden="true"></span>
+            </span>
+        </header>
+        <main id="main" class="mx-auto flex flex-col gap-7.5 pt-[clamp(3rem,10vh,6rem)] pb-8">
+            <section id="overallStatus" data-state="checking"
+                     class="overall-status flex items-start gap-2.5 rounded-(--radius-menu) border p-4"
+                     aria-live="polite" aria-atomic="true">
+                <span class="status-icons status-color mt-0.75 shrink-0" aria-hidden="true">
+                    <i data-lucide="clock-3" class="checking-icon size-4.5"></i>
+                    <i data-lucide="wifi-off" class="disconnected-icon size-4.5"></i>
+                    <i data-lucide="circle-check" class="operational-icon size-4.5"></i>
+                    <i data-lucide="triangle-alert" class="degraded-icon size-4.5"></i>
+                    <i data-lucide="circle-x" class="outage-icon size-4.5"></i>
+                </span>
+                <div class="min-w-0">
+                    <h1 id="statusTitle" class="text-xl/6 font-bold tracking-[-0.025em] text-pretty">
+                        <span data-banner-state="checking">Checking system status…</span>
+                        <span data-banner-state="disconnected">Disconnected</span>
+                        <span data-banner-state="operational">All systems operational</span>
+                        <span data-banner-state="degraded">The service is experiencing issues</span>
+                        <span data-banner-state="outage">The service is unavailable</span>
+                    </h1>
+                    <p id="statusDescription" class="mt-1 text-sm/5 text-zinc-700">
                         <span data-banner-state="checking">Waiting for the first health check.</span>
                         <span data-banner-state="disconnected">The connection to the monitor was lost. Showing the last received checks while reconnecting…</span>
                         <span data-banner-state="operational">No issues detected with app.internal.</span>
                         <span data-banner-state="degraded">Some health checks are failing for app.internal.</span>
                         <span data-banner-state="outage">Health checks are consistently failing for app.internal.</span>
                     </p>
-                </section>
-                <section id="flagCard" class="flag-card rounded-2xl border-[length:0.0625rem] border-emerald-200 bg-emerald-50/50 p-4" aria-labelledby="flagHeading" hidden>
-                    <h2 id="flagHeading" class="mb-3 flex items-center gap-2 text-sm font-medium text-emerald-900"><i data-lucide="flag" class="h-4 w-4" aria-hidden="true"></i>Challenge complete</h2>
-                    <div class="flex min-w-0 items-center gap-2 rounded-xl border-[length:0.0625rem] border-emerald-200 bg-white p-1.5 pl-3">
-                        <p id="flagValue" class="min-w-0 flex-1 select-text break-all py-1 text-sm leading-5 text-zinc-800" aria-label="Flag"></p>
-                        <button id="copyFlag" type="button" class="action-button copy-button inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100" data-copied="false">
-                            <span class="copy-icons relative h-3.5 w-3.5" aria-hidden="true"><i data-lucide="copy" class="copy-icon absolute h-3.5 w-3.5"></i><i data-lucide="check" class="copied-icon absolute h-3.5 w-3.5"></i></span>
-                            <span id="copyLabel" class="min-w-[4.5ch]" aria-live="polite" aria-atomic="true">
-                                <span class="copy-label-default">Copy</span>
-                                <span class="copy-label-done">Copied</span>
-                            </span>
-                        </button>
+                </div>
+            </section>
+            <section id="flagCard" class="flag-card rounded-(--radius-menu) border border-emerald-200 bg-emerald-50/50 p-4" aria-labelledby="flagHeading" hidden>
+                <h2 id="flagHeading" class="mb-3 flex items-center gap-2 text-sm font-medium text-emerald-900"><i data-lucide="flag" class="h-4 w-4" aria-hidden="true"></i>Challenge complete</h2>
+                <div class="flex min-w-0 items-center gap-2 rounded-xl border border-emerald-200 bg-white pe-1 ps-3">
+                    <p id="flagValue" class="min-w-0 flex-1 select-text break-all py-1 text-sm leading-5 text-zinc-800" aria-label="Flag"></p>
+                    <button id="copyFlag" type="button" class="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-2.5
+                                                               text-sm font-medium text-zinc-600 hover:text-zinc-900 motion-safe:transition-colors" data-copied="false">
+                        <span class="copy-icons relative h-3.5 w-3.5" aria-hidden="true"><i data-lucide="copy" class="copy-icon absolute h-3.5 w-3.5"></i><i data-lucide="check" class="copied-icon absolute h-3.5 w-3.5"></i></span>
+                        <span id="copyLabel" class="min-w-[4.5ch]" aria-live="polite" aria-atomic="true">
+                            <span class="copy-label-default">Copy</span>
+                            <span class="copy-label-done">Copied</span>
+                        </span>
+                    </button>
+                </div>
+                <p id="copyMessage" class="mt-2 text-xs leading-5 text-emerald-900" aria-live="polite" hidden>Copy the flag from the text above.</p>
+            </section>
+            <section id="serviceStatus" data-state="checking" aria-labelledby="systemHeading">
+                <div class="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-(--color-rule) pb-2.5">
+                    <span class="status-icons status-color shrink-0" aria-hidden="true">
+                        <i data-lucide="clock-3" class="checking-icon h-4 w-4"></i><i data-lucide="circle-check" class="operational-icon h-4 w-4"></i><i data-lucide="triangle-alert" class="degraded-icon h-4 w-4"></i><i data-lucide="circle-x" class="outage-icon h-4 w-4"></i>
+                    </span>
+                    <h2 id="systemHeading" class="text-sm font-medium" translate="no">app.internal</h2>
+                    <span id="uptime" class="ms-auto text-[0.8125rem] tabular-nums text-zinc-600" aria-describedby="uptimeHelp"><span id="uptimeValue" hidden></span><span id="unknownUptime">—</span> uptime</span>
+                </div>
+                <div class="history-wrap relative mt-4">
+                    <div id="bars" class="history-bars flex h-4 items-stretch" role="group" aria-label="Recent health checks" aria-describedby="chartHelp"></div>
+                    <template id="historyBar">
+                        <button type="button" class="history-bar" tabindex="-1"></button>
+                    </template>
+                    <div id="historyTooltip" class="history-tooltip" aria-hidden="true">
+                        <time id="tooltipTime" class="block font-medium" hidden></time>
+                        <span id="noCheckRecorded" class="block font-medium">No check recorded</span>
+                        <span id="tooltipResult" data-state="checking" class="tooltip-result mt-1 flex items-center gap-1.5 text-zinc-600">
+                            <span data-check-state="checking">No data</span>
+                            <span data-check-state="operational">Operational</span>
+                            <span data-check-state="degraded">Degraded</span>
+                            <span data-check-state="outage">Unavailable</span>
+                        </span>
                     </div>
-                    <p id="copyMessage" class="mt-2 text-xs leading-5 text-emerald-900" aria-live="polite" hidden>Copy the flag from the text above.</p>
-                </section>
-                <section class="rounded-2xl border-[length:0.0625rem] border-zinc-200 shadow-[0_0.0625rem_0.125rem_rgb(0_0_0/0.03)]" aria-labelledby="systemHeading">
-                    <div class="border-b-[length:0.0625rem] border-zinc-100 px-4 py-3.5">
-                        <h2 id="systemHeading" class="text-base font-medium">System status</h2>
-                    </div>
-                    <div id="serviceStatus" data-state="checking" class="px-4 pb-4 pt-3">
-                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 py-1">
-                            <span class="status-icons status-color shrink-0" aria-hidden="true">
-                                <i data-lucide="clock-3" class="checking-icon h-4 w-4"></i><i data-lucide="circle-check" class="operational-icon h-4 w-4"></i><i data-lucide="triangle-alert" class="degraded-icon h-4 w-4"></i><i data-lucide="circle-x" class="outage-icon h-4 w-4"></i>
-                            </span>
-                            <span class="text-sm font-medium" translate="no">app.internal</span>
-                            <span id="uptime" class="ml-auto text-xs tabular-nums text-zinc-600" aria-describedby="uptimeHelp"><span id="uptimeValue" hidden></span><span id="unknownUptime">—</span> uptime</span>
-                        </div>
-                        <div class="history-wrap relative mt-2">
-                            <div id="bars" class="history-bars flex h-4 items-stretch" role="group" aria-label="Recent health checks" aria-describedby="chartHelp"></div>
-                            <template id="historyBar">
-                                <button type="button" class="history-bar" tabindex="-1"></button>
-                            </template>
-                            <div id="historyTooltip" class="history-tooltip" aria-hidden="true">
-                                <time id="tooltipTime" class="block font-medium" hidden></time>
-                                <span id="noCheckRecorded" class="block font-medium">No check recorded</span>
-                                <span id="tooltipResult" data-state="checking" class="tooltip-result mt-1 flex items-center gap-1.5 text-zinc-600">
-                                    <span data-check-state="checking">No data</span>
-                                    <span data-check-state="operational">Operational</span>
-                                    <span data-check-state="degraded">Degraded</span>
-                                    <span data-check-state="outage">Unavailable</span>
-                                </span>
-                            </div>
-                        </div>
-                        <p id="chartHelp" class="sr-only">Use the left and right arrow keys to inspect checks.</p>
-                        <p id="uptimeHelp" class="sr-only">Uptime is the percentage of successful checks in the displayed window.</p>
-                        <div class="mt-2 flex items-center justify-between gap-3 text-[0.6875rem] text-zinc-500"><span id="emptyHistory">No checks recorded yet</span><time id="oldestCheck" hidden></time><span>Now</span></div>
-                    </div>
-                </section>
-                <noscript><p class="rounded-xl border-[length:0.0625rem] border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Enable JavaScript to see service status.</p></noscript>
-            </main>
-        </div>
+                </div>
+                <p id="chartHelp" class="sr-only">Use the left and right arrow keys to inspect checks.</p>
+                <p id="uptimeHelp" class="sr-only">Uptime is the percentage of successful checks in the displayed window.</p>
+                <div class="mt-2 flex items-center justify-between gap-3 text-[0.6875rem] text-zinc-500"><span id="emptyHistory">No checks recorded yet</span><time id="oldestCheck" hidden></time><span>Now</span></div>
+            </section>
+            <noscript><p class="rounded-xl border-[length:0.0625rem] border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Enable JavaScript to see service status.</p></noscript>
+        </main>
     </body>
 </html>
