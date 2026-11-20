@@ -61,7 +61,7 @@ app.config.update(
 )
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=0, x_proto=1)
 
-root = Path(tempfile.mkdtemp(prefix="unpack-"))
+root = Path(tempfile.mkdtemp(prefix=""))
 archives = {}
 app.extensions["archive_root"] = root
 app.extensions["archives"] = archives
@@ -260,7 +260,7 @@ def remove_archive(archives, archive_id):
 
 def extract_archive(root, archives, payload, name, owner, tar_format=None):
     archive_id = secrets.token_hex(16)
-    directory = Path(tempfile.mkdtemp(prefix="archive-", dir=root))
+    directory = Path(tempfile.mkdtemp(prefix="", dir=root))
     files = []
 
     try:
