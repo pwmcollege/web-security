@@ -405,7 +405,7 @@ def index():
     )
 
     return render_template(
-        "unzip.html",
+        "unarchive.html",
         csrf_token=session["csrf"],
         archive_extensions=",".join((".zip", *extensions)),
     )

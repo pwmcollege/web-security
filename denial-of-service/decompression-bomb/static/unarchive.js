@@ -3,7 +3,6 @@
 (() => {
     window.lucide?.createIcons({ attrs: { "stroke-width": "1.5" }, inTemplates: true });
 
-    const MAX_UPLOAD = 1_000_000;
     const baseUrl = new URL("./", location.href);
     const byId = (id) => document.getElementById(id);
     const uploadView = byId("upload-view");
@@ -11,6 +10,7 @@
     const form = byId("archive-form");
     const input = byId("archive-input");
     const archiveExtensions = input.accept.split(",");
+    const uploadLimit = window.unarchiveUploadLimit;
     const dropZone = byId("drop-zone");
     const browseButton = byId("browse-button");
     const removeButton = byId("remove-button");
@@ -72,8 +72,10 @@
             return;
         }
 
-        if (file.size > MAX_UPLOAD) {
-            error("This archive is too large. Choose an archive of 1 MB or less.");
+        const validationError = uploadLimit?.validate(file);
+
+        if (validationError) {
+            error(validationError);
 
             return;
         }
@@ -123,7 +125,11 @@
         try {
             data = await response.json();
         } catch {
-            throw new Error(response.status === 413 ? "This archive is too large. Choose an archive of 1 MB or less." : "The archive could not be opened. Please try again.");
+            const message = response.status === 413
+                ? uploadLimit?.message ?? "This archive is too large."
+                : "The archive could not be opened. Please try again.";
+
+            throw new Error(message);
         }
 
         if (!response.ok) throw new Error(typeof data.error === "string" ? data.error : "The archive could not be opened. Please try again.");

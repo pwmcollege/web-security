@@ -6,14 +6,18 @@
         <meta name="csrf-token" content="{{ csrf_token }}" />
         <meta name="description" content="Open ZIP and TAR archives and download the files inside." />
         <title>Unarchive</title>
-        {% set asset_base = 'https://cdn.internal/' if request.host.split(':', 1)[0] | lower == 'app.internal' else './assets/' %}
+        {% set asset_base = 'https://cdn.internal/' if request.host.split(':', 1)[0] | lower == internal_host else './assets/' %}
         <link rel="icon" href="data:," />
         <link rel="stylesheet" href="{{ asset_base }}fonts/geist.css" />
         <script src="{{ asset_base }}tailwind/tailwind.min.js"></script>
-        <link rel="stylesheet" href="./static/unzip.css" />
+        {% block app_styles %}
+        <link rel="stylesheet" href="./static/unarchive.css" />
+        {% endblock %}
         <script src="{{ asset_base }}lucide/lucide.min.js" defer></script>
         <script src="{{ asset_base }}motion/motion.min.js" defer></script>
-        <script src="./static/unzip.js" defer></script>
+        {% block app_scripts %}
+        <script src="./static/{{ app_script }}" defer></script>
+        {% endblock %}
     </head>
     <body class="m-0 flex min-h-dvh flex-col">
         <a class="fixed start-3 top-2 z-1 inline-flex min-h-11 -translate-y-[150%] items-center rounded-[999px] bg-(--color-ink) px-4 py-2 text-sm/[normal] text-white focus:translate-none" href="#main">Skip to content</a>
@@ -27,7 +31,7 @@
                     <div id="drop-zone" class="drop-zone flex flex-col items-center justify-center gap-5 px-[clamp(1.125rem,5vw,2.25rem)] py-[clamp(1.875rem,6vw,3rem)] text-center motion-safe:transition-[background-color,border-color] motion-safe:duration-150">
                         <div class="min-w-0 max-w-full">
                             <h1 id="upload-title" dir="auto">Drop an archive here</h1>
-                            <p id="file-limit" class="mt-2 text-sm/normal text-(color:--color-muted) tabular-nums">ZIP or TAR · Up to 1 MB</p>
+                            <p id="file-limit" class="mt-2 text-sm/normal text-(color:--color-muted) tabular-nums">{% block upload_hint %}ZIP or TAR{% endblock %}</p>
                             <p id="selected-size" class="mt-2 text-sm/normal text-(color:--color-muted) tabular-nums" hidden></p>
                         </div>
                         <div class="flex max-w-full flex-wrap items-center gap-2">

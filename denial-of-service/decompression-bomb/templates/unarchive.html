@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% set internal_host = "app.internal" %}
+{% set app_script = "unarchive.js" %}
+{% set upload_limit_label = "1 MB" %}
+
+{% block app_scripts %}
+    {% if config.MAX_CONTENT_LENGTH %}
+        <script src="./static/upload-limit.js" data-max-upload="{{ config.MAX_CONTENT_LENGTH }}" data-limit-label="{{ upload_limit_label }}" defer></script>
+    {% endif %}
+    {{ super() }}
+{% endblock %}
+
+{% block upload_hint %}{{ super() }}{% if config.MAX_CONTENT_LENGTH %} · Up to {{ upload_limit_label }}{% endif %}{% endblock %}
